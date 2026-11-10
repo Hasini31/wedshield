@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane
+    prefHeight="760.0" prefWidth="1200.0"
+    stylesheets="@../css/styles.css"
+    xmlns="http://javafx.com/javafx/21"
+    xmlns:fx="http://javafx.com/fxml/1"
+    fx:controller="com.webshield.ui.controllers.ShellController">
+
+    <!-- ===================================================================== -->
+    <!-- LEFT SIDEBAR                                                          -->
+    <!-- ===================================================================== -->
+    <left>
+        <VBox styleClass="ws-sidebar" VBox.vgrow="ALWAYS">
+
+            <!-- Brand -->
+            <HBox alignment="CENTER_LEFT" spacing="10" styleClass="ws-brand-box">
+                <HBox alignment="CENTER" styleClass="ws-brand-icon">
+                    <Label styleClass="ws-brand-icon-text" text="WS" />
+                </HBox>
+                <VBox alignment="CENTER_LEFT" spacing="2">
+                    <Label styleClass="ws-brand-name" text="WebShield" />
+                    <Label styleClass="ws-brand-tagline" text="SECURITY PLATFORM" />
+                </VBox>
+            </HBox>
+
+            <!-- Nav Section -->
+            <Label styleClass="ws-nav-section" text="MAIN MENU" />
+
+            <Button fx:id="navDashboard"
+                    maxWidth="Infinity"
+                    onAction="#onNavDashboard"
+                    styleClass="ws-nav-btn, ws-nav-btn-active"
+                    text="  ▣  Dashboard" />
+
+            <Button fx:id="navWebsites"
+                    maxWidth="Infinity"
+                    onAction="#onNavWebsites"
+                    styleClass="ws-nav-btn"
+                    text="  ⬡  Websites" />
+
+            <Button fx:id="navScans"
+                    maxWidth="Infinity"
+                    onAction="#onNavScans"
+                    styleClass="ws-nav-btn"
+                    text="  ⬦  Security Scans" />
+
+            <Button fx:id="navHistory"
+                    maxWidth="Infinity"
+                    onAction="#onNavHistory"
+                    styleClass="ws-nav-btn"
+                    text="  ≡  Scan History" />
+
+            <Button fx:id="navReports"
+                    maxWidth="Infinity"
+                    onAction="#onNavReports"
+                    styleClass="ws-nav-btn"
+                    text="  ⎙  Reports" />
+
+            <!-- API SECURITY TESTING SECTION -->
+            <Label styleClass="ws-nav-section" text="API SECURITY TESTING">
+                <VBox.margin><Insets top="8" /></VBox.margin>
+            </Label>
+
+            <Button fx:id="navApiProjects"
+                    maxWidth="Infinity"
+                    onAction="#onNavApiProjects"
+                    styleClass="ws-nav-btn"
+                    text="  ⚡  API Projects" />
+
+            <Button fx:id="navApiConfig"
+                    maxWidth="Infinity"
+                    onAction="#onNavApiConfig"
+                    styleClass="ws-nav-btn"
+                    text="  ⚙  Test Configuration" />
+
+            <Button fx:id="navApiScan"
+                    maxWidth="Infinity"
+                    onAction="#onNavApiScan"
+                    styleClass="ws-nav-btn"
+                    text="  ▶  Scan Execution" />
+
+            <Button fx:id="navApiTestCases"
+                    maxWidth="Infinity"
+                    onAction="#onNavApiTestCases"
+                    styleClass="ws-nav-btn"
+                    text="  ▤  Test Cases" />
+
+            <Button fx:id="navApiExecutions"
+                    maxWidth="Infinity"
+                    onAction="#onNavApiExecutions"
+                    styleClass="ws-nav-btn"
+                    text="  ⇄  Execution Results" />
+
+            <Button fx:id="navApiFindings"
+                    maxWidth="Infinity"
+                    onAction="#onNavApiFindings"
+                    styleClass="ws-nav-btn"
+                    text="  ⚠  Security Findings" />
+
+            <Button fx:id="navApiHistory"
+                    maxWidth="Infinity"
+                    onAction="#onNavApiHistory"
+                    styleClass="ws-nav-btn"
+                    text="  ≡  API Scan History" />
+
+            <Button fx:id="navApiComparison"
+                    maxWidth="Infinity"
+                    onAction="#onNavApiComparison"
+                    styleClass="ws-nav-btn"
+                    text="  ⚖  Scan Comparison" />
+
+            <Button fx:id="navApiReports"
+                    maxWidth="Infinity"
+                    onAction="#onNavApiReports"
+                    styleClass="ws-nav-btn"
+                    text="  📋  API Reports" />
+
+            <Label styleClass="ws-nav-section" text="SYSTEM">
+                <VBox.margin><Insets top="8" /></VBox.margin>
+            </Label>
+
+            <Button fx:id="navSettings"
+                    maxWidth="Infinity"
+                    onAction="#onNavSettings"
+                    styleClass="ws-nav-btn"
+                    text="  ⚙  Settings" />
+
+            <!-- Spacer -->
+            <Region VBox.vgrow="ALWAYS" />
+
+            <!-- Sidebar footer -->
+            <VBox styleClass="ws-sidebar-footer" spacing="8">
+                <HBox alignment="CENTER_LEFT" spacing="6" styleClass="ws-scope-badge">
+                    <Label styleClass="ws-scope-dot" text="●" />
+                    <Label styleClass="ws-scope-text" text="Defensive Scope Enforced" />
+                </HBox>
+            </VBox>
+        </VBox>
+    </left>
+
+    <!-- ===================================================================== -->
+    <!-- CENTER (TopBar + ContentArea)                                        -->
+    <!-- ===================================================================== -->
+    <center>
+        <BorderPane>
+
+            <!-- TOP BAR -->
+            <top>
+                <HBox alignment="CENTER_LEFT" spacing="14" styleClass="ws-topbar">
+
+                    <!-- Title + Breadcrumb -->
+                    <VBox alignment="CENTER_LEFT" spacing="3">
+                        <Label fx:id="lblPageTitle"    styleClass="ws-page-title"  text="Dashboard" />
+                        <HBox alignment="CENTER_LEFT" spacing="0">
+                            <Label styleClass="ws-breadcrumb"     text="WebShield" />
+                            <Label styleClass="ws-breadcrumb-sep" text=" / " />
+                            <Label fx:id="lblBreadcrumb" styleClass="ws-breadcrumb" text="Overview" />
+                        </HBox>
+                    </VBox>
+
+                    <Region HBox.hgrow="ALWAYS" />
+
+                    <!-- Scope badge -->
+                    <HBox alignment="CENTER" styleClass="ws-topbar-scope-badge">
+                        <Label styleClass="ws-topbar-scope-text" text="Authorized Targets Only" />
+                    </HBox>
+
+                    <!-- Vertical rule -->
+                    <Region styleClass="ws-topbar-separator" />
+
+                    <!-- User profile -->
+                    <HBox alignment="CENTER_LEFT" spacing="10">
+                        <HBox alignment="CENTER" styleClass="ws-user-avatar">
+                            <Label fx:id="lblUserInitials" styleClass="ws-user-initials" text="OP" />
+                        </HBox>
+                        <VBox alignment="CENTER_LEFT" spacing="2">
+                            <Label fx:id="lblUserName" styleClass="ws-user-name" text="Operator" />
+                            <Label styleClass="ws-user-role" text="Security Console" />
+                        </VBox>
+                        <Button onAction="#onLogout" styleClass="ws-btn-icon" text="⎋ Logout" />
+                    </HBox>
+                </HBox>
+            </top>
+
+            <!-- PAGE CONTENT – StackPane swaps between pages -->
+            <center>
+                <StackPane fx:id="contentArea" />
+            </center>
+
+        </BorderPane>
+    </center>
+
+</BorderPane>
+

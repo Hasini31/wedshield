@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TreeView?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<ScrollPane fitToWidth="true" styleClass="ws-scroll-pane"
+            xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.webshield.ui.controllers.WebsiteDetailsController">
+
+    <VBox spacing="20" styleClass="ws-content">
+
+        <!-- ============================================================= -->
+        <!-- HEADER & ACTIONS                                              -->
+        <!-- ============================================================= -->
+        <HBox alignment="CENTER_LEFT" spacing="12">
+            <Button onAction="#onBack" styleClass="ws-btn-secondary" text="← Back to Websites" />
+            <VBox spacing="2">
+                <Label fx:id="lblWebsiteName" styleClass="ws-page-title" text="Website Name" />
+                <Label fx:id="lblWebsiteUrl" styleClass="ws-breadcrumb" text="https://example.com" />
+            </VBox>
+            <Region HBox.hgrow="ALWAYS" />
+            <Button fx:id="btnStartScan" onAction="#onStartSecurityScan" styleClass="ws-btn-secondary" text="🛡 Start Assessment" />
+            <Button fx:id="btnCrawl" onAction="#onCrawlWebsite" styleClass="ws-btn-primary" text="🕸 Crawl Website" />
+        </HBox>
+
+        <!-- ============================================================= -->
+        <!-- SUMMARY METRIC CARDS                                          -->
+        <!-- ============================================================= -->
+        <GridPane hgap="16" vgap="16">
+            <columnConstraints>
+                <ColumnConstraints percentWidth="25" />
+                <ColumnConstraints percentWidth="25" />
+                <ColumnConstraints percentWidth="25" />
+                <ColumnConstraints percentWidth="25" />
+            </columnConstraints>
+
+            <HBox alignment="CENTER_LEFT" spacing="12" styleClass="ws-stat-card" GridPane.columnIndex="0">
+                <HBox alignment="CENTER" styleClass="ws-stat-icon-blue">
+                    <Label styleClass="ws-icon-text-blue" text="📄" />
+                </HBox>
+                <VBox spacing="3" HBox.hgrow="ALWAYS">
+                    <Label styleClass="ws-stat-label" text="DISCOVERED PAGES" />
+                    <Label fx:id="statPages" styleClass="ws-stat-value" text="0" />
+                </VBox>
+            </HBox>
+
+            <HBox alignment="CENTER_LEFT" spacing="12" styleClass="ws-stat-card" GridPane.columnIndex="1">
+                <HBox alignment="CENTER" styleClass="ws-stat-icon-green">
+                    <Label styleClass="ws-icon-text-green" text="📝" />
+                </HBox>
+                <VBox spacing="3" HBox.hgrow="ALWAYS">
+                    <Label styleClass="ws-stat-label" text="DISCOVERED FORMS" />
+                    <Label fx:id="statForms" styleClass="ws-stat-value" text="0" />
+                </VBox>
+            </HBox>
+
+            <HBox alignment="CENTER_LEFT" spacing="12" styleClass="ws-stat-card" GridPane.columnIndex="2">
+                <HBox alignment="CENTER" styleClass="ws-stat-icon-amber">
+                    <Label styleClass="ws-icon-text-amber" text="⌨" />
+                </HBox>
+                <VBox spacing="3" HBox.hgrow="ALWAYS">
+                    <Label styleClass="ws-stat-label" text="INPUT FIELDS" />
+                    <Label fx:id="statInputs" styleClass="ws-stat-value" text="0" />
+                </VBox>
+            </HBox>
+
+            <HBox alignment="CENTER_LEFT" spacing="12" styleClass="ws-stat-card" GridPane.columnIndex="3">
+                <HBox alignment="CENTER" styleClass="ws-stat-icon-red">
+                    <Label styleClass="ws-icon-text-red" text="⚠" />
+                </HBox>
+                <VBox spacing="3" HBox.hgrow="ALWAYS">
+                    <Label styleClass="ws-stat-label" text="SCAN STATUS" />
+                    <Label fx:id="statStatus" styleClass="ws-stat-value" text="IDLE" style="-fx-font-size: 16px;" />
+                </VBox>
+            </HBox>
+        </GridPane>
+
+        <!-- Crawl Progress banner (hidden when idle) -->
+        <VBox fx:id="crawlProgressBox" spacing="8" styleClass="ws-card" visible="false" managed="false">
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <Label fx:id="lblCrawlStatus" styleClass="ws-card-subtitle" text="Crawling target..." HBox.hgrow="ALWAYS" />
+                <Label fx:id="lblCrawlMetrics" styleClass="ws-info-label" text="" />
+            </HBox>
+            <ProgressBar fx:id="crawlProgressBar" maxWidth="Infinity" styleClass="ws-progress-bar" />
+        </VBox>
+
+        <!-- ============================================================= -->
+        <!-- SPLIT: TREE VIEW (STRUCTURE) + PAGES TABLE                    -->
+        <!-- ============================================================= -->
+        <SplitPane dividerPositions="0.38" prefHeight="450" style="-fx-background-color: transparent;">
+
+            <!-- LEFT: Website Structure TreeView -->
+            <VBox spacing="10" styleClass="ws-card">
+                <Label styleClass="ws-card-title" text="Website Structure" />
+                <Label styleClass="ws-card-subtitle" text="DISCOVERED HIERARCHY, FORMS &amp; INPUTS" />
+                <Region styleClass="ws-section-divider" />
+                <TreeView fx:id="treeStructure" VBox.vgrow="ALWAYS" styleClass="ws-table" />
+            </VBox>
+
+            <!-- RIGHT: Discovered Pages Table -->
+            <VBox spacing="10" styleClass="ws-card">
+                <Label styleClass="ws-card-title" text="Discovered Pages" />
+                <Label styleClass="ws-card-subtitle" text="ALL DISCOVERED URL ENDPOINTS" />
+                <Region styleClass="ws-section-divider" />
+
+                <TableView fx:id="tablePages" VBox.vgrow="ALWAYS" styleClass="ws-table">
+                    <columns>
+                        <TableColumn fx:id="colPageUrl" text="URL" prefWidth="250" />
+                        <TableColumn fx:id="colPageStatus" text="Status" prefWidth="70" />
+                        <TableColumn fx:id="colPageMethod" text="Method" prefWidth="70" />
+                        <TableColumn fx:id="colPageDepth" text="Depth" prefWidth="60" />
+                        <TableColumn fx:id="colPageForms" text="Forms" prefWidth="60" />
+                    </columns>
+                    <placeholder>
+                        <VBox alignment="CENTER" spacing="8" minHeight="160">
+                            <Label styleClass="ws-empty-icon" text="🕸" />
+                            <Label styleClass="ws-empty-title" text="No pages discovered yet" />
+                            <Label styleClass="ws-empty-desc" text="Click 'Crawl Website' above to discover links, pages, and forms." />
+                        </VBox>
+                    </placeholder>
+                </TableView>
+            </VBox>
+
+        </SplitPane>
+
+    </VBox>
+</ScrollPane>
+

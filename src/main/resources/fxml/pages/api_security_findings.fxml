@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox spacing="0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.webshield.ui.controllers.ApiSecurityFindingsController">
+
+    <!-- Top Action Bar -->
+    <HBox alignment="CENTER_LEFT" spacing="12" styleClass="ws-card"
+          style="-fx-background-radius: 0; -fx-border-radius: 0; -fx-border-width: 0 0 1 0; -fx-border-color: #E2E6ED; -fx-padding: 12 24;">
+        <Label styleClass="ws-card-title" text="API Security Findings &amp; Vulnerabilities" />
+        <Region HBox.hgrow="ALWAYS" />
+        <Label styleClass="ws-stat-label" text="SCAN: " />
+        <ComboBox fx:id="cbScans" prefWidth="280" styleClass="ws-combo-box" promptText="Select a scan..." />
+    </HBox>
+
+    <ScrollPane fitToWidth="true" fitToHeight="true" styleClass="ws-scroll-pane" VBox.vgrow="ALWAYS">
+        <VBox spacing="16" styleClass="ws-content">
+
+            <!-- Row 1: Clickable Severity Filter Metric Cards -->
+            <GridPane hgap="12" vgap="8">
+                <columnConstraints>
+                    <ColumnConstraints percentWidth="16.6" />
+                    <ColumnConstraints percentWidth="16.6" />
+                    <ColumnConstraints percentWidth="16.6" />
+                    <ColumnConstraints percentWidth="16.6" />
+                    <ColumnConstraints percentWidth="16.6" />
+                    <ColumnConstraints percentWidth="17.0" />
+                </columnConstraints>
+
+                <!-- Total -->
+                <HBox onMouseClicked="#onFilterAll" alignment="CENTER_LEFT" spacing="8" styleClass="ws-stat-card"
+                      style="-fx-cursor: hand;" GridPane.columnIndex="0">
+                    <VBox>
+                        <Label styleClass="ws-stat-label" text="TOTAL" />
+                        <Label fx:id="lblTotalCount" styleClass="ws-stat-value" text="0" />
+                    </VBox>
+                </HBox>
+
+                <!-- Critical -->
+                <HBox onMouseClicked="#onFilterCritical" alignment="CENTER_LEFT" spacing="8" styleClass="ws-stat-card"
+                      style="-fx-cursor: hand;" GridPane.columnIndex="1">
+                    <VBox>
+                        <Label styleClass="ws-stat-label" text="CRITICAL" />
+                        <Label fx:id="lblCriticalCount" styleClass="ws-stat-value" text="0" style="-fx-text-fill: #DC2626;" />
+                    </VBox>
+                </HBox>
+
+                <!-- High -->
+                <HBox onMouseClicked="#onFilterHigh" alignment="CENTER_LEFT" spacing="8" styleClass="ws-stat-card"
+                      style="-fx-cursor: hand;" GridPane.columnIndex="2">
+                    <VBox>
+                        <Label styleClass="ws-stat-label" text="HIGH" />
+                        <Label fx:id="lblHighCount" styleClass="ws-stat-value" text="0" style="-fx-text-fill: #EA580C;" />
+                    </VBox>
+                </HBox>
+
+                <!-- Medium -->
+                <HBox onMouseClicked="#onFilterMedium" alignment="CENTER_LEFT" spacing="8" styleClass="ws-stat-card"
+                      style="-fx-cursor: hand;" GridPane.columnIndex="3">
+                    <VBox>
+                        <Label styleClass="ws-stat-label" text="MEDIUM" />
+                        <Label fx:id="lblMediumCount" styleClass="ws-stat-value" text="0" style="-fx-text-fill: #D97706;" />
+                    </VBox>
+                </HBox>
+
+                <!-- Low -->
+                <HBox onMouseClicked="#onFilterLow" alignment="CENTER_LEFT" spacing="8" styleClass="ws-stat-card"
+                      style="-fx-cursor: hand;" GridPane.columnIndex="4">
+                    <VBox>
+                        <Label styleClass="ws-stat-label" text="LOW" />
+                        <Label fx:id="lblLowCount" styleClass="ws-stat-value" text="0" style="-fx-text-fill: #356AE6;" />
+                    </VBox>
+                </HBox>
+
+                <!-- Info -->
+                <HBox onMouseClicked="#onFilterInfo" alignment="CENTER_LEFT" spacing="8" styleClass="ws-stat-card"
+                      style="-fx-cursor: hand;" GridPane.columnIndex="5">
+                    <VBox>
+                        <Label styleClass="ws-stat-label" text="INFO" />
+                        <Label fx:id="lblInfoCount" styleClass="ws-stat-value" text="0" style="-fx-text-fill: #7C3AED;" />
+                    </VBox>
+                </HBox>
+            </GridPane>
+
+            <!-- Row 2: SplitPane with Findings Table on Left & Inspector on Right -->
+            <SplitPane dividerPositions="0.6" styleClass="ws-card" VBox.vgrow="ALWAYS" minHeight="540">
+
+                <!-- Left: Filters & Table -->
+                <VBox spacing="10">
+                    <HBox spacing="8" alignment="CENTER_LEFT">
+                        <TextField fx:id="tfSearch" promptText="Search findings by rule, endpoint, CWE..."
+                                   styleClass="ws-text-field" HBox.hgrow="ALWAYS" />
+                        <ComboBox fx:id="cbSeverityFilter" prefWidth="120" styleClass="ws-combo-box" />
+                        <ComboBox fx:id="cbConfidenceFilter" prefWidth="110" styleClass="ws-combo-box" />
+                    </HBox>
+
+                    <TableView fx:id="tableFindings" styleClass="ws-table" VBox.vgrow="ALWAYS">
+                        <columns>
+                            <TableColumn fx:id="colSeverity" text="Severity" prefWidth="85" />
+                            <TableColumn fx:id="colTitle" text="Finding Title" prefWidth="190" />
+                            <TableColumn fx:id="colMethod" text="Method" prefWidth="65" />
+                            <TableColumn fx:id="colEndpoint" text="Endpoint" prefWidth="150" />
+                            <TableColumn fx:id="colConfidence" text="Confidence" prefWidth="85" />
+                            <TableColumn fx:id="colOwasp" text="OWASP Category" prefWidth="110" />
+                            <TableColumn fx:id="colCwe" text="CWE" prefWidth="75" />
+                        </columns>
+                        <placeholder>
+                            <Label text="No security findings recorded for this scan" />
+                        </placeholder>
+                    </TableView>
+                </VBox>
+
+                <!-- Right: Finding Inspector -->
+                <VBox fx:id="paneFindingDetails" spacing="10" style="-fx-padding: 0 0 0 12;">
+                    <HBox alignment="CENTER_LEFT" spacing="8">
+                        <Label fx:id="lblDetailSeverity" styleClass="ws-badge-critical" text="CRITICAL" />
+                        <Label fx:id="lblDetailConfidence" styleClass="ws-badge-neutral" text="Confidence: HIGH" />
+                    </HBox>
+
+                    <Label fx:id="lblDetailTitle" styleClass="ws-card-title" text="Security Finding Title" wrapText="true" />
+                    <Label fx:id="lblDetailEndpoint" style="-fx-font-weight: bold; -fx-text-fill: #356AE6;" text="GET /api/v1/endpoint" />
+
+                    <HBox spacing="12">
+                        <Label fx:id="lblDetailOwasp" styleClass="ws-stat-label" text="OWASP: API1:2023" />
+                        <Label fx:id="lblDetailCwe" styleClass="ws-stat-label" text="CWE: CWE-200" />
+                    </HBox>
+
+                    <Region styleClass="ws-section-divider" />
+
+                    <!-- Evidence Snippet -->
+                    <Label styleClass="ws-stat-label" text="VULNERABILITY EVIDENCE" />
+                    <TextArea fx:id="txtEvidence" editable="false" wrapText="true" prefHeight="130"
+                              style="-fx-font-family: 'Consolas', 'Courier New', monospace; -fx-font-size: 11px;" />
+
+                    <!-- Remediation Guidance -->
+                    <Label styleClass="ws-stat-label" text="REMEDIATION GUIDANCE &amp; SECURE CODING" />
+                    <TextArea fx:id="txtRemediation" editable="false" wrapText="true"
+                              prefHeight="90"
+                              style="-fx-font-family: 'Consolas', 'Courier New', monospace; -fx-font-size: 11px;" />
+
+                    <!-- AI Explanation Section -->
+                    <HBox alignment="CENTER_LEFT" spacing="12">
+                        <Button fx:id="btnExplainWithAi" onAction="#onExplainWithAi" styleClass="ws-btn-secondary" text="🤖 Explain Finding with AI" />
+                        <ProgressIndicator fx:id="piAiLoading" prefWidth="20" prefHeight="20" visible="false" managed="false" />
+                    </HBox>
+
+                    <VBox fx:id="paneAiExplanation" spacing="8" visible="false" managed="false"
+                          style="-fx-background-color: #FAF5FF; -fx-border-color: #D8B4FE; -fx-border-radius: 6; -fx-padding: 12;">
+                        <HBox alignment="CENTER_LEFT" spacing="8">
+                            <Label style="-fx-font-weight: 800; -fx-text-fill: #6B21A8; -fx-font-size: 12px;" text="AI-ASSISTED ADVISORY" />
+                            <Region HBox.hgrow="ALWAYS" />
+                            <Label fx:id="lblAiProvider" styleClass="ws-badge-info" text="Provider: Local Mock" />
+                        </HBox>
+                        <TextArea fx:id="txtAiExplanation" editable="false" wrapText="true" prefHeight="130"
+                                  style="-fx-font-size: 12px; -fx-background-color: transparent;" />
+                        <Label fx:id="lblAiDisclaimer" wrapText="true"
+                               style="-fx-font-size: 11px; -fx-text-fill: #7E22CE; -fx-font-style: italic;"
+                               text="AI-Assisted Security Advisory: Contextual guidance only. Not independently verified." />
+                    </VBox>
+                </VBox>
+            </SplitPane>
+
+        </VBox>
+    </ScrollPane>
+</VBox>
+

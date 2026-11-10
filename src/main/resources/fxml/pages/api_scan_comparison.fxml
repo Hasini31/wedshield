@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox spacing="0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.webshield.ui.controllers.ApiScanComparisonController">
+
+    <!-- Top Action Bar -->
+    <HBox alignment="CENTER_LEFT" spacing="12" styleClass="ws-card"
+          style="-fx-background-radius: 0; -fx-border-radius: 0; -fx-border-width: 0 0 1 0; -fx-border-color: #E2E6ED; -fx-padding: 12 24;">
+        <Label styleClass="ws-card-title" text="API Scan Differential &amp; Regression Analysis" />
+        <Region HBox.hgrow="ALWAYS" />
+        <Label fx:id="lblComparisonStatus" styleClass="ws-stat-label" text="Select two scans to compare" />
+        <Button fx:id="btnCompare" onAction="#onCompareScans" styleClass="ws-btn-primary" text="⚖ Compare Scans" />
+    </HBox>
+
+    <ScrollPane fitToWidth="true" fitToHeight="true" styleClass="ws-scroll-pane" VBox.vgrow="ALWAYS">
+        <VBox spacing="16" styleClass="ws-content">
+
+            <!-- Selection Bar: Scan A vs Scan B -->
+            <VBox spacing="12" styleClass="ws-card">
+                <GridPane hgap="16" vgap="10">
+                    <columnConstraints>
+                        <ColumnConstraints percentWidth="48" />
+                        <ColumnConstraints percentWidth="4" />
+                        <ColumnConstraints percentWidth="48" />
+                    </columnConstraints>
+
+                    <VBox spacing="4" GridPane.columnIndex="0">
+                        <Label styleClass="ws-stat-label" text="BASELINE SCAN (SCAN A)" />
+                        <ComboBox fx:id="cbScanA" maxWidth="Infinity" styleClass="ws-combo-box" promptText="Select baseline scan..." />
+                    </VBox>
+
+                    <HBox alignment="CENTER" GridPane.columnIndex="1">
+                        <Label styleClass="ws-stat-value" text="VS" style="-fx-font-size: 14px; -fx-text-fill: #94A3B8;" />
+                    </HBox>
+
+                    <VBox spacing="4" GridPane.columnIndex="2">
+                        <Label styleClass="ws-stat-label" text="COMPARISON SCAN (SCAN B)" />
+                        <ComboBox fx:id="cbScanB" maxWidth="Infinity" styleClass="ws-combo-box" promptText="Select comparison scan..." />
+                    </VBox>
+                </GridPane>
+            </VBox>
+
+            <!-- Metrics Diff Summary Cards -->
+            <GridPane hgap="12" vgap="8">
+                <columnConstraints>
+                    <ColumnConstraints percentWidth="20" />
+                    <ColumnConstraints percentWidth="20" />
+                    <ColumnConstraints percentWidth="20" />
+                    <ColumnConstraints percentWidth="20" />
+                    <ColumnConstraints percentWidth="20" />
+                </columnConstraints>
+
+                <HBox alignment="CENTER_LEFT" spacing="8" styleClass="ws-stat-card" GridPane.columnIndex="0">
+                    <VBox>
+                        <Label styleClass="ws-stat-label" text="NEW REGRESSIONS" />
+                        <Label fx:id="lblNewFindings" styleClass="ws-stat-value" text="+0" style="-fx-text-fill: #DC2626;" />
+                    </VBox>
+                </HBox>
+
+                <HBox alignment="CENTER_LEFT" spacing="8" styleClass="ws-stat-card" GridPane.columnIndex="1">
+                    <VBox>
+                        <Label styleClass="ws-stat-label" text="RESOLVED (FIXED)" />
+                        <Label fx:id="lblResolvedFindings" styleClass="ws-stat-value" text="-0" style="-fx-text-fill: #059669;" />
+                    </VBox>
+                </HBox>
+
+                <HBox alignment="CENTER_LEFT" spacing="8" styleClass="ws-stat-card" GridPane.columnIndex="2">
+                    <VBox>
+                        <Label styleClass="ws-stat-label" text="PERSISTENT FINDINGS" />
+                        <Label fx:id="lblPersistentFindings" styleClass="ws-stat-value" text="0" style="-fx-text-fill: #D97706;" />
+                    </VBox>
+                </HBox>
+
+                <HBox alignment="CENTER_LEFT" spacing="8" styleClass="ws-stat-card" GridPane.columnIndex="3">
+                    <VBox>
+                        <Label styleClass="ws-stat-label" text="COVERAGE DELTA" />
+                        <Label fx:id="lblCoverageDelta" styleClass="ws-stat-value" text="+0.0%" style="-fx-text-fill: #356AE6;" />
+                    </VBox>
+                </HBox>
+
+                <HBox alignment="CENTER_LEFT" spacing="8" styleClass="ws-stat-card" GridPane.columnIndex="4">
+                    <VBox>
+                        <Label styleClass="ws-stat-label" text="DURATION DELTA" />
+                        <Label fx:id="lblDurationDelta" styleClass="ws-stat-value" text="+0s" style="-fx-text-fill: #7C3AED;" />
+                    </VBox>
+                </HBox>
+            </GridPane>
+
+            <!-- Differential Findings: Two side-by-side or stacked tables -->
+            <GridPane hgap="16" vgap="16" VBox.vgrow="ALWAYS">
+                <columnConstraints>
+                    <ColumnConstraints percentWidth="50" />
+                    <ColumnConstraints percentWidth="50" />
+                </columnConstraints>
+
+                <!-- Left: New Findings (Regressions in B) -->
+                <VBox spacing="10" styleClass="ws-card" GridPane.columnIndex="0" VBox.vgrow="ALWAYS" minHeight="360">
+                    <HBox alignment="CENTER_LEFT">
+                        <Label styleClass="ws-card-title" text="New Vulnerabilities Discovered (Regressions)" style="-fx-text-fill: #DC2626;" />
+                    </HBox>
+                    <Region styleClass="ws-section-divider" />
+
+                    <TableView fx:id="tableNewFindings" styleClass="ws-table" VBox.vgrow="ALWAYS">
+                        <columns>
+                            <TableColumn fx:id="colNewSev" text="Severity" prefWidth="80" />
+                            <TableColumn fx:id="colNewTitle" text="Title" prefWidth="170" />
+                            <TableColumn fx:id="colNewMethod" text="Method" prefWidth="65" />
+                            <TableColumn fx:id="colNewEndpoint" text="Endpoint" prefWidth="130" />
+                            <TableColumn fx:id="colNewOwasp" text="OWASP" prefWidth="85" />
+                        </columns>
+                        <placeholder>
+                            <Label text="No new regressions discovered in Scan B" />
+                        </placeholder>
+                    </TableView>
+                </VBox>
+
+                <!-- Right: Resolved Findings (Fixed in B) -->
+                <VBox spacing="10" styleClass="ws-card" GridPane.columnIndex="1" VBox.vgrow="ALWAYS" minHeight="360">
+                    <HBox alignment="CENTER_LEFT">
+                        <Label styleClass="ws-card-title" text="Resolved Vulnerabilities (Fixed)" style="-fx-text-fill: #059669;" />
+                    </HBox>
+                    <Region styleClass="ws-section-divider" />
+
+                    <TableView fx:id="tableResolvedFindings" styleClass="ws-table" VBox.vgrow="ALWAYS">
+                        <columns>
+                            <TableColumn fx:id="colResSev" text="Severity" prefWidth="80" />
+                            <TableColumn fx:id="colResTitle" text="Title" prefWidth="170" />
+                            <TableColumn fx:id="colResMethod" text="Method" prefWidth="65" />
+                            <TableColumn fx:id="colResEndpoint" text="Endpoint" prefWidth="130" />
+                            <TableColumn fx:id="colResOwasp" text="OWASP" prefWidth="85" />
+                        </columns>
+                        <placeholder>
+                            <Label text="No previously reported findings were resolved" />
+                        </placeholder>
+                    </TableView>
+                </VBox>
+            </GridPane>
+
+            <!-- Persistent Findings (Present in Both Scans) -->
+            <VBox spacing="10" styleClass="ws-card" VBox.vgrow="ALWAYS" minHeight="280">
+                <HBox alignment="CENTER_LEFT" spacing="8">
+                    <Label styleClass="ws-card-title" text="Persistent Vulnerabilities (Present in Both Scans)" style="-fx-text-fill: #D97706;" />
+                    <Region HBox.hgrow="ALWAYS" />
+                    <Label fx:id="lblPersistentTableCount" styleClass="ws-badge-neutral" text="0 findings" />
+                </HBox>
+                <Region styleClass="ws-section-divider" />
+
+                <TableView fx:id="tablePersistentFindings" styleClass="ws-table" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="colPerSev" text="Severity" prefWidth="80" />
+                        <TableColumn fx:id="colPerTitle" text="Title" prefWidth="240" />
+                        <TableColumn fx:id="colPerMethod" text="Method" prefWidth="65" />
+                        <TableColumn fx:id="colPerEndpoint" text="Endpoint" prefWidth="200" />
+                        <TableColumn fx:id="colPerOwasp" text="OWASP" prefWidth="120" />
+                    </columns>
+                    <placeholder>
+                        <Label text="No persistent findings shared between these scans" />
+                    </placeholder>
+                </TableView>
+            </VBox>
+
+        </VBox>
+    </ScrollPane>
+</VBox>
+

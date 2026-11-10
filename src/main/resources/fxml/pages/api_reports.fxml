@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<ScrollPane fitToWidth="true" styleClass="ws-page-scroll"
+            xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.webshield.ui.controllers.ApiReportsController">
+
+    <VBox spacing="20" styleClass="ws-page-container">
+        <padding>
+            <Insets bottom="30" left="30" right="30" top="24"/>
+        </padding>
+
+        <!-- Page Header -->
+        <HBox alignment="CENTER_LEFT" spacing="16">
+            <VBox spacing="4" HBox.hgrow="ALWAYS">
+                <Label styleClass="ws-page-title" text="API Security Reports"/>
+                <Label styleClass="ws-page-subtitle" text="Generate executive-ready PDF &amp; HTML vulnerability reports with optional AI insights"/>
+            </VBox>
+            <Button fx:id="btnRefresh" onAction="#onRefresh" styleClass="ws-btn-secondary" text="↻ Refresh History"/>
+        </HBox>
+
+        <!-- Main Configuration Grid -->
+        <GridPane hgap="20" vgap="20">
+            <columnConstraints>
+                <ColumnConstraints percentWidth="50"/>
+                <ColumnConstraints percentWidth="50"/>
+            </columnConstraints>
+
+            <!-- Card 1: Report Configuration Form -->
+            <VBox spacing="16" styleClass="ws-card" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                <Label styleClass="ws-card-title" text="1. Report Scope &amp; Format"/>
+
+                <!-- Target Scan -->
+                <VBox spacing="6">
+                    <Label styleClass="ws-form-label" text="Select Completed API Scan"/>
+                    <ComboBox fx:id="cbScans" maxWidth="Infinity" promptText="Choose a completed scan..."/>
+                </VBox>
+
+                <!-- Format Selection -->
+                <VBox spacing="6">
+                    <Label styleClass="ws-form-label" text="Export Format"/>
+                    <HBox spacing="24">
+                        <RadioButton fx:id="rbPdf" selected="true" text="PDF Document (.pdf)"/>
+                        <RadioButton fx:id="rbHtml" text="Interactive HTML (.html)"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Sections Toggles -->
+                <VBox spacing="8">
+                    <Label styleClass="ws-form-label" text="Include Sections"/>
+                    <GridPane hgap="12" vgap="8">
+                        <columnConstraints>
+                            <ColumnConstraints percentWidth="50"/>
+                            <ColumnConstraints percentWidth="50"/>
+                        </columnConstraints>
+                        <CheckBox fx:id="chkExecutiveSummary" selected="true" text="Executive Summary" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                        <CheckBox fx:id="chkScope" selected="true" text="Assessment Scope" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                        <CheckBox fx:id="chkMethodology" selected="true" text="Testing Methodology" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                        <CheckBox fx:id="chkVulnerabilityOverview" selected="true" text="Vulnerability Overview (OWASP/CWE)" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                        <CheckBox fx:id="chkDetailedFindings" selected="true" text="Detailed Findings &amp; Evidence" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                        <CheckBox fx:id="chkStatistics" selected="true" text="Scan Execution Statistics" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+                        <CheckBox fx:id="chkRemediation" selected="true" text="Prioritized Remediation Roadmap" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+                        <CheckBox fx:id="chkLimitations" selected="true" text="Legal Disclaimer &amp; Limitations" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+                    </GridPane>
+                </VBox>
+            </VBox>
+
+            <!-- Card 2: AI Assistance & Generation Trigger -->
+            <VBox spacing="16" styleClass="ws-card" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                <Label styleClass="ws-card-title" text="2. AI Explanations &amp; Export"/>
+
+                <!-- AI Explanations Card -->
+                <VBox spacing="10" style="-fx-background-color: #FAF5FF; -fx-border-color: #D8B4FE; -fx-border-radius: 6; -fx-padding: 14;">
+                    <HBox alignment="CENTER_LEFT" spacing="8">
+                        <Label style="-fx-font-weight: 800; -fx-text-fill: #6B21A8;" text="🤖 LLM Finding Explanations"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Label fx:id="lblProviderBadge" styleClass="ws-badge-info" text="Provider: Local Mock / Ollama"/>
+                    </HBox>
+                    <CheckBox fx:id="chkIncludeAi" text="Include AI-assisted root-cause &amp; remediation explanations"/>
+                    <CheckBox fx:id="chkExternalConsent" disable="true"
+                              text="Authorize transmitting sanitized finding metadata to external LLM provider"/>
+                    <Label style="-fx-font-size: 11px; -fx-text-fill: #7E22CE;"
+                           text="Security Note: Authorization headers, tokens, and credentials are automatically scrubbed. Original deterministic findings are never modified."
+                           wrapText="true"/>
+                </VBox>
+
+                <!-- Trigger & Progress -->
+                <VBox spacing="10" VBox.vgrow="ALWAYS">
+                    <Button fx:id="btnGenerateReport" maxWidth="Infinity" onAction="#onGenerateReport"
+                            styleClass="ws-btn-primary" text="⚡ Generate Assessment Report"/>
+
+                    <ProgressBar fx:id="pbGenerating" maxWidth="Infinity" progress="0.0" visible="false"/>
+                    <Label fx:id="lblGenerationStatus" alignment="CENTER" maxWidth="Infinity"
+                           style="-fx-font-size: 13px; -fx-text-fill: #64748B;" text="Ready to generate report."/>
+                </VBox>
+
+                <!-- Latest Export Card -->
+                <VBox fx:id="paneLatestReport" spacing="8" style="-fx-background-color: #F8FAFC; -fx-border-color: #E2E8F0; -fx-border-radius: 6; -fx-padding: 12;" visible="false">
+                    <HBox alignment="CENTER_LEFT" spacing="8">
+                        <Label style="-fx-font-weight: 700; -fx-text-fill: #16A34A;" text="✓ Report Ready:"/>
+                        <Label fx:id="lblLatestFilename" style="-fx-font-weight: 700; -fx-text-fill: #0F172A;" text="Report.pdf"/>
+                    </HBox>
+                    <HBox spacing="12">
+                        <Button fx:id="btnOpenReport" onAction="#onOpenLatestReport" styleClass="ws-btn-secondary" text="📄 Open Report"/>
+                        <Button fx:id="btnOpenFolder" onAction="#onOpenReportFolder" styleClass="ws-btn-secondary" text="📁 Open Directory"/>
+                    </HBox>
+                </VBox>
+            </VBox>
+        </GridPane>
+
+        <!-- Card 3: Generated Reports History -->
+        <VBox spacing="14" styleClass="ws-card">
+            <HBox alignment="CENTER_LEFT">
+                <Label styleClass="ws-card-title" text="Generated Reports Archive"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label fx:id="lblReportCount" style="-fx-font-size: 13px; -fx-text-fill: #64748B;" text="0 reports"/>
+            </HBox>
+
+            <TableView fx:id="tableReports" minHeight="220" styleClass="ws-table">
+                <columns>
+                    <TableColumn fx:id="colReportId" prefWidth="90" text="Report ID"/>
+                    <TableColumn fx:id="colFormat" prefWidth="90" text="Format"/>
+                    <TableColumn fx:id="colScanName" prefWidth="240" text="Scan Name"/>
+                    <TableColumn fx:id="colSize" prefWidth="110" text="File Size"/>
+                    <TableColumn fx:id="colHasAi" prefWidth="120" text="AI Assisted"/>
+                    <TableColumn fx:id="colGeneratedAt" prefWidth="180" text="Generated Date"/>
+                </columns>
+                <columnResizePolicy>
+                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                </columnResizePolicy>
+            </TableView>
+
+            <HBox alignment="CENTER_RIGHT" spacing="12">
+                <Button fx:id="btnOpenSelected" disable="true" onAction="#onOpenSelectedReport" styleClass="ws-btn-secondary" text="Open Selected"/>
+                <Button fx:id="btnDeleteReport" disable="true" onAction="#onDeleteSelectedReport" styleClass="ws-btn-secondary" text="Delete Report"/>
+            </HBox>
+        </VBox>
+    </VBox>
+</ScrollPane>
+

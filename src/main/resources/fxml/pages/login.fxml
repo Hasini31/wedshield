@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Hyperlink?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<StackPane
+    xmlns="http://javafx.com/javafx/21"
+    xmlns:fx="http://javafx.com/fxml/1"
+    fx:controller="com.webshield.ui.controllers.LoginController"
+    styleClass="ws-auth-bg">
+
+    <!-- Centred card -->
+    <VBox styleClass="ws-auth-card" alignment="TOP_CENTER" spacing="0"
+          maxWidth="400" maxHeight="500">
+
+        <!-- Brand header -->
+        <HBox alignment="CENTER" spacing="10" styleClass="ws-auth-brand">
+            <HBox alignment="CENTER" styleClass="ws-brand-icon">
+                <Label styleClass="ws-brand-icon-text" text="WS" />
+            </HBox>
+            <Label text="WebShield" styleClass="ws-auth-brand-name" />
+        </HBox>
+
+        <!-- Body -->
+        <VBox spacing="14" styleClass="ws-auth-body">
+            <Label text="Sign in to your account" styleClass="ws-auth-heading" />
+            <Label text="Security Assessment Platform" styleClass="ws-auth-subheading" />
+
+            <Region minHeight="4" />
+
+            <!-- Email -->
+            <VBox spacing="5">
+                <Label text="Email address" styleClass="ws-field-label" />
+                <TextField fx:id="emailField" styleClass="ws-text-field"
+                           promptText="you@example.com" />
+            </VBox>
+
+            <!-- Password -->
+            <VBox spacing="5">
+                <Label text="Password" styleClass="ws-field-label" />
+                <PasswordField fx:id="passwordField" styleClass="ws-text-field"
+                               promptText="Enter your password" />
+            </VBox>
+
+            <!-- Remember me + error message -->
+            <HBox alignment="CENTER_LEFT" spacing="8">
+                <CheckBox fx:id="rememberMeCheck" styleClass="ws-check" text="Remember me" />
+            </HBox>
+
+            <!-- Error / status -->
+            <Label fx:id="messageLabel" styleClass="ws-auth-error"
+                   wrapText="true" maxWidth="340" />
+
+            <!-- Login button -->
+            <Button text="Sign In" onAction="#handleLogin"
+                    styleClass="ws-btn-primary" maxWidth="Infinity" />
+
+            <!-- Register link -->
+            <HBox alignment="CENTER" spacing="4">
+                <Label text="Don't have an account?" styleClass="ws-auth-link-label" />
+                <Hyperlink text="Register here" onAction="#goToRegister"
+                           styleClass="ws-auth-link" />
+            </HBox>
+        </VBox>
+
+    </VBox>
+</StackPane>

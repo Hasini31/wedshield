@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox spacing="0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.webshield.ui.controllers.ApiTestCasesController">
+
+    <!-- Top Action Bar -->
+    <HBox alignment="CENTER_LEFT" spacing="12" styleClass="ws-card"
+          style="-fx-background-radius: 0; -fx-border-radius: 0; -fx-border-width: 0 0 1 0; -fx-border-color: #E2E6ED; -fx-padding: 12 24;">
+        <Label styleClass="ws-card-title" text="API Test Cases &amp; Mutation Lineage" />
+        <Region HBox.hgrow="ALWAYS" />
+        <Label styleClass="ws-stat-label" text="SCAN: " />
+        <ComboBox fx:id="cbScans" prefWidth="280" styleClass="ws-combo-box" promptText="Select a scan..." />
+    </HBox>
+
+    <ScrollPane fitToWidth="true" fitToHeight="true" styleClass="ws-scroll-pane" VBox.vgrow="ALWAYS">
+        <VBox spacing="16" styleClass="ws-content">
+
+            <!-- Split View: Table on Left, Details on Right -->
+            <SplitPane dividerPositions="0.6" styleClass="ws-card" VBox.vgrow="ALWAYS" minHeight="560">
+
+                <!-- Left: Test Cases Table & Filters -->
+                <VBox spacing="10">
+                    <HBox spacing="8" alignment="CENTER_LEFT">
+                        <TextField fx:id="tfSearch" promptText="Search test cases by ID, endpoint, description..."
+                                   styleClass="ws-text-field" HBox.hgrow="ALWAYS" />
+                        <ComboBox fx:id="cbCategoryFilter" prefWidth="130" styleClass="ws-combo-box" />
+                        <Label fx:id="lblTestCaseCount" styleClass="ws-badge-neutral" text="0 test cases" />
+                    </HBox>
+
+                    <TableView fx:id="tableTestCases" styleClass="ws-table" VBox.vgrow="ALWAYS">
+                        <columns>
+                            <TableColumn fx:id="colTestCaseId" text="Test ID" prefWidth="120" />
+                            <TableColumn fx:id="colMethod" text="Method" prefWidth="70" />
+                            <TableColumn fx:id="colEndpoint" text="Endpoint" prefWidth="180" />
+                            <TableColumn fx:id="colCategory" text="Category" prefWidth="95" />
+                            <TableColumn fx:id="colStrategy" text="Strategy" prefWidth="130" />
+                            <TableColumn fx:id="colTarget" text="Targeted Property" prefWidth="130" />
+                        </columns>
+                        <placeholder>
+                            <Label text="No test cases recorded for this scan" />
+                        </placeholder>
+                    </TableView>
+                </VBox>
+
+                <!-- Right: Test Case Inspector -->
+                <VBox fx:id="paneDetails" spacing="12" style="-fx-padding: 0 0 0 12;">
+                    <HBox alignment="CENTER_LEFT" spacing="8">
+                        <Label fx:id="lblDetailCategory" styleClass="ws-badge-info" text="VALID" />
+                        <Label fx:id="lblDetailTestId" styleClass="ws-card-title" text="TC-001" />
+                    </HBox>
+                    <Region styleClass="ws-section-divider" />
+
+                    <VBox spacing="6">
+                        <HBox spacing="8">
+                            <Label styleClass="ws-stat-label" text="METHOD &amp; ENDPOINT: " />
+                            <Label fx:id="lblDetailMethod" styleClass="ws-badge-neutral" text="GET" />
+                            <Label fx:id="lblDetailEndpoint" style="-fx-font-weight: bold;" text="/api/v1/resource" />
+                        </HBox>
+
+                        <HBox spacing="8">
+                            <Label styleClass="ws-stat-label" text="GENERATION STRATEGY: " />
+                            <Label fx:id="lblDetailStrategy" styleClass="ws-badge-neutral" text="VALID_NOMINAL" />
+                        </HBox>
+
+                        <HBox spacing="8">
+                            <Label styleClass="ws-stat-label" text="PARENT TEST CASE (LINEAGE): " />
+                            <Label fx:id="lblDetailParent" text="None (Root Case)" />
+                        </HBox>
+
+                        <HBox spacing="8">
+                            <Label styleClass="ws-stat-label" text="TARGETED PROPERTY: " />
+                            <Label fx:id="lblDetailTarget" text="General" />
+                        </HBox>
+                    </VBox>
+
+                    <Region styleClass="ws-section-divider" />
+
+                    <Label styleClass="ws-stat-label" text="TEST RATIONALE &amp; DESCRIPTION" />
+                    <TextArea fx:id="txtDetailDescription" editable="false" wrapText="true" VBox.vgrow="ALWAYS"
+                              prefHeight="200"
+                              style="-fx-font-family: 'Consolas', 'Courier New', monospace; -fx-font-size: 11px;" />
+                </VBox>
+            </SplitPane>
+
+        </VBox>
+    </ScrollPane>
+</VBox>
+

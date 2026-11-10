@@ -1,0 +1,871 @@
+/* =============================================================================
+   WebShield – Enterprise Security Platform
+   Design System & Global Stylesheet
+   ============================================================================= */
+
+/* --------------------------------------------------------------------------- */
+/* CSS Variables – Design Tokens                                               */
+/* --------------------------------------------------------------------------- */
+.root {
+    -ws-sidebar-bg:        #172338;
+    -ws-sidebar-hover:     #1e2f4a;
+    -ws-sidebar-active:    #1a3052;
+    -ws-sidebar-border:    #223351;
+    -ws-sidebar-text:      #8fa3be;
+    -ws-sidebar-text-active: #ffffff;
+    -ws-sidebar-label:     #4d6480;
+    -ws-accent-blue:       #356AE6;
+    -ws-accent-blue-dark:  #2756c5;
+    -ws-accent-blue-light: #EBF3FF;
+    -ws-bg-app:            #F5F7FA;
+    -ws-bg-white:          #FFFFFF;
+    -ws-bg-subtle:         #F8FAFC;
+    -ws-text-primary:      #1a2332;
+    -ws-text-secondary:    #64748B;
+    -ws-text-muted:        #94A3B8;
+    -ws-border:            #E2E6ED;
+    -ws-border-light:      #EFF3F8;
+    -ws-green:             #059669;
+    -ws-green-bg:          #ECFDF5;
+    -ws-amber:             #D97706;
+    -ws-amber-bg:          #FFFBEB;
+    -ws-red:               #DC2626;
+    -ws-red-bg:            #FEF2F2;
+    -ws-orange:            #EA580C;
+    -ws-orange-bg:         #FFF7ED;
+    -ws-purple:            #7C3AED;
+    -ws-purple-bg:         #F5F3FF;
+
+    -fx-font-family: "Segoe UI", Arial, sans-serif;
+    -fx-font-size: 13px;
+    -fx-background-color: #F5F7FA;
+    -fx-text-fill: #1a2332;
+}
+
+/* --------------------------------------------------------------------------- */
+/* SIDEBAR                                                                     */
+/* --------------------------------------------------------------------------- */
+.ws-sidebar {
+    -fx-background-color: #172338;
+    -fx-min-width: 230px;
+    -fx-pref-width: 230px;
+    -fx-max-width: 230px;
+}
+
+.ws-brand-box {
+    -fx-padding: 18 16 18 18;
+    -fx-border-color: transparent transparent #223351 transparent;
+    -fx-border-width: 0 0 1 0;
+}
+
+.ws-brand-icon {
+    -fx-background-color: #356AE6;
+    -fx-background-radius: 7;
+    -fx-min-width: 32;
+    -fx-min-height: 32;
+    -fx-max-width: 32;
+    -fx-max-height: 32;
+    -fx-alignment: CENTER;
+}
+
+.ws-brand-icon-text {
+    -fx-text-fill: #FFFFFF;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+}
+
+.ws-brand-name {
+    -fx-text-fill: #FFFFFF;
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+}
+
+.ws-brand-tagline {
+    -fx-text-fill: #4d6480;
+    -fx-font-size: 9.5px;
+    -fx-font-weight: bold;
+}
+
+.ws-nav-section {
+    -fx-text-fill: #4d6480;
+    -fx-font-size: 9.5px;
+    -fx-font-weight: bold;
+    -fx-padding: 18 0 6 18;
+}
+
+.ws-nav-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: #8fa3be;
+    -fx-font-size: 13px;
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 10 16 10 16;
+    -fx-cursor: hand;
+    -fx-border-width: 0;
+    -fx-background-radius: 0;
+    -fx-graphic-text-gap: 10;
+}
+
+.ws-nav-btn:hover {
+    -fx-background-color: #1e2f4a;
+    -fx-text-fill: #FFFFFF;
+}
+
+.ws-nav-btn-active {
+    -fx-background-color: #1a3052;
+    -fx-text-fill: #FFFFFF;
+    -fx-font-weight: bold;
+    -fx-border-color: transparent transparent transparent #356AE6;
+    -fx-border-width: 0 0 0 3;
+    -fx-padding: 10 16 10 13;
+}
+
+.ws-sidebar-divider {
+    -fx-background-color: #223351;
+    -fx-min-height: 1;
+    -fx-max-height: 1;
+    -fx-pref-height: 1;
+}
+
+.ws-sidebar-footer {
+    -fx-padding: 12 16;
+    -fx-border-color: #223351 transparent transparent transparent;
+    -fx-border-width: 1 0 0 0;
+}
+
+.ws-scope-badge {
+    -fx-background-color: #1a2d45;
+    -fx-background-radius: 4;
+    -fx-padding: 5 10;
+    -fx-border-color: #223351;
+    -fx-border-radius: 4;
+    -fx-border-width: 1;
+}
+
+.ws-scope-dot {
+    -fx-text-fill: #059669;
+    -fx-font-size: 10px;
+}
+
+.ws-scope-text {
+    -fx-text-fill: #7a96b4;
+    -fx-font-size: 11px;
+}
+
+/* --------------------------------------------------------------------------- */
+/* TOP HEADER BAR                                                              */
+/* --------------------------------------------------------------------------- */
+.ws-topbar {
+    -fx-background-color: #FFFFFF;
+    -fx-padding: 0 24;
+    -fx-min-height: 58;
+    -fx-pref-height: 58;
+    -fx-max-height: 58;
+    -fx-border-color: transparent transparent #E2E6ED transparent;
+    -fx-border-width: 0 0 1 0;
+}
+
+.ws-page-title {
+    -fx-font-size: 17px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1a2332;
+}
+
+.ws-breadcrumb {
+    -fx-font-size: 11.5px;
+    -fx-text-fill: #94A3B8;
+}
+
+.ws-breadcrumb-sep {
+    -fx-font-size: 10px;
+    -fx-text-fill: #CBD5E1;
+    -fx-padding: 0 4;
+}
+
+.ws-topbar-scope-badge {
+    -fx-background-color: #F0F4FF;
+    -fx-background-radius: 20;
+    -fx-padding: 5 14;
+    -fx-border-color: #C7D7FB;
+    -fx-border-radius: 20;
+    -fx-border-width: 1;
+}
+
+.ws-topbar-scope-text {
+    -fx-font-size: 11px;
+    -fx-text-fill: #2756c5;
+    -fx-font-weight: 600;
+}
+
+.ws-topbar-separator {
+    -fx-background-color: #E2E6ED;
+    -fx-min-width: 1;
+    -fx-pref-width: 1;
+    -fx-max-width: 1;
+    -fx-min-height: 28;
+    -fx-pref-height: 28;
+    -fx-max-height: 28;
+}
+
+.ws-user-avatar {
+    -fx-background-color: #EFF3F8;
+    -fx-background-radius: 50%;
+    -fx-min-width: 34;
+    -fx-min-height: 34;
+    -fx-max-width: 34;
+    -fx-max-height: 34;
+    -fx-alignment: CENTER;
+    -fx-border-color: #D5DDE8;
+    -fx-border-radius: 50%;
+    -fx-border-width: 1;
+}
+
+.ws-user-initials {
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #475569;
+}
+
+.ws-user-name {
+    -fx-font-size: 12.5px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #1E293B;
+}
+
+.ws-user-role {
+    -fx-font-size: 11px;
+    -fx-text-fill: #94A3B8;
+}
+
+/* --------------------------------------------------------------------------- */
+/* CONTENT BODY                                                                */
+/* --------------------------------------------------------------------------- */
+.ws-content {
+    -fx-background-color: #F5F7FA;
+    -fx-padding: 24;
+}
+
+/* --------------------------------------------------------------------------- */
+/* CARDS                                                                       */
+/* --------------------------------------------------------------------------- */
+.ws-card {
+    -fx-background-color: #FFFFFF;
+    -fx-background-radius: 6;
+    -fx-border-color: #E2E6ED;
+    -fx-border-radius: 6;
+    -fx-border-width: 1;
+    -fx-padding: 20;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.04), 8, 0, 0, 2);
+}
+
+.ws-card-title {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1a2332;
+}
+
+.ws-card-subtitle {
+    -fx-font-size: 10.5px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #94A3B8;
+}
+
+.ws-section-divider {
+    -fx-background-color: #EFF3F8;
+    -fx-min-height: 1;
+    -fx-max-height: 1;
+    -fx-pref-height: 1;
+}
+
+/* STAT CARDS */
+.ws-stat-card {
+    -fx-background-color: #FFFFFF;
+    -fx-background-radius: 6;
+    -fx-border-color: #E2E6ED;
+    -fx-border-radius: 6;
+    -fx-border-width: 1;
+    -fx-padding: 18 20;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.04), 6, 0, 0, 2);
+}
+
+.ws-stat-label {
+    -fx-font-size: 10.5px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #94A3B8;
+}
+
+.ws-stat-value {
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1a2332;
+}
+
+.ws-stat-desc {
+    -fx-font-size: 11.5px;
+    -fx-text-fill: #64748B;
+}
+
+.ws-stat-indicator-positive {
+    -fx-font-size: 11px;
+    -fx-text-fill: #059669;
+    -fx-font-weight: 600;
+}
+
+.ws-stat-indicator-neutral {
+    -fx-font-size: 11px;
+    -fx-text-fill: #64748B;
+}
+
+.ws-stat-icon-blue {
+    -fx-background-color: #EBF3FF;
+    -fx-background-radius: 8;
+    -fx-padding: 10;
+    -fx-border-color: #C7D7FB;
+    -fx-border-radius: 8;
+    -fx-border-width: 1;
+    -fx-min-width: 40;
+    -fx-min-height: 40;
+    -fx-alignment: CENTER;
+}
+
+.ws-stat-icon-green {
+    -fx-background-color: #ECFDF5;
+    -fx-background-radius: 8;
+    -fx-padding: 10;
+    -fx-border-color: #A7F3D0;
+    -fx-border-radius: 8;
+    -fx-border-width: 1;
+    -fx-min-width: 40;
+    -fx-min-height: 40;
+    -fx-alignment: CENTER;
+}
+
+.ws-stat-icon-amber {
+    -fx-background-color: #FFFBEB;
+    -fx-background-radius: 8;
+    -fx-padding: 10;
+    -fx-border-color: #FDE68A;
+    -fx-border-radius: 8;
+    -fx-border-width: 1;
+    -fx-min-width: 40;
+    -fx-min-height: 40;
+    -fx-alignment: CENTER;
+}
+
+.ws-stat-icon-red {
+    -fx-background-color: #FEF2F2;
+    -fx-background-radius: 8;
+    -fx-padding: 10;
+    -fx-border-color: #FECACA;
+    -fx-border-radius: 8;
+    -fx-border-width: 1;
+    -fx-min-width: 40;
+    -fx-min-height: 40;
+    -fx-alignment: CENTER;
+}
+
+.ws-icon-text-blue  { -fx-text-fill: #356AE6; -fx-font-size: 16px; }
+.ws-icon-text-green { -fx-text-fill: #059669; -fx-font-size: 16px; }
+.ws-icon-text-amber { -fx-text-fill: #D97706; -fx-font-size: 16px; }
+.ws-icon-text-red   { -fx-text-fill: #DC2626; -fx-font-size: 16px; }
+
+/* --------------------------------------------------------------------------- */
+/* BUTTONS                                                                     */
+/* --------------------------------------------------------------------------- */
+.ws-btn-primary {
+    -fx-background-color: #356AE6;
+    -fx-text-fill: #FFFFFF;
+    -fx-font-weight: 600;
+    -fx-font-size: 12.5px;
+    -fx-padding: 9 18;
+    -fx-background-radius: 5;
+    -fx-cursor: hand;
+    -fx-border-width: 0;
+}
+
+.ws-btn-primary:hover {
+    -fx-background-color: #2756c5;
+}
+
+.ws-btn-secondary {
+    -fx-background-color: #FFFFFF;
+    -fx-text-fill: #334155;
+    -fx-font-weight: 600;
+    -fx-font-size: 12.5px;
+    -fx-padding: 8 18;
+    -fx-background-radius: 5;
+    -fx-border-color: #CBD5E1;
+    -fx-border-radius: 5;
+    -fx-border-width: 1;
+    -fx-cursor: hand;
+}
+
+.ws-btn-secondary:hover {
+    -fx-background-color: #F8FAFC;
+    -fx-border-color: #94A3B8;
+}
+
+.ws-btn-danger {
+    -fx-background-color: #FFFFFF;
+    -fx-text-fill: #DC2626;
+    -fx-font-weight: 600;
+    -fx-font-size: 12.5px;
+    -fx-padding: 8 18;
+    -fx-background-radius: 5;
+    -fx-border-color: #FECACA;
+    -fx-border-radius: 5;
+    -fx-border-width: 1;
+    -fx-cursor: hand;
+}
+
+.ws-btn-danger:hover {
+    -fx-background-color: #FEF2F2;
+    -fx-border-color: #DC2626;
+}
+
+.ws-btn-icon {
+    -fx-background-color: #FFFFFF;
+    -fx-text-fill: #64748B;
+    -fx-padding: 7 12;
+    -fx-background-radius: 5;
+    -fx-border-color: #CBD5E1;
+    -fx-border-radius: 5;
+    -fx-border-width: 1;
+    -fx-cursor: hand;
+    -fx-font-size: 13px;
+}
+
+.ws-btn-icon:hover {
+    -fx-background-color: #F8FAFC;
+    -fx-text-fill: #334155;
+}
+
+/* --------------------------------------------------------------------------- */
+/* TABLES                                                                      */
+/* --------------------------------------------------------------------------- */
+.ws-table {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #E2E6ED;
+    -fx-border-width: 1;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-table-cell-border-color: transparent;
+}
+
+.ws-table .column-header {
+    -fx-background-color: #F8FAFC;
+    -fx-border-color: transparent transparent #E2E6ED transparent;
+    -fx-border-width: 0 0 1 0;
+    -fx-padding: 0 10;
+    -fx-min-height: 38;
+    -fx-pref-height: 38;
+}
+
+.ws-table .column-header .label {
+    -fx-text-fill: #475569;
+    -fx-font-weight: 700;
+    -fx-font-size: 11px;
+    -fx-alignment: CENTER_LEFT;
+}
+
+.ws-table .column-header-background {
+    -fx-background-color: #F8FAFC;
+}
+
+.ws-table .filler {
+    -fx-background-color: #F8FAFC;
+    -fx-border-color: transparent transparent #E2E6ED transparent;
+    -fx-border-width: 0 0 1 0;
+}
+
+.ws-table .table-row-cell {
+    -fx-cell-size: 40px;
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: transparent transparent #F1F5F9 transparent;
+    -fx-border-width: 0 0 1 0;
+}
+
+.ws-table .table-row-cell:hover {
+    -fx-background-color: #F8FAFC;
+}
+
+.ws-table .table-row-cell:selected {
+    -fx-background-color: #EFF6FF;
+}
+
+.ws-table .table-cell {
+    -fx-text-fill: #334155;
+    -fx-font-size: 12.5px;
+    -fx-padding: 0 10;
+    -fx-alignment: CENTER_LEFT;
+}
+
+.ws-table .table-row-cell:selected .table-cell {
+    -fx-text-fill: #1E40AF;
+}
+
+/* --------------------------------------------------------------------------- */
+/* SEVERITY BADGES                                                             */
+/* --------------------------------------------------------------------------- */
+.ws-badge-critical {
+    -fx-background-color: #FEF2F2;
+    -fx-background-radius: 3;
+    -fx-padding: 2 8;
+    -fx-border-color: #FECACA;
+    -fx-border-radius: 3;
+    -fx-border-width: 1;
+}
+.ws-badge-critical-text {
+    -fx-text-fill: #DC2626;
+    -fx-font-size: 10.5px;
+    -fx-font-weight: 700;
+}
+
+.ws-badge-high {
+    -fx-background-color: #FFF7ED;
+    -fx-background-radius: 3;
+    -fx-padding: 2 8;
+    -fx-border-color: #FED7AA;
+    -fx-border-radius: 3;
+    -fx-border-width: 1;
+}
+.ws-badge-high-text {
+    -fx-text-fill: #EA580C;
+    -fx-font-size: 10.5px;
+    -fx-font-weight: 700;
+}
+
+.ws-badge-medium {
+    -fx-background-color: #FFFBEB;
+    -fx-background-radius: 3;
+    -fx-padding: 2 8;
+    -fx-border-color: #FDE68A;
+    -fx-border-radius: 3;
+    -fx-border-width: 1;
+}
+.ws-badge-medium-text {
+    -fx-text-fill: #D97706;
+    -fx-font-size: 10.5px;
+    -fx-font-weight: 700;
+}
+
+.ws-badge-low {
+    -fx-background-color: #EFF6FF;
+    -fx-background-radius: 3;
+    -fx-padding: 2 8;
+    -fx-border-color: #BFDBFE;
+    -fx-border-radius: 3;
+    -fx-border-width: 1;
+}
+.ws-badge-low-text {
+    -fx-text-fill: #2563EB;
+    -fx-font-size: 10.5px;
+    -fx-font-weight: 700;
+}
+
+.ws-badge-info {
+    -fx-background-color: #F8FAFC;
+    -fx-background-radius: 3;
+    -fx-padding: 2 8;
+    -fx-border-color: #CBD5E1;
+    -fx-border-radius: 3;
+    -fx-border-width: 1;
+}
+.ws-badge-info-text {
+    -fx-text-fill: #64748B;
+    -fx-font-size: 10.5px;
+    -fx-font-weight: 700;
+}
+
+.ws-badge-active {
+    -fx-background-color: #ECFDF5;
+    -fx-background-radius: 10;
+    -fx-padding: 3 10;
+    -fx-border-color: #A7F3D0;
+    -fx-border-radius: 10;
+    -fx-border-width: 1;
+}
+.ws-badge-active-text {
+    -fx-text-fill: #059669;
+    -fx-font-size: 10.5px;
+    -fx-font-weight: 700;
+}
+
+/* --------------------------------------------------------------------------- */
+/* EMPTY STATE                                                                 */
+/* --------------------------------------------------------------------------- */
+.ws-empty-state {
+    -fx-alignment: CENTER;
+    -fx-spacing: 10;
+}
+
+.ws-empty-icon {
+    -fx-font-size: 36px;
+    -fx-text-fill: #CBD5E1;
+}
+
+.ws-empty-title {
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #475569;
+}
+
+.ws-empty-desc {
+    -fx-font-size: 12.5px;
+    -fx-text-fill: #94A3B8;
+    -fx-text-alignment: CENTER;
+    -fx-wrap-text: true;
+    -fx-max-width: 360;
+}
+
+/* --------------------------------------------------------------------------- */
+/* FORMS                                                                       */
+/* --------------------------------------------------------------------------- */
+.ws-field-label {
+    -fx-font-size: 12px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #374151;
+}
+
+.ws-field-hint {
+    -fx-font-size: 11px;
+    -fx-text-fill: #94A3B8;
+}
+
+.ws-text-field {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #D1D5DB;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+    -fx-border-width: 1;
+    -fx-padding: 8 12;
+    -fx-font-size: 13px;
+    -fx-text-fill: #1a2332;
+    -fx-prompt-text-fill: #9CA3AF;
+}
+
+.ws-text-field:focused {
+    -fx-border-color: #356AE6;
+    -fx-border-width: 1.5;
+}
+
+.ws-combo {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #D1D5DB;
+    -fx-border-radius: 5;
+    -fx-border-width: 1;
+    -fx-font-size: 13px;
+    -fx-text-fill: #1a2332;
+}
+
+.ws-combo:focused {
+    -fx-border-color: #356AE6;
+}
+
+.ws-text-area {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #D1D5DB;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+    -fx-border-width: 1;
+    -fx-font-size: 13px;
+    -fx-text-fill: #1a2332;
+    -fx-prompt-text-fill: #9CA3AF;
+}
+
+.ws-text-area:focused {
+    -fx-border-color: #356AE6;
+}
+
+.ws-check {
+    -fx-text-fill: #374151;
+    -fx-font-size: 12.5px;
+}
+
+/* --------------------------------------------------------------------------- */
+/* PROGRESS                                                                    */
+/* --------------------------------------------------------------------------- */
+.ws-progress-bar {
+    -fx-accent: #356AE6;
+    -fx-background-color: #EFF3F8;
+    -fx-background-radius: 4;
+    -fx-pref-height: 6;
+}
+
+.ws-progress-bar .bar {
+    -fx-background-color: #356AE6;
+    -fx-background-radius: 4;
+    -fx-background-insets: 0;
+}
+
+.ws-progress-bar .track {
+    -fx-background-color: #EFF3F8;
+    -fx-background-radius: 4;
+    -fx-background-insets: 0;
+}
+
+/* --------------------------------------------------------------------------- */
+/* SCROLL PANE                                                                 */
+/* --------------------------------------------------------------------------- */
+.ws-scroll-pane {
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+    -fx-padding: 0;
+}
+
+.ws-scroll-pane .viewport {
+    -fx-background-color: transparent;
+}
+
+.ws-scroll-pane .scroll-bar:vertical {
+    -fx-background-color: transparent;
+    -fx-pref-width: 8;
+}
+
+.ws-scroll-pane .scroll-bar:vertical .track {
+    -fx-background-color: transparent;
+}
+
+.ws-scroll-pane .scroll-bar:vertical .thumb {
+    -fx-background-color: #CBD5E1;
+    -fx-background-radius: 4;
+}
+
+.ws-scroll-pane .scroll-bar:horizontal {
+    -fx-pref-height: 0;
+    -fx-min-height: 0;
+    -fx-max-height: 0;
+}
+
+/* --------------------------------------------------------------------------- */
+/* SETTINGS PAGE                                                               */
+/* --------------------------------------------------------------------------- */
+.ws-settings-section-title {
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1a2332;
+}
+
+.ws-info-row {
+    -fx-padding: 10 0;
+    -fx-border-color: transparent transparent #EFF3F8 transparent;
+    -fx-border-width: 0 0 1 0;
+}
+
+.ws-info-label {
+    -fx-font-size: 12px;
+    -fx-text-fill: #64748B;
+    -fx-min-width: 140;
+}
+
+.ws-info-value {
+    -fx-font-size: 12.5px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #1a2332;
+}
+
+/* =========================================================================
+   AUTH PAGES – Login & Register
+   ========================================================================= */
+
+.ws-auth-bg {
+    -fx-background-color: #F5F7FA;
+    -fx-alignment: CENTER;
+}
+
+.ws-auth-card {
+    -fx-background-color: #FFFFFF;
+    -fx-background-radius: 10;
+    -fx-border-color: #E2E6ED;
+    -fx-border-radius: 10;
+    -fx-border-width: 1;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 20, 0, 0, 4);
+}
+
+.ws-auth-brand {
+    -fx-background-color: #172338;
+    -fx-background-radius: 10 10 0 0;
+    -fx-padding: 22 28;
+    -fx-border-color: transparent;
+}
+
+.ws-auth-brand-name {
+    -fx-text-fill: #FFFFFF;
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+}
+
+.ws-auth-body {
+    -fx-padding: 28 32 28 32;
+}
+
+.ws-auth-heading {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1a2332;
+}
+
+.ws-auth-subheading {
+    -fx-font-size: 12.5px;
+    -fx-text-fill: #64748B;
+}
+
+.ws-auth-error {
+    -fx-text-fill: #DC2626;
+    -fx-font-size: 12px;
+    -fx-min-height: 16;
+}
+
+.ws-auth-success {
+    -fx-text-fill: #059669;
+    -fx-font-size: 12px;
+}
+
+.ws-auth-link-label {
+    -fx-font-size: 12.5px;
+    -fx-text-fill: #64748B;
+}
+
+.ws-auth-link {
+    -fx-text-fill: #356AE6;
+    -fx-font-size: 12.5px;
+    -fx-font-weight: 600;
+    -fx-border-width: 0;
+    -fx-padding: 0;
+    -fx-cursor: hand;
+}
+
+/* =========================================================================
+   CHART – BarChart override for severity distribution
+   ========================================================================= */
+
+.chart-bar {
+    -fx-bar-fill: #356AE6;
+}
+
+.ws-chart {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+.chart-plot-background {
+    -fx-background-color: #F8FAFC;
+}
+
+.chart-vertical-grid-lines {
+    -fx-stroke: transparent;
+}
+
+.chart-horizontal-grid-lines {
+    -fx-stroke: #EFF3F8;
+}
+
+.axis-label {
+    -fx-font-size: 11px;
+    -fx-text-fill: #64748B;
+    -fx-font-weight: 600;
+}
+
+.axis {
+    -fx-tick-label-font-size: 11px;
+    -fx-tick-label-fill: #94A3B8;
+}

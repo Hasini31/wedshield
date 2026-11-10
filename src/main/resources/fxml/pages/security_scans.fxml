@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.Spinner?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<ScrollPane
+    fitToWidth="true"
+    hbarPolicy="NEVER"
+    styleClass="ws-scroll-pane"
+    xmlns="http://javafx.com/javafx/21"
+    xmlns:fx="http://javafx.com/fxml/1"
+    fx:controller="com.webshield.ui.controllers.SecurityScansController">
+
+    <VBox spacing="20" styleClass="ws-content">
+
+        <HBox spacing="16">
+
+            <!-- ============================================================= -->
+            <!-- LEFT: CONFIGURATION                                          -->
+            <!-- ============================================================= -->
+            <VBox spacing="16" HBox.hgrow="ALWAYS">
+
+                <!-- Target selection -->
+                <VBox spacing="12" styleClass="ws-card">
+                    <Label styleClass="ws-card-title" text="Target &amp; Scope" />
+                    <Region styleClass="ws-section-divider" />
+
+                    <VBox spacing="6">
+                        <Label styleClass="ws-field-label" text="Select Authorized Website" />
+                        <ComboBox fx:id="cbWebsite"
+                                  promptText="— Choose a registered target —"
+                                  styleClass="ws-combo"
+                                  maxWidth="Infinity" />
+                        <Label styleClass="ws-field-hint" text="Only websites you have registered and authorized appear here." />
+                    </VBox>
+
+                    <HBox spacing="16">
+                        <VBox spacing="6" HBox.hgrow="ALWAYS">
+                            <Label styleClass="ws-field-label" text="Max Crawl Depth" />
+                            <Spinner fx:id="spDepth" min="1" max="10" initialValue="3"
+                                     styleClass="ws-combo" maxWidth="Infinity" />
+                        </VBox>
+                        <VBox spacing="6" HBox.hgrow="ALWAYS">
+                            <Label styleClass="ws-field-label" text="Max Pages" />
+                            <Spinner fx:id="spMaxPages" min="10" max="500" initialValue="100"
+                                     styleClass="ws-combo" maxWidth="Infinity" />
+                        </VBox>
+                        <VBox spacing="6" HBox.hgrow="ALWAYS">
+                            <Label styleClass="ws-field-label" text="Timeout (s)" />
+                            <Spinner fx:id="spTimeout" min="5" max="60" initialValue="15"
+                                     styleClass="ws-combo" maxWidth="Infinity" />
+                        </VBox>
+                    </HBox>
+                </VBox>
+
+                <!-- Assessment categories -->
+                <VBox spacing="12" styleClass="ws-card">
+                    <Label styleClass="ws-card-title" text="Assessment Categories" />
+                    <Label styleClass="ws-card-subtitle" text="SELECT CHECKS TO EXECUTE" />
+                    <Region styleClass="ws-section-divider" />
+
+                    <VBox spacing="10">
+                        <CheckBox fx:id="chkHeaders"
+                                  styleClass="ws-check"
+                                  selected="true"
+                                  text="HTTP Security Header Inspection  –  Checks CSP, HSTS, X-Frame-Options, X-Content-Type-Options, Referrer-Policy" />
+                        <CheckBox fx:id="chkCookies"
+                                  styleClass="ws-check"
+                                  selected="true"
+                                  text="Cookie Security Configuration  –  Inspects HttpOnly, Secure, and SameSite attributes" />
+                        <CheckBox fx:id="chkReflection"
+                                  styleClass="ws-check"
+                                  selected="true"
+                                  text="Input Reflection Analysis  –  Detects unescaped parameter reflection in responses" />
+                        <CheckBox fx:id="chkSqlErrors"
+                                  styleClass="ws-check"
+                                  selected="true"
+                                  text="SQL Error and Anomaly Detection  –  Identifies DBMS error leakage in server responses" />
+                        <CheckBox fx:id="chkInputValidation"
+                                  styleClass="ws-check"
+                                  selected="true"
+                                  text="Input Validation Assessment  –  Evaluates form constraints and server-side behaviour" />
+                    </VBox>
+                </VBox>
+
+            </VBox>
+
+            <!-- ============================================================= -->
+            <!-- RIGHT: CONTROLS + PROGRESS                                   -->
+            <!-- ============================================================= -->
+            <VBox spacing="16" minWidth="340" prefWidth="360">
+
+                <!-- Start / Stop -->
+                <VBox spacing="12" styleClass="ws-card">
+                    <Label styleClass="ws-card-title" text="Scan Controls" />
+                    <Region styleClass="ws-section-divider" />
+
+                    <VBox spacing="10">
+                        <Button fx:id="btnStartScan"
+                                maxWidth="Infinity"
+                                onAction="#onStartScan"
+                                styleClass="ws-btn-primary"
+                                text="▶  Start Security Assessment" />
+                        <Button fx:id="btnStopScan"
+                                maxWidth="Infinity"
+                                onAction="#onStopScan"
+                                styleClass="ws-btn-danger"
+                                disable="true"
+                                text="◼  Stop Assessment" />
+                    </VBox>
+
+                    <Region styleClass="ws-section-divider" />
+                    <Label fx:id="lblScanStatus" styleClass="ws-card-subtitle" text="STATUS: IDLE" />
+                </VBox>
+
+                <!-- Progress -->
+                <VBox spacing="12" styleClass="ws-card">
+                    <Label styleClass="ws-card-title" text="Scan Progress" />
+                    <Region styleClass="ws-section-divider" />
+
+                    <VBox spacing="8">
+                        <HBox>
+                            <Label styleClass="ws-field-label" text="Overall Progress" HBox.hgrow="ALWAYS" />
+                            <Label fx:id="lblProgressPct" styleClass="ws-card-subtitle" text="0%" />
+                        </HBox>
+                        <ProgressBar fx:id="progressBar" maxWidth="Infinity" progress="0" styleClass="ws-progress-bar" />
+                    </VBox>
+
+                    <GridPane hgap="8" vgap="8">
+                        <columnConstraints>
+                            <ColumnConstraints percentWidth="50" />
+                            <ColumnConstraints percentWidth="50" />
+                        </columnConstraints>
+                        <HBox spacing="6" alignment="CENTER_LEFT" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                            <Label styleClass="ws-info-label" text="Pages found:" />
+                            <Label fx:id="lblPagesFound" styleClass="ws-info-value" text="0" />
+                        </HBox>
+                        <HBox spacing="6" alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                            <Label styleClass="ws-info-label" text="Pages tested:" />
+                            <Label fx:id="lblPagesTested" styleClass="ws-info-value" text="0" />
+                        </HBox>
+                        <HBox spacing="6" alignment="CENTER_LEFT" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                            <Label styleClass="ws-info-label" text="Checks done:" />
+                            <Label fx:id="lblChecksDone" styleClass="ws-info-value" text="0" />
+                        </HBox>
+                        <HBox spacing="6" alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                            <Label styleClass="ws-info-label" text="Findings:" />
+                            <Label fx:id="lblFindingsFound" styleClass="ws-info-value" text="0" />
+                        </HBox>
+                    </GridPane>
+                </VBox>
+
+                <!-- Live log -->
+                <VBox spacing="10" styleClass="ws-card" VBox.vgrow="ALWAYS">
+                    <Label styleClass="ws-card-title" text="Activity Log" />
+                    <Region styleClass="ws-section-divider" />
+                    <TextArea fx:id="taLog"
+                              editable="false"
+                              styleClass="ws-text-area"
+                              promptText="Scan activity will appear here..."
+                              prefRowCount="10"
+                              VBox.vgrow="ALWAYS" />
+                </VBox>
+
+            </VBox>
+        </HBox>
+    </VBox>
+</ScrollPane>
+

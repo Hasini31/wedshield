@@ -1,0 +1,313 @@
+openapi: 3.0.3
+
+info:
+  title: Vulnerable E-Commerce Store REST API
+  description: Controlled testbed REST API for WebShield automated security scanning and penetration assessment. Version 2 includes selected security improvements and two intentional vulnerability test endpoints.
+  version: 2.0.0
+
+servers:
+  - url: http://localhost:8080/api/v1
+    description: Local Testbed Server
+
+paths:
+
+  # ==========================================
+  # 1. USER AUTHENTICATION
+  # ==========================================
+
+  /auth/login:
+    post:
+      summary: User Authentication
+      description: Issues a JWT session token upon presenting valid credentials.
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+                - password
+              properties:
+                username:
+                  type: string
+                  example: admin
+                password:
+                  type: string
+                  format: password
+                  example: secret123
+
+      responses:
+        '200':
+          description: Authentication successful
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                example: no-store, no-cache, must-revalidate
+            X-Content-Type-Options:
+              schema:
+                type: string
+                example: nosniff
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                  expires_in:
+                    type: integer
+
+        '400':
+          description: Invalid request
+
+        '401':
+          description: Invalid credentials
+
+  # ==========================================
+  # 2. USER PROFILE
+  # ==========================================
+
+  /users/{userId}:
+
+    get:
+      summary: Get User Profile by ID
+      description: Returns account details and profile information.
+
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: Numeric User ID
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100000
+            example: 42
+
+      responses:
+        '200':
+          description: User profile found
+          headers:
+            X-Content-Type-Options:
+              schema:
+                type: string
+                example: nosniff
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  username:
+                    type: string
+                  email:
+                    type: string
+                    format: email
+
+        '400':
+          description: Invalid user ID
+
+        '404':
+          description: User not found
+
+    put:
+      summary: Update User Profile
+      description: Modifies user account profile attributes.
+
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                fullName:
+                  type: string
+                  maxLength: 80
+
+                email:
+                  type: string
+                  format: email
+
+                role:
+                  type: string
+                  enum:
+                    - USER
+                    - ADMIN
+                    - AUDITOR
+
+      responses:
+        '200':
+          description: Profile updated
+
+        '400':
+          description: Invalid profile data
+
+        '404':
+          description: User not found
+
+    delete:
+      summary: Delete User Account
+      description: Permanently deletes user account.
+
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+
+      responses:
+        '204':
+          description: Account deleted
+
+        '404':
+          description: User not found
+
+  # ==========================================
+  # 3. PRODUCT SEARCH
+  # ==========================================
+
+  /products/search:
+    get:
+      summary: Search Products Catalogue
+      description: Performs dynamic search across catalogue items.
+
+      parameters:
+        - name: q
+          in: query
+          required: true
+          description: Search keywords or probe string
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 100
+
+        - name: category
+          in: query
+          required: false
+          schema:
+            type: string
+
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+
+        - name: size
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+            default: 10
+
+      responses:
+        '200':
+          description: Matching products returned
+
+        '400':
+          description: Invalid search query parameters
+
+  # ==========================================
+  # 4. NEW VULNERABILITY - SQL INJECTION
+  # ==========================================
+
+  /coupons/validate:
+    post:
+      summary: Validate Coupon Code
+      description: >
+        Validates a coupon code against the database.
+        Intentionally vulnerable local test endpoint for
+        SQL Injection detection by WebShield.
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - couponCode
+              properties:
+                couponCode:
+                  type: string
+                  description: Coupon code to validate
+                  example: SAVE20
+
+      responses:
+        '200':
+          description: Coupon validation result
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  valid:
+                    type: boolean
+                  coupons:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        code:
+                          type: string
+                        discount:
+                          type: integer
+
+        '400':
+          description: Invalid coupon input
+
+        '500':
+          description: Database query error
+
+  # ==========================================
+  # 5. NEW VULNERABILITY - REFLECTED XSS
+  # ==========================================
+
+  /reviews/search:
+    get:
+      summary: Search Product Reviews
+      description: >
+        Searches product reviews using a user-provided
+        search keyword. Intentionally vulnerable local
+        test endpoint for Reflected XSS detection by WebShield.
+
+      parameters:
+        - name: q
+          in: query
+          required: true
+          description: Review search keyword
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 200
+            example: good product
+
+      responses:
+        '200':
+          description: HTML search results
+          content:
+            text/html:
+              schema:
+                type: string
+
+        '400':
+          description: Invalid search query

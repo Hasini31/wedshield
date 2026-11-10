@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Spinner?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox spacing="0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.webshield.ui.controllers.ApiTestConfigController">
+
+    <!-- Top Action Bar -->
+    <HBox alignment="CENTER_LEFT" spacing="12" styleClass="ws-card"
+          style="-fx-background-radius: 0; -fx-border-radius: 0; -fx-border-width: 0 0 1 0; -fx-border-color: #E2E6ED; -fx-padding: 12 24;">
+        <Label styleClass="ws-card-title" text="API Test &amp; Scan Configuration" />
+        <Region HBox.hgrow="ALWAYS" />
+        <Label fx:id="lblValidationMsg" style="-fx-text-fill: #DC2626; -fx-font-weight: bold;" text="" />
+        <Button onAction="#resetToDefaults" styleClass="ws-btn-secondary" text="↺ Reset Defaults" />
+        <Button onAction="#onLaunchScan" styleClass="ws-btn-primary" text="▶ Launch Scan Execution" />
+    </HBox>
+
+    <ScrollPane fitToWidth="true" styleClass="ws-scroll-pane" VBox.vgrow="ALWAYS">
+        <VBox spacing="16" styleClass="ws-content">
+
+            <!-- Section 1: Target API Project -->
+            <VBox spacing="12" styleClass="ws-card">
+                <Label styleClass="ws-card-title" text="1. Target API Project &amp; Base URL" />
+                <Label styleClass="ws-card-subtitle" text="SELECT TARGET SPECIFICATION FOR ASSESSMENT" />
+                <Region styleClass="ws-section-divider" />
+
+                <GridPane hgap="16" vgap="12">
+                    <columnConstraints>
+                        <ColumnConstraints percentWidth="50" />
+                        <ColumnConstraints percentWidth="50" />
+                    </columnConstraints>
+
+                    <VBox spacing="6" GridPane.columnIndex="0">
+                        <Label styleClass="ws-stat-label" text="API PROJECT" />
+                        <ComboBox fx:id="cbProjects" maxWidth="Infinity" styleClass="ws-combo-box" promptText="Select an imported API project..." />
+                    </VBox>
+
+                    <VBox spacing="6" GridPane.columnIndex="1">
+                        <Label styleClass="ws-stat-label" text="TARGET BASE URL OVERRIDE" />
+                        <TextField fx:id="tfTargetBaseUrl" styleClass="ws-text-field" promptText="http://localhost:8080" />
+                    </VBox>
+                </GridPane>
+            </VBox>
+
+            <!-- Section 2: Rule-Based Test Generation & Mutation -->
+            <GridPane hgap="16" vgap="16">
+                <columnConstraints>
+                    <ColumnConstraints percentWidth="50" />
+                    <ColumnConstraints percentWidth="50" />
+                </columnConstraints>
+
+                <!-- Generation Options -->
+                <VBox spacing="12" styleClass="ws-card" GridPane.columnIndex="0">
+                    <Label styleClass="ws-card-title" text="2. Schema-Aware Test Generation" />
+                    <Label styleClass="ws-card-subtitle" text="MODULE C: BOUNDARY &amp; CONSTRAINT SAMPLING" />
+                    <Region styleClass="ws-section-divider" />
+
+                    <VBox spacing="8">
+                        <CheckBox fx:id="chkValidCases" text="Generate Valid Schema Inputs (Conformance Testing)" selected="true" />
+                        <CheckBox fx:id="chkInvalidCases" text="Generate Invalid Schema Inputs (Negative Testing)" selected="true" />
+                        <CheckBox fx:id="chkBoundaryCases" text="Generate Boundary-Value Inputs (Min/Max Boundaries)" selected="true" />
+                    </VBox>
+
+                    <GridPane hgap="12" vgap="8">
+                        <columnConstraints>
+                            <ColumnConstraints percentWidth="50" />
+                            <ColumnConstraints percentWidth="50" />
+                        </columnConstraints>
+
+                        <VBox spacing="4" GridPane.columnIndex="0">
+                            <Label styleClass="ws-stat-label" text="CASES PER ENDPOINT" />
+                            <Spinner fx:id="spCasesPerEndpoint" editable="true" maxWidth="Infinity" />
+                        </VBox>
+
+                        <VBox spacing="4" GridPane.columnIndex="1">
+                            <Label styleClass="ws-stat-label" text="SCHEMA RECURSION DEPTH" />
+                            <Spinner fx:id="spSchemaDepth" editable="true" maxWidth="Infinity" />
+                        </VBox>
+                    </GridPane>
+                </VBox>
+
+                <!-- Mutation Engine Options -->
+                <VBox spacing="12" styleClass="ws-card" GridPane.columnIndex="1">
+                    <Label styleClass="ws-card-title" text="3. Input Mutation Engine" />
+                    <Label styleClass="ws-card-subtitle" text="MODULE D: FUZZING &amp; SYSTEMATIC INPUT PERTURBATION" />
+                    <Region styleClass="ws-section-divider" />
+
+                    <CheckBox fx:id="chkEnableMutation" text="Enable Systematic Input Mutation" selected="true" />
+
+                    <GridPane hgap="12" vgap="8">
+                        <columnConstraints>
+                            <ColumnConstraints percentWidth="50" />
+                            <ColumnConstraints percentWidth="50" />
+                        </columnConstraints>
+
+                        <VBox spacing="4" GridPane.columnIndex="0">
+                            <Label styleClass="ws-stat-label" text="MUTATION PROBABILITY" />
+                            <Spinner fx:id="spMutationProbability" editable="true" maxWidth="Infinity" />
+                        </VBox>
+
+                        <VBox spacing="4" GridPane.columnIndex="1">
+                            <Label styleClass="ws-stat-label" text="MAX MUTATIONS / CASE" />
+                            <Spinner fx:id="spMaxMutations" editable="true" maxWidth="Infinity" />
+                        </VBox>
+                    </GridPane>
+
+                    <VBox spacing="6">
+                        <Label styleClass="ws-stat-label" text="ENABLED OPERATOR CATEGORIES" />
+                        <HBox spacing="12">
+                            <CheckBox fx:id="chkTypeMutations" text="Type &amp; Format" selected="true" />
+                            <CheckBox fx:id="chkBoundaryMutations" text="Boundary Overflow" selected="true" />
+                        </HBox>
+                        <HBox spacing="12">
+                            <CheckBox fx:id="chkSecurityPayloads" text="Security Payloads" selected="true" />
+                            <CheckBox fx:id="chkStructuralMutations" text="JSON Structural" selected="true" />
+                        </HBox>
+                    </VBox>
+                </VBox>
+            </GridPane>
+
+            <!-- Section 3: Evolutionary Search (MIO) & Safety Constraints -->
+            <GridPane hgap="16" vgap="16">
+                <columnConstraints>
+                    <ColumnConstraints percentWidth="50" />
+                    <ColumnConstraints percentWidth="50" />
+                </columnConstraints>
+
+                <!-- Evolutionary Search (MIO) -->
+                <VBox spacing="12" styleClass="ws-card" GridPane.columnIndex="0">
+                    <Label styleClass="ws-card-title" text="4. Evolutionary Search Algorithm" />
+                    <Label styleClass="ws-card-subtitle" text="MODULE E: MANY INDEPENDENT OBJECTIVES (MIO) ENGINE" />
+                    <Region styleClass="ws-section-divider" />
+
+                    <CheckBox fx:id="chkEnableMio" text="Run Evolutionary Many-Objective Search" selected="true" />
+
+                    <GridPane hgap="12" vgap="8">
+                        <columnConstraints>
+                            <ColumnConstraints percentWidth="33.3" />
+                            <ColumnConstraints percentWidth="33.3" />
+                            <ColumnConstraints percentWidth="33.4" />
+                        </columnConstraints>
+
+                        <VBox spacing="4" GridPane.columnIndex="0">
+                            <Label styleClass="ws-stat-label" text="POPULATION" />
+                            <Spinner fx:id="spPopulationSize" editable="true" maxWidth="Infinity" />
+                        </VBox>
+
+                        <VBox spacing="4" GridPane.columnIndex="1">
+                            <Label styleClass="ws-stat-label" text="GENERATIONS" />
+                            <Spinner fx:id="spMaxGenerations" editable="true" maxWidth="Infinity" />
+                        </VBox>
+
+                        <VBox spacing="4" GridPane.columnIndex="2">
+                            <Label styleClass="ws-stat-label" text="MAX BUDGET" />
+                            <Spinner fx:id="spEvaluationBudget" editable="true" maxWidth="Infinity" />
+                        </VBox>
+                    </GridPane>
+
+                    <Label styleClass="ws-stat-indicator-neutral"
+                           text="MIO optimizes multiple independent testing objectives (HTTP status codes, parameter coverage) simultaneously." wrapText="true" />
+                </VBox>
+
+                <!-- Execution Safety Constraints -->
+                <VBox spacing="12" styleClass="ws-card" GridPane.columnIndex="1">
+                    <Label styleClass="ws-card-title" text="5. Execution Safety &amp; Scope Constraints" />
+                    <Label styleClass="ws-card-subtitle" text="MODULE F: RATE LIMITING &amp; DEFENSIVE BOUNDARIES" />
+                    <Region styleClass="ws-section-divider" />
+
+                    <GridPane hgap="12" vgap="8">
+                        <columnConstraints>
+                            <ColumnConstraints percentWidth="50" />
+                            <ColumnConstraints percentWidth="50" />
+                        </columnConstraints>
+
+                        <VBox spacing="4" GridPane.columnIndex="0">
+                            <Label styleClass="ws-stat-label" text="TIMEOUT (MS)" />
+                            <Spinner fx:id="spRequestTimeoutMs" editable="true" maxWidth="Infinity" />
+                        </VBox>
+
+                        <VBox spacing="4" GridPane.columnIndex="1">
+                            <Label styleClass="ws-stat-label" text="MAX RESPONSE (BYTES)" />
+                            <Spinner fx:id="spMaxResponseSizeBytes" editable="true" maxWidth="Infinity" />
+                        </VBox>
+
+                        <VBox spacing="4" GridPane.columnIndex="0">
+                            <Label styleClass="ws-stat-label" text="RATE LIMIT (REQ/SEC)" />
+                            <Spinner fx:id="spRateLimitRps" editable="true" maxWidth="Infinity" />
+                        </VBox>
+
+                        <VBox spacing="4" GridPane.columnIndex="1">
+                            <Label styleClass="ws-stat-label" text="CONCURRENCY (THREADS)" />
+                            <Spinner fx:id="spConcurrency" editable="true" maxWidth="Infinity" />
+                        </VBox>
+                    </GridPane>
+
+                    <HBox alignment="CENTER_LEFT" spacing="10">
+                        <CheckBox fx:id="chkAllowUnsafeMethods" text="Allow Unsafe Mutation of PUT/DELETE Methods" />
+                        <Label styleClass="ws-badge-warning" text="Caution" />
+                    </HBox>
+
+                    <HBox alignment="CENTER_LEFT" spacing="8">
+                        <Label styleClass="ws-badge-info" text="Defensive Scope" />
+                        <Label styleClass="ws-stat-indicator-neutral" text="TLS certificate verification and secret redaction strictly active." />
+                    </HBox>
+                </VBox>
+            </GridPane>
+
+        </VBox>
+    </ScrollPane>
+</VBox>
+

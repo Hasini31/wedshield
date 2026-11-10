@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox spacing="0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.webshield.ui.controllers.ApiExecutionResultsController">
+
+    <!-- Top Action Bar -->
+    <HBox alignment="CENTER_LEFT" spacing="12" styleClass="ws-card"
+          style="-fx-background-radius: 0; -fx-border-radius: 0; -fx-border-width: 0 0 1 0; -fx-border-color: #E2E6ED; -fx-padding: 12 24;">
+        <Label styleClass="ws-card-title" text="HTTP Execution Results &amp; Traffic Logs" />
+        <Region HBox.hgrow="ALWAYS" />
+        <Label styleClass="ws-stat-label" text="SCAN: " />
+        <ComboBox fx:id="cbScans" prefWidth="280" styleClass="ws-combo-box" promptText="Select a scan..." />
+    </HBox>
+
+    <ScrollPane fitToWidth="true" fitToHeight="true" styleClass="ws-scroll-pane" VBox.vgrow="ALWAYS">
+        <VBox spacing="16" styleClass="ws-content">
+
+            <!-- Split View: Table on Left, Details on Right -->
+            <SplitPane dividerPositions="0.6" styleClass="ws-card" VBox.vgrow="ALWAYS" minHeight="560">
+
+                <!-- Left: Table & Controls -->
+                <VBox spacing="10">
+                    <HBox spacing="8" alignment="CENTER_LEFT">
+                        <TextField fx:id="tfSearch" promptText="Search executions by endpoint, UUID, error..."
+                                   styleClass="ws-text-field" HBox.hgrow="ALWAYS" />
+                        <ComboBox fx:id="cbStatusFilter" prefWidth="150" styleClass="ws-combo-box" />
+                        <Label fx:id="lblExecutionCount" styleClass="ws-badge-neutral" text="0 executions" />
+                    </HBox>
+
+                    <TableView fx:id="tableExecutions" styleClass="ws-table" VBox.vgrow="ALWAYS">
+                        <columns>
+                            <TableColumn fx:id="colMethod" text="Method" prefWidth="65" />
+                            <TableColumn fx:id="colEndpoint" text="Endpoint" prefWidth="180" />
+                            <TableColumn fx:id="colStatusCode" text="Status" prefWidth="70" />
+                            <TableColumn fx:id="colDuration" text="Latency" prefWidth="75" />
+                            <TableColumn fx:id="colSize" text="Size" prefWidth="70" />
+                            <TableColumn fx:id="colOutcome" text="Outcome" prefWidth="110" />
+                            <TableColumn fx:id="colTimestamp" text="Time" prefWidth="120" />
+                        </columns>
+                        <placeholder>
+                            <Label text="No execution records found for this scan" />
+                        </placeholder>
+                    </TableView>
+
+                    <!-- Pagination Bar -->
+                    <HBox alignment="CENTER_RIGHT" spacing="10" style="-fx-padding: 6 0 0 0;">
+                        <Label styleClass="ws-stat-label" text="ROWS:" />
+                        <ComboBox fx:id="cbPageSize" prefWidth="75" styleClass="ws-combo-box" />
+                        <Region HBox.hgrow="ALWAYS" />
+                        <Button fx:id="btnPrevPage" onAction="#onPrevPage" styleClass="ws-btn-secondary" text="◀ Prev" />
+                        <Label fx:id="lblPageInfo" styleClass="ws-stat-label" text="Page 1 of 1 (0 total)" />
+                        <Button fx:id="btnNextPage" onAction="#onNextPage" styleClass="ws-btn-secondary" text="Next ▶" />
+                    </HBox>
+                </VBox>
+
+                <!-- Right: Traffic & Response Inspector -->
+                <VBox fx:id="paneExecutionDetails" spacing="10" style="-fx-padding: 0 0 0 12;">
+                    <HBox alignment="CENTER_LEFT" spacing="8">
+                        <Label fx:id="lblDetailMethod" styleClass="ws-badge-info" text="GET" />
+                        <Label fx:id="lblDetailEndpoint" styleClass="ws-card-title" text="/api/v1/resource" />
+                    </HBox>
+
+                    <HBox alignment="CENTER_LEFT" spacing="10">
+                        <Label fx:id="lblDetailStatusCode" styleClass="ws-badge-success" text="HTTP 200" />
+                        <Label fx:id="lblDetailOutcome" styleClass="ws-badge-neutral" text="SUCCESS" />
+                        <Label fx:id="lblDetailDuration" styleClass="ws-stat-indicator-neutral" text="25 ms" />
+                    </HBox>
+                    <Label fx:id="lblDetailUuid" styleClass="ws-stat-label" text="UUID: ..." />
+
+                    <Region styleClass="ws-section-divider" />
+
+                    <!-- Headers -->
+                    <Label styleClass="ws-stat-label" text="RESPONSE HEADERS" />
+                    <TextArea fx:id="txtResponseHeaders" editable="false" wrapText="true" prefHeight="110"
+                              style="-fx-font-family: 'Consolas', 'Courier New', monospace; -fx-font-size: 11px;" />
+
+                    <!-- Body -->
+                    <Label styleClass="ws-stat-label" text="RESPONSE BODY (REDACTED &amp; SANITIZED)" />
+                    <TextArea fx:id="txtResponseBody" editable="false" wrapText="true" VBox.vgrow="ALWAYS"
+                              prefHeight="200"
+                              style="-fx-font-family: 'Consolas', 'Courier New', monospace; -fx-font-size: 11px;" />
+                </VBox>
+            </SplitPane>
+
+        </VBox>
+    </ScrollPane>
+</VBox>
+

@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox spacing="0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.webshield.ui.controllers.ApiProjectDetailsController">
+
+    <!-- Top Action Bar -->
+    <HBox alignment="CENTER_LEFT" spacing="12" styleClass="ws-card"
+          style="-fx-background-radius: 0; -fx-border-radius: 0; -fx-border-width: 0 0 1 0; -fx-border-color: #E2E6ED; -fx-padding: 12 24;">
+        <Button onAction="#onBackToProjects" styleClass="ws-btn-secondary" text="← Back to Projects" />
+        <Region HBox.hgrow="ALWAYS" />
+        <Button onAction="#onConfigureScan" styleClass="ws-btn-secondary" text="⚙ Configure Scan" />
+        <Button onAction="#onQuickScan" styleClass="ws-btn-primary" text="▶ Launch Scan" />
+    </HBox>
+
+    <ScrollPane fitToWidth="true" fitToHeight="true" styleClass="ws-scroll-pane" VBox.vgrow="ALWAYS">
+        <VBox spacing="16" styleClass="ws-content">
+
+            <!-- Summary Card -->
+            <VBox spacing="12" styleClass="ws-card">
+                <HBox alignment="CENTER_LEFT" spacing="12">
+                    <VBox spacing="3" HBox.hgrow="ALWAYS">
+                        <Label fx:id="lblProjectName" styleClass="ws-card-title" text="Project Details" />
+                        <Label fx:id="lblProjectDescription" styleClass="ws-card-subtitle" text="Specification Summary" />
+                    </VBox>
+                    <HBox spacing="8" alignment="CENTER_RIGHT">
+                        <Label styleClass="ws-badge-neutral" text="Standard: " />
+                        <Label fx:id="lblSpecVersion" styleClass="ws-badge-info" text="OpenAPI 3.0" />
+                        <Label styleClass="ws-badge-neutral" text="Base URL: " />
+                        <Label fx:id="lblBaseUrl" styleClass="ws-badge-neutral" text="http://localhost" />
+                    </HBox>
+                </HBox>
+
+                <!-- Method Metrics Counters -->
+                <GridPane hgap="12" vgap="8">
+                    <columnConstraints>
+                        <ColumnConstraints percentWidth="16.6" />
+                        <ColumnConstraints percentWidth="16.6" />
+                        <ColumnConstraints percentWidth="16.6" />
+                        <ColumnConstraints percentWidth="16.6" />
+                        <ColumnConstraints percentWidth="16.6" />
+                        <ColumnConstraints percentWidth="17.0" />
+                    </columnConstraints>
+
+                    <HBox alignment="CENTER_LEFT" spacing="8" styleClass="ws-stat-card" GridPane.columnIndex="0">
+                        <VBox>
+                            <Label styleClass="ws-stat-label" text="TOTAL ENDPOINTS" />
+                            <Label fx:id="lblEndpointCount" styleClass="ws-stat-value" text="0" />
+                        </VBox>
+                    </HBox>
+
+                    <HBox alignment="CENTER_LEFT" spacing="8" styleClass="ws-stat-card" GridPane.columnIndex="1">
+                        <VBox>
+                            <Label styleClass="ws-stat-label" text="GET" />
+                            <Label fx:id="lblCountGet" styleClass="ws-stat-value" text="0" style="-fx-text-fill: #059669;" />
+                        </VBox>
+                    </HBox>
+
+                    <HBox alignment="CENTER_LEFT" spacing="8" styleClass="ws-stat-card" GridPane.columnIndex="2">
+                        <VBox>
+                            <Label styleClass="ws-stat-label" text="POST" />
+                            <Label fx:id="lblCountPost" styleClass="ws-stat-value" text="0" style="-fx-text-fill: #356AE6;" />
+                        </VBox>
+                    </HBox>
+
+                    <HBox alignment="CENTER_LEFT" spacing="8" styleClass="ws-stat-card" GridPane.columnIndex="3">
+                        <VBox>
+                            <Label styleClass="ws-stat-label" text="PUT" />
+                            <Label fx:id="lblCountPut" styleClass="ws-stat-value" text="0" style="-fx-text-fill: #D97706;" />
+                        </VBox>
+                    </HBox>
+
+                    <HBox alignment="CENTER_LEFT" spacing="8" styleClass="ws-stat-card" GridPane.columnIndex="4">
+                        <VBox>
+                            <Label styleClass="ws-stat-label" text="DELETE" />
+                            <Label fx:id="lblCountDelete" styleClass="ws-stat-value" text="0" style="-fx-text-fill: #DC2626;" />
+                        </VBox>
+                    </HBox>
+
+                    <HBox alignment="CENTER_LEFT" spacing="8" styleClass="ws-stat-card" GridPane.columnIndex="5">
+                        <VBox>
+                            <Label styleClass="ws-stat-label" text="OTHER" />
+                            <Label fx:id="lblCountOther" styleClass="ws-stat-value" text="0" style="-fx-text-fill: #7C3AED;" />
+                        </VBox>
+                    </HBox>
+                </GridPane>
+            </VBox>
+
+            <!-- Endpoints SplitPane -->
+            <SplitPane dividerPositions="0.45" styleClass="ws-card" VBox.vgrow="ALWAYS" minHeight="520">
+                <!-- Left: Endpoint List & Filters -->
+                <VBox spacing="10">
+                    <HBox spacing="8" alignment="CENTER_LEFT">
+                        <TextField fx:id="tfEndpointSearch" promptText="Filter by path or summary..."
+                                   styleClass="ws-text-field" HBox.hgrow="ALWAYS" />
+                        <ComboBox fx:id="cbMethodFilter" prefWidth="110" styleClass="ws-combo-box" />
+                    </HBox>
+
+                    <TableView fx:id="tableEndpoints" styleClass="ws-table" VBox.vgrow="ALWAYS">
+                        <columns>
+                            <TableColumn fx:id="colMethod" text="Method" prefWidth="75" />
+                            <TableColumn fx:id="colPath" text="Endpoint Path" prefWidth="200" />
+                            <TableColumn fx:id="colSummary" text="Summary" prefWidth="160" />
+                            <TableColumn fx:id="colParamCount" text="Params" prefWidth="60" />
+                        </columns>
+                        <placeholder>
+                            <Label text="No endpoints found matching filter criteria" />
+                        </placeholder>
+                    </TableView>
+                </VBox>
+
+                <!-- Right: Endpoint Detail Inspector -->
+                <VBox fx:id="paneEndpointDetails" spacing="12" style="-fx-padding: 0 0 0 12;">
+                    <HBox alignment="CENTER_LEFT" spacing="10">
+                        <Label fx:id="lblDetailMethod" styleClass="ws-badge-info" text="GET" />
+                        <Label fx:id="lblDetailPath" styleClass="ws-card-title" text="/api/endpoint" />
+                    </HBox>
+                    <Label fx:id="lblDetailSummary" styleClass="ws-card-subtitle" text="Endpoint summary" />
+                    <Label fx:id="lblDetailDescription" styleClass="ws-stat-indicator-neutral" text="Detailed endpoint description" wrapText="true" />
+
+                    <Region styleClass="ws-section-divider" />
+
+                    <!-- Parameters Table -->
+                    <Label styleClass="ws-stat-label" text="PARAMETERS" />
+                    <TableView fx:id="tableParams" prefHeight="130" styleClass="ws-table">
+                        <columns>
+                            <TableColumn fx:id="colParamName" text="Name" prefWidth="120" />
+                            <TableColumn fx:id="colParamIn" text="In" prefWidth="70" />
+                            <TableColumn fx:id="colParamType" text="Type" prefWidth="80" />
+                            <TableColumn fx:id="colParamRequired" text="Required" prefWidth="70" />
+                            <TableColumn fx:id="colParamDesc" text="Description" prefWidth="160" />
+                        </columns>
+                        <placeholder>
+                            <Label text="No parameters declared for this endpoint" />
+                        </placeholder>
+                    </TableView>
+
+                    <!-- Request Body Schema -->
+                    <Label styleClass="ws-stat-label" text="REQUEST BODY SCHEMA" />
+                    <TextArea fx:id="txtRequestBodySchema" prefHeight="90" editable="false" wrapText="true"
+                              style="-fx-font-family: 'Consolas', 'Courier New', monospace; -fx-font-size: 11px;" />
+
+                    <!-- Response Schemas -->
+                    <Label styleClass="ws-stat-label" text="RESPONSE CODES &amp; SCHEMAS" />
+                    <TextArea fx:id="txtResponseSchemas" prefHeight="90" editable="false" wrapText="true"
+                              style="-fx-font-family: 'Consolas', 'Courier New', monospace; -fx-font-size: 11px;" />
+
+                    <!-- Security Requirements -->
+                    <HBox spacing="8" alignment="CENTER_LEFT">
+                        <Label styleClass="ws-stat-label" text="SECURITY: " />
+                        <Label fx:id="lblSecurityReqs" styleClass="ws-badge-neutral" text="Public" />
+                    </HBox>
+                </VBox>
+            </SplitPane>
+        </VBox>
+    </ScrollPane>
+</VBox>
+

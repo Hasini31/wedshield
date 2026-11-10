@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Priority?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane prefHeight="760.0" prefWidth="1180.0" stylesheets="@../css/styles.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.webshield.ui.controllers.MainController">
+    <!-- LEFT SIDEBAR -->
+    <left>
+        <VBox styleClass="sidebar">
+            <!-- Brand Section -->
+            <HBox alignment="CENTER_LEFT" spacing="12.0" styleClass="brand-container">
+                <HBox alignment="CENTER" styleClass="brand-badge">
+                    <Label styleClass="brand-badge-text" text="WS" />
+                </HBox>
+                <VBox alignment="CENTER_LEFT">
+                    <Label styleClass="brand-title" text="WebShield" />
+                    <Label styleClass="brand-subtitle" text="SECURITY TESTING PLATFORM" />
+                </VBox>
+            </HBox>
+
+            <!-- Navigation Links -->
+            <VBox spacing="4.0">
+                <padding>
+                    <Insets top="14.0" />
+                </padding>
+                <Label styleClass="nav-section-label" text="NAVIGATION" />
+                <Button fx:id="btnDashboard" maxWidth="Infinity" onAction="#handleNavDashboard" styleClass="nav-item, nav-item-active" text="  ●  Dashboard" />
+                <Button fx:id="btnWebsites" maxWidth="Infinity" onAction="#handleNavWebsites" styleClass="nav-item" text="  ○  Websites" />
+                <Button fx:id="btnScans" maxWidth="Infinity" onAction="#handleNavScans" styleClass="nav-item" text="  ○  Security Scans" />
+                <Button fx:id="btnScanHistory" maxWidth="Infinity" onAction="#handleNavHistory" styleClass="nav-item" text="  ○  Scan History" />
+                <Button fx:id="btnReports" maxWidth="Infinity" onAction="#handleNavReports" styleClass="nav-item" text="  ○  Reports" />
+                
+                <Label styleClass="nav-section-label" text="MANAGEMENT">
+                    <VBox.margin>
+                        <Insets top="12.0" />
+                    </VBox.margin>
+                </Label>
+                <Button fx:id="btnSettings" maxWidth="Infinity" onAction="#handleNavSettings" styleClass="nav-item" text="  ⚙  Settings" />
+            </VBox>
+
+            <Region VBox.vgrow="ALWAYS" />
+
+            <!-- Sidebar Footer: Scope Boundary & Mode -->
+            <VBox spacing="6.0" styleClass="sidebar-footer">
+                <Label styleClass="nav-section-label" text="ENGINE STATUS">
+                    <padding>
+                        <Insets bottom="0.0" left="0.0" right="0.0" top="0.0" />
+                    </padding>
+                </Label>
+                <HBox alignment="CENTER_LEFT" spacing="8.0" styleClass="environment-badge">
+                    <Label styleClass="environment-text" text="● Defensive Scope Active" />
+                </HBox>
+            </VBox>
+        </VBox>
+    </left>
+
+    <!-- TOP & CENTER WRAPPER -->
+    <center>
+        <BorderPane>
+            <!-- TOP BAR -->
+            <top>
+                <HBox alignment="CENTER_LEFT" spacing="16.0" styleClass="top-header">
+                    <VBox alignment="CENTER_LEFT" spacing="2.0">
+                        <Label fx:id="lblPageTitle" styleClass="page-title" text="Platform Dashboard" />
+                        <Label fx:id="lblBreadcrumb" styleClass="breadcrumbs" text="WebShield Console / Overview" />
+                    </VBox>
+
+                    <Region HBox.hgrow="ALWAYS" />
+
+                    <!-- Status Indicator -->
+                    <HBox alignment="CENTER" spacing="8.0" styleClass="header-status-badge">
+                        <Label styleClass="header-status-text" text="Target Scope: Authorized Targets Only" />
+                    </HBox>
+
+                    <!-- User Profile Indicator -->
+                    <HBox alignment="CENTER_LEFT" spacing="10.0">
+                        <HBox alignment="CENTER" styleClass="user-avatar">
+                            <Label styleClass="user-avatar-text" text="SO" />
+                        </HBox>
+                        <VBox alignment="CENTER_LEFT">
+                            <Label styleClass="user-name" text="Security Operator" />
+                            <Label styleClass="breadcrumbs" text="Operator Console" />
+                        </VBox>
+                    </HBox>
+                </HBox>
+            </top>
+
+            <!-- MAIN CONTENT AREA -->
+            <center>
+                <VBox spacing="20.0" styleClass="content-body">
+                    <!-- Top Statistics Summary Cards -->
+                    <HBox spacing="16.0">
+                        <!-- Card 1 -->
+                        <VBox spacing="8.0" styleClass="card" HBox.hgrow="ALWAYS">
+                            <Label styleClass="card-subtitle" text="AUTHORIZED TARGETS" />
+                            <Label styleClass="stat-number" text="0" />
+                            <Label styleClass="stat-desc" text="Registered web targets" />
+                        </VBox>
+
+                        <!-- Card 2 -->
+                        <VBox spacing="8.0" styleClass="card" HBox.hgrow="ALWAYS">
+                            <Label styleClass="card-subtitle" text="ASSESSMENTS COMPLETED" />
+                            <Label styleClass="stat-number" text="0" />
+                            <Label styleClass="stat-desc" text="Security scans executed" />
+                        </VBox>
+
+                        <!-- Card 3 -->
+                        <VBox spacing="8.0" styleClass="card" HBox.hgrow="ALWAYS">
+                            <Label styleClass="card-subtitle" text="SECURITY FINDINGS" />
+                            <Label styleClass="stat-number" text="0" />
+                            <Label styleClass="stat-desc" text="Identified vulnerabilities" />
+                        </VBox>
+
+                        <!-- Card 4 -->
+                        <VBox spacing="8.0" styleClass="card" HBox.hgrow="ALWAYS">
+                            <Label styleClass="card-subtitle" text="CRITICAL FINDINGS" />
+                            <Label styleClass="stat-number" text="0" />
+                            <Label styleClass="stat-desc" text="High priority remediation" />
+                        </VBox>
+                    </HBox>
+
+                    <!-- Status Overview & Architectural Readiness Card -->
+                    <VBox spacing="12.0" styleClass="card" VBox.vgrow="ALWAYS">
+                        <HBox alignment="CENTER_LEFT">
+                            <VBox spacing="2.0">
+                                <Label styleClass="card-title" text="Application Foundation &amp; Architecture Status" />
+                                <Label styleClass="card-subtitle" text="Core JavaFX runtime and modular package architecture established" />
+                            </VBox>
+                            <Region HBox.hgrow="ALWAYS" />
+                            <Button onAction="#handleStatusAction" styleClass="btn-secondary" text="Verify Subsystems" />
+                        </HBox>
+
+                        <Separator />
+
+                        <VBox spacing="10.0">
+                            <Label styleClass="card-subtitle" text="SUBSYSTEM STATUS" />
+                            <HBox spacing="24.0">
+                                <VBox spacing="4.0">
+                                    <Label styleClass="breadcrumbs" text="Core Engine" />
+                                    <Label text="✔ Java 21 LTS (Temurin Hotspot)" />
+                                </VBox>
+                                <VBox spacing="4.0">
+                                    <Label styleClass="breadcrumbs" text="UI Framework" />
+                                    <Label text="✔ JavaFX 21 + FXML Layouts" />
+                                </VBox>
+                                <VBox spacing="4.0">
+                                    <Label styleClass="breadcrumbs" text="Build System" />
+                                    <Label text="✔ Apache Maven 3.9" />
+                                </VBox>
+                                <VBox spacing="4.0">
+                                    <Label styleClass="breadcrumbs" text="Parsing Engine" />
+                                    <Label text="✔ Jsoup 1.17 + Jackson 2.17" />
+                                </VBox>
+                            </HBox>
+                        </VBox>
+
+                        <Region VBox.vgrow="ALWAYS" />
+
+                        <HBox alignment="CENTER_LEFT" spacing="12.0">
+                            <Label fx:id="lblEngineStatus" styleClass="breadcrumbs" text="WebShield initial project setup verified. Ready for feature modules." />
+                        </HBox>
+                    </VBox>
+                </VBox>
+            </center>
+        </BorderPane>
+    </center>
+</BorderPane>
+

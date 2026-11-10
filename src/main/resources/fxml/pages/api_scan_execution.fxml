@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox spacing="0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.webshield.ui.controllers.ApiScanExecutionController">
+
+    <!-- Top Action Bar -->
+    <HBox alignment="CENTER_LEFT" spacing="12" styleClass="ws-card"
+          style="-fx-background-radius: 0; -fx-border-radius: 0; -fx-border-width: 0 0 1 0; -fx-border-color: #E2E6ED; -fx-padding: 12 24;">
+        <Label styleClass="ws-card-title" text="API Scan Execution Console" />
+        <Region HBox.hgrow="ALWAYS" />
+        <Label styleClass="ws-stat-label" text="STATUS: " />
+        <Label fx:id="lblScanStatus" styleClass="ws-badge-neutral" text="IDLE" />
+        <Button fx:id="btnCancelScan" onAction="#onCancelScan" disable="true" styleClass="ws-btn-danger" text="⏹ Cancel Scan" />
+        <Button fx:id="btnStartScan" onAction="#onStartScan" styleClass="ws-btn-primary" text="▶ Start Scan" />
+    </HBox>
+
+    <ScrollPane fitToWidth="true" styleClass="ws-scroll-pane" VBox.vgrow="ALWAYS">
+        <VBox spacing="16" styleClass="ws-content">
+
+            <!-- Target Selection Card -->
+            <VBox spacing="10" styleClass="ws-card">
+                <HBox alignment="CENTER_LEFT" spacing="12">
+                    <VBox spacing="4" HBox.hgrow="ALWAYS">
+                        <Label styleClass="ws-card-title" text="Target Specification" />
+                        <Label styleClass="ws-card-subtitle" text="SELECT SPECIFICATION FOR LIVE SCANNING" />
+                    </VBox>
+                    <ComboBox fx:id="cbProjects" prefWidth="320" styleClass="ws-combo-box" promptText="Select an API Project..." />
+                </HBox>
+            </VBox>
+
+            <!-- Progress & Telemetry Card -->
+            <VBox spacing="12" styleClass="ws-card">
+                <HBox alignment="CENTER_LEFT">
+                    <Label fx:id="lblCurrentPhase" styleClass="ws-card-title" text="Ready to start security assessment" />
+                    <Region HBox.hgrow="ALWAYS" />
+                    <Label fx:id="lblProgressPercent" styleClass="ws-stat-value" text="0%" style="-fx-font-size: 14px;" />
+                </HBox>
+
+                <ProgressBar fx:id="progressBar" progress="0.0" maxWidth="Infinity" prefHeight="10" />
+
+                <!-- Telemetry Metrics Counters -->
+                <GridPane hgap="12" vgap="8">
+                    <columnConstraints>
+                        <ColumnConstraints percentWidth="20" />
+                        <ColumnConstraints percentWidth="20" />
+                        <ColumnConstraints percentWidth="20" />
+                        <ColumnConstraints percentWidth="20" />
+                        <ColumnConstraints percentWidth="20" />
+                    </columnConstraints>
+
+                    <HBox alignment="CENTER_LEFT" spacing="8" styleClass="ws-stat-card" GridPane.columnIndex="0">
+                        <VBox>
+                            <Label styleClass="ws-stat-label" text="ENDPOINTS" />
+                            <Label fx:id="lblEndpointsTested" styleClass="ws-stat-value" text="0" />
+                        </VBox>
+                    </HBox>
+
+                    <HBox alignment="CENTER_LEFT" spacing="8" styleClass="ws-stat-card" GridPane.columnIndex="1">
+                        <VBox>
+                            <Label styleClass="ws-stat-label" text="TESTS GENERATED" />
+                            <Label fx:id="lblTestsGenerated" styleClass="ws-stat-value" text="0" style="-fx-text-fill: #356AE6;" />
+                        </VBox>
+                    </HBox>
+
+                    <HBox alignment="CENTER_LEFT" spacing="8" styleClass="ws-stat-card" GridPane.columnIndex="2">
+                        <VBox>
+                            <Label styleClass="ws-stat-label" text="REQUESTS RUN" />
+                            <Label fx:id="lblRequestsExecuted" styleClass="ws-stat-value" text="0" style="-fx-text-fill: #059669;" />
+                        </VBox>
+                    </HBox>
+
+                    <HBox alignment="CENTER_LEFT" spacing="8" styleClass="ws-stat-card" GridPane.columnIndex="3">
+                        <VBox>
+                            <Label styleClass="ws-stat-label" text="FINDINGS" />
+                            <Label fx:id="lblFindingsDiscovered" styleClass="ws-stat-value" text="0" style="-fx-text-fill: #DC2626;" />
+                        </VBox>
+                    </HBox>
+
+                    <HBox alignment="CENTER_LEFT" spacing="8" styleClass="ws-stat-card" GridPane.columnIndex="4">
+                        <VBox>
+                            <Label styleClass="ws-stat-label" text="OBJECTIVE COVERAGE" />
+                            <Label fx:id="lblCoveragePercent" styleClass="ws-stat-value" text="0.0%" style="-fx-text-fill: #7C3AED;" />
+                        </VBox>
+                    </HBox>
+                </GridPane>
+
+                <!-- Post-scan Action Shortcuts (Visible on finish) -->
+                <HBox fx:id="panePostScanActions" alignment="CENTER_LEFT" spacing="12" visible="false"
+                      style="-fx-background-color: #ECFDF5; -fx-padding: 10 14; -fx-background-radius: 6; -fx-border-color: #A7F3D0; -fx-border-radius: 6;">
+                    <Label text="Scan complete! Review findings and telemetry:" style="-fx-text-fill: #065F46; -fx-font-weight: bold;" />
+                    <Region HBox.hgrow="ALWAYS" />
+                    <Button fx:id="btnViewTestCases" onAction="#onViewTestCases" styleClass="ws-btn-secondary" text="▤ View Test Cases" />
+                    <Button fx:id="btnViewExecutions" onAction="#onViewExecutions" styleClass="ws-btn-secondary" text="⇄ View Executions" />
+                    <Button fx:id="btnViewFindings" onAction="#onViewFindings" styleClass="ws-btn-primary" text="⚠ Inspect Findings" />
+                </HBox>
+            </VBox>
+
+            <!-- Live Console Activity Log -->
+            <VBox spacing="8" styleClass="ws-card" VBox.vgrow="ALWAYS" minHeight="300">
+                <HBox alignment="CENTER_LEFT">
+                    <Label styleClass="ws-card-title" text="Live Execution Telemetry &amp; Log" />
+                    <Region HBox.hgrow="ALWAYS" />
+                    <Label styleClass="ws-stat-indicator-neutral" text="Real-Time Event Stream" />
+                </HBox>
+                <Region styleClass="ws-section-divider" />
+                <TextArea fx:id="txtLogConsole" editable="false" wrapText="true" VBox.vgrow="ALWAYS"
+                          prefHeight="240"
+                          style="-fx-font-family: 'Consolas', 'Courier New', monospace; -fx-font-size: 11px; -fx-control-inner-background: #172338; -fx-text-fill: #A7F3D0;" />
+            </VBox>
+
+        </VBox>
+    </ScrollPane>
+</VBox>
+

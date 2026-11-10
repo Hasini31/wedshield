@@ -1,0 +1,25 @@
+# Maven build output
+target/
+
+# Environment and credentials – NEVER commit these
+.env
+src/main/resources/database.properties
+
+# IDE files
+.idea/
+*.iml
+.vscode/
+*.class
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Generated scan reports
+reports/
+
+

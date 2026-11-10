@@ -1,0 +1,17 @@
+# WebShield – Database Connection Configuration TEMPLATE
+# Copy this file to database.properties and fill in your values.
+# database.properties is in .gitignore and must NOT be committed.
+
+# JDBC connection string for the Docker MySQL container
+db.url=jdbc:mysql://localhost:3306/webshield?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&characterEncoding=UTF-8
+
+# Credentials (match values in docker-compose.yml / .env)
+db.username=webshield_user
+db.password=CHANGE_ME
+
+# Connection pool (applied in Stage 3)
+db.pool.maxSize=10
+db.pool.minIdle=2
+db.pool.connectionTimeout=30000
+db.pool.idleTimeout=600000
+

@@ -1,0 +1,50 @@
+services:
+
+  # =========================================================================
+  # MySQL 8 – WebShield primary database
+  # =========================================================================
+  webshield-db:
+    image: mysql:8.0
+    container_name: webshield-mysql
+    restart: unless-stopped
+
+    environment:
+      MYSQL_ROOT_PASSWORD: webshield_root_2024
+      MYSQL_DATABASE:      webshield
+      MYSQL_USER:          webshield_user
+      MYSQL_PASSWORD:      webshield_pass_2024
+
+    ports:
+      # host:container  – connect from the app on localhost:3306
+      - "3306:3306"
+
+    volumes:
+      # Persist MySQL data across container restarts
+      - webshield-db-data:/var/lib/mysql
+      # Auto-run schema SQL on first container start
+      - ./src/main/resources/database/schema.sql:/docker-entrypoint-initdb.d/01_schema.sql:ro
+      - ./src/main/resources/database/02_api_testing_schema.sql:/docker-entrypoint-initdb.d/02_api_testing_schema.sql:ro
+      - ./src/main/resources/database/03_api_execution_and_findings_schema.sql:/docker-entrypoint-initdb.d/03_api_execution_and_findings_schema.sql:ro
+      - ./src/main/resources/database/04_api_reports_schema.sql:/docker-entrypoint-initdb.d/04_api_reports_schema.sql:ro
+
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost",
+             "-u", "webshield_user", "--password=webshield_pass_2024"]
+      interval: 10s
+      timeout:  5s
+      retries:  5
+      start_period: 30s
+
+    command: >
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+      --sql-mode=STRICT_TRANS_TABLES,NO_ZERO_DATE,NO_ZERO_IN_DATE,ERROR_FOR_DIVISION_BY_ZERO
+      --max-connections=100
+
+# =============================================================================
+# Named volumes
+# =============================================================================
+volumes:
+  webshield-db-data:
+    driver: local
+
