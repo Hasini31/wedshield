@@ -4,6 +4,8 @@
 <?import javafx.scene.chart.BarChart?>
 <?import javafx.scene.chart.CategoryAxis?>
 <?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TableColumn?>
@@ -18,6 +20,7 @@
 <ScrollPane
     fitToWidth="true"
     hbarPolicy="NEVER"
+    vbarPolicy="AS_NEEDED"
     styleClass="ws-scroll-pane"
     xmlns="http://javafx.com/javafx/21"
     xmlns:fx="http://javafx.com/fxml/1"
@@ -26,212 +29,432 @@
     <VBox spacing="20" styleClass="ws-content">
 
         <!-- ============================================================= -->
-        <!-- ROW 1 – STAT CARDS                                            -->
+        <!-- TOP HEADER: TITLE, TIMESTAMP & REFRESH                        -->
         <!-- ============================================================= -->
-        <GridPane hgap="16" vgap="16">
+        <HBox alignment="CENTER_LEFT" spacing="16" style="-fx-padding: 0 0 4 0;">
+            <VBox spacing="3" HBox.hgrow="ALWAYS">
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Label text="Security Command Center" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #1a2332;" />
+                    <Label text="LIVE TELEMETRY" style="-fx-background-color: #ECFDF5; -fx-text-fill: #059669; -fx-font-size: 10px; -fx-font-weight: bold; -fx-padding: 2 8; -fx-background-radius: 4; -fx-border-color: #A7F3D0; -fx-border-radius: 4;" />
+                </HBox>
+                <Label text="Unified real-time monitoring and analytics across Website and API security testing engines." style="-fx-font-size: 12px; -fx-text-fill: #64748B;" />
+            </VBox>
+            <HBox alignment="CENTER_RIGHT" spacing="12">
+                <Label fx:id="lblLastUpdated" text="Last refreshed: —" style="-fx-font-size: 11.5px; -fx-text-fill: #94A3B8;" />
+                <Button fx:id="btnRefresh" onAction="#onRefresh" styleClass="ws-btn-secondary" text="🔄 Refresh Data" />
+            </HBox>
+        </HBox>
+
+        <!-- ============================================================= -->
+        <!-- ROW 1: OVERALL SECURITY STATISTICS (6 METRIC CARDS)           -->
+        <!-- ============================================================= -->
+        <GridPane hgap="14" vgap="14">
             <columnConstraints>
-                <ColumnConstraints percentWidth="25" />
-                <ColumnConstraints percentWidth="25" />
-                <ColumnConstraints percentWidth="25" />
-                <ColumnConstraints percentWidth="25" />
+                <ColumnConstraints percentWidth="16.666" />
+                <ColumnConstraints percentWidth="16.666" />
+                <ColumnConstraints percentWidth="16.666" />
+                <ColumnConstraints percentWidth="16.666" />
+                <ColumnConstraints percentWidth="16.666" />
+                <ColumnConstraints percentWidth="16.67" />
             </columnConstraints>
 
-            <!-- Total Websites -->
-            <HBox alignment="CENTER_LEFT" spacing="14" styleClass="ws-stat-card" GridPane.columnIndex="0">
-                <HBox alignment="CENTER" styleClass="ws-stat-icon-blue">
-                    <Label styleClass="ws-icon-text-blue" text="⬡" />
-                </HBox>
-                <VBox spacing="4" HBox.hgrow="ALWAYS">
+            <!-- CARD 1: TOTAL WEBSITES -->
+            <VBox spacing="6" styleClass="ws-stat-card" GridPane.columnIndex="0">
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <HBox alignment="CENTER" styleClass="ws-stat-icon-blue">
+                        <Label styleClass="ws-icon-text-blue" text="🌐" />
+                    </HBox>
                     <Label styleClass="ws-stat-label" text="TOTAL WEBSITES" />
-                    <Label fx:id="statTargets" styleClass="ws-stat-value" text="0" />
-                    <Label styleClass="ws-stat-indicator-neutral" text="Registered targets" />
-                </VBox>
-            </HBox>
-
-            <!-- Total Scans -->
-            <HBox alignment="CENTER_LEFT" spacing="14" styleClass="ws-stat-card" GridPane.columnIndex="1">
-                <HBox alignment="CENTER" styleClass="ws-stat-icon-green">
-                    <Label styleClass="ws-icon-text-green" text="⬦" />
                 </HBox>
-                <VBox spacing="4" HBox.hgrow="ALWAYS">
+                <Label fx:id="statTotalWebsites" styleClass="ws-stat-value" text="0" />
+                <Label fx:id="statActiveWebsites" styleClass="ws-stat-indicator-positive" text="0 active" />
+            </VBox>
+
+            <!-- CARD 2: API PROJECTS -->
+            <VBox spacing="6" styleClass="ws-stat-card" GridPane.columnIndex="1">
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <HBox alignment="CENTER" styleClass="ws-stat-icon-blue" style="-fx-background-color: #F5F3FF; -fx-border-color: #DDD6FE;">
+                        <Label style="-fx-text-fill: #7C3AED; -fx-font-size: 16px;" text="⚡" />
+                    </HBox>
+                    <Label styleClass="ws-stat-label" text="API PROJECTS" />
+                </HBox>
+                <Label fx:id="statApiProjects" styleClass="ws-stat-value" text="0" />
+                <Label styleClass="ws-stat-indicator-neutral" text="OpenAPI specs" />
+            </VBox>
+
+            <!-- CARD 3: TOTAL SECURITY SCANS -->
+            <VBox spacing="6" styleClass="ws-stat-card" GridPane.columnIndex="2">
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <HBox alignment="CENTER" styleClass="ws-stat-icon-green">
+                        <Label styleClass="ws-icon-text-green" text="▶" />
+                    </HBox>
                     <Label styleClass="ws-stat-label" text="TOTAL SCANS" />
-                    <Label fx:id="statScans" styleClass="ws-stat-value" text="0" />
-                    <Label styleClass="ws-stat-indicator-neutral" text="Assessments run" />
-                </VBox>
-            </HBox>
-
-            <!-- Total Findings -->
-            <HBox alignment="CENTER_LEFT" spacing="14" styleClass="ws-stat-card" GridPane.columnIndex="2">
-                <HBox alignment="CENTER" styleClass="ws-stat-icon-amber">
-                    <Label styleClass="ws-icon-text-amber" text="⚑" />
                 </HBox>
-                <VBox spacing="4" HBox.hgrow="ALWAYS">
-                    <Label styleClass="ws-stat-label" text="TOTAL VULNERABILITIES" />
-                    <Label fx:id="statFindings" styleClass="ws-stat-value" text="0" />
-                    <Label styleClass="ws-stat-indicator-neutral" text="All severities" />
-                </VBox>
-            </HBox>
+                <Label fx:id="statTotalScans" styleClass="ws-stat-value" text="0" />
+                <Label fx:id="statScansBreakdown" styleClass="ws-stat-indicator-neutral" text="0 Web · 0 API" />
+            </VBox>
 
-            <!-- Critical Findings -->
-            <HBox alignment="CENTER_LEFT" spacing="14" styleClass="ws-stat-card" GridPane.columnIndex="3">
-                <HBox alignment="CENTER" styleClass="ws-stat-icon-red">
-                    <Label styleClass="ws-icon-text-red" text="⚠" />
+            <!-- CARD 4: API TEST CASES EXECUTED -->
+            <VBox spacing="6" styleClass="ws-stat-card" GridPane.columnIndex="3">
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <HBox alignment="CENTER" styleClass="ws-stat-icon-green" style="-fx-background-color: #EFF6FF; -fx-border-color: #BFDBFE;">
+                        <Label style="-fx-text-fill: #2563EB; -fx-font-size: 16px;" text="🧪" />
+                    </HBox>
+                    <Label styleClass="ws-stat-label" text="API TEST CASES" />
                 </HBox>
-                <VBox spacing="4" HBox.hgrow="ALWAYS">
+                <Label fx:id="statApiExecuted" styleClass="ws-stat-value" text="0" />
+                <Label fx:id="statApiGenerated" styleClass="ws-stat-indicator-neutral" text="0 executed · 0 gen" />
+            </VBox>
+
+            <!-- CARD 5: TOTAL VULNERABILITIES -->
+            <VBox spacing="6" styleClass="ws-stat-card" GridPane.columnIndex="4">
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <HBox alignment="CENTER" styleClass="ws-stat-icon-amber">
+                        <Label styleClass="ws-icon-text-amber" text="⚑" />
+                    </HBox>
+                    <Label styleClass="ws-stat-label" text="TOTAL FINDINGS" />
+                </HBox>
+                <Label fx:id="statTotalFindings" styleClass="ws-stat-value" text="0" />
+                <Label fx:id="statFindingsBreakdown" styleClass="ws-stat-indicator-neutral" text="0 Web · 0 API" />
+            </VBox>
+
+            <!-- CARD 6: CRITICAL FINDINGS -->
+            <VBox spacing="6" styleClass="ws-stat-card" GridPane.columnIndex="5">
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <HBox alignment="CENTER" styleClass="ws-stat-icon-red">
+                        <Label styleClass="ws-icon-text-red" text="⚠" />
+                    </HBox>
                     <Label styleClass="ws-stat-label" text="CRITICAL FINDINGS" />
-                    <Label fx:id="statCritical" styleClass="ws-stat-value" text="0" />
-                    <Label styleClass="ws-stat-indicator-neutral" text="Immediate attention" />
-                </VBox>
-            </HBox>
+                </HBox>
+                <Label fx:id="statCriticalFindings" styleClass="ws-stat-value" style="-fx-text-fill: #DC2626;" text="0" />
+                <Label fx:id="statCriticalBreakdown" style="-fx-text-fill: #DC2626; -fx-font-size: 11px; -fx-font-weight: 600;" text="0 Web · 0 API" />
+            </VBox>
         </GridPane>
 
         <!-- ============================================================= -->
-        <!-- ROW 2 – CHART + RECENT SCANS                                  -->
+        <!-- ROW 2: WEBSITE SECURITY OVERVIEW                              -->
+        <!-- ============================================================= -->
+        <VBox spacing="14" styleClass="ws-card">
+            <HBox alignment="CENTER_LEFT">
+                <VBox spacing="2" HBox.hgrow="ALWAYS">
+                    <Label styleClass="ws-card-title" text="Website Security Overview" />
+                    <Label styleClass="ws-card-subtitle" text="DYNAMIC WEB RECONNAISSANCE &amp; DEFENSIVE SCAN METRICS" />
+                </VBox>
+                <Button onAction="#onViewAllWebsites" styleClass="ws-btn-secondary" text="View All Websites →" />
+            </HBox>
+
+            <!-- Metric Badges Strip -->
+            <HBox spacing="12" style="-fx-background-color: #F8FAFC; -fx-padding: 10 16; -fx-background-radius: 6; -fx-border-color: #E2E8F0; -fx-border-radius: 6;">
+                <HBox spacing="6" alignment="CENTER_LEFT">
+                    <Label text="Registered:" style="-fx-font-size: 11px; -fx-text-fill: #64748B;" />
+                    <Label fx:id="lblWebRegistered" text="0" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #1E293B;" />
+                </HBox>
+                <Label text="•" style="-fx-text-fill: #CBD5E1;" />
+                <HBox spacing="6" alignment="CENTER_LEFT">
+                    <Label text="Scanned:" style="-fx-font-size: 11px; -fx-text-fill: #64748B;" />
+                    <Label fx:id="lblWebScanned" text="0" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #1E293B;" />
+                </HBox>
+                <Label text="•" style="-fx-text-fill: #CBD5E1;" />
+                <HBox spacing="6" alignment="CENTER_LEFT">
+                    <Label text="Pages Discovered:" style="-fx-font-size: 11px; -fx-text-fill: #64748B;" />
+                    <Label fx:id="lblWebPagesDiscovered" text="0" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #1E293B;" />
+                </HBox>
+                <Label text="•" style="-fx-text-fill: #CBD5E1;" />
+                <HBox spacing="6" alignment="CENTER_LEFT">
+                    <Label text="Pages Tested:" style="-fx-font-size: 11px; -fx-text-fill: #64748B;" />
+                    <Label fx:id="lblWebPagesTested" text="0" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #1E293B;" />
+                </HBox>
+                <Label text="•" style="-fx-text-fill: #CBD5E1;" />
+                <HBox spacing="6" alignment="CENTER_LEFT">
+                    <Label text="Total Website Findings:" style="-fx-font-size: 11px; -fx-text-fill: #64748B;" />
+                    <Label fx:id="lblWebFindings" text="0" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #1E293B;" />
+                </HBox>
+                <Label text="•" style="-fx-text-fill: #CBD5E1;" />
+                <HBox spacing="6" alignment="CENTER_LEFT">
+                    <Label text="Last Scan:" style="-fx-font-size: 11px; -fx-text-fill: #64748B;" />
+                    <Label fx:id="lblWebLastScan" text="—" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #356AE6;" />
+                </HBox>
+            </HBox>
+
+            <Region styleClass="ws-section-divider" />
+
+            <!-- Website Overview Table -->
+            <TableView fx:id="tableWebsiteOverview" styleClass="ws-table" prefHeight="210">
+                <columns>
+                    <TableColumn fx:id="colWebName" text="Website Name" prefWidth="150" />
+                    <TableColumn fx:id="colWebUrl" text="Target URL" prefWidth="230" />
+                    <TableColumn fx:id="colWebDiscovered" text="Discovered" prefWidth="85" />
+                    <TableColumn fx:id="colWebTested" text="Tested" prefWidth="80" />
+                    <TableColumn fx:id="colWebFindings" text="Findings" prefWidth="75" />
+                    <TableColumn fx:id="colWebCritical" text="Critical" prefWidth="70" />
+                    <TableColumn fx:id="colWebHigh" text="High" prefWidth="65" />
+                    <TableColumn fx:id="colWebLastScan" text="Last Scan Date" prefWidth="130" />
+                    <TableColumn fx:id="colWebStatus" text="Status" prefWidth="95" />
+                    <TableColumn fx:id="colWebAction" text="Action" prefWidth="105" />
+                </columns>
+                <placeholder>
+                    <VBox alignment="CENTER" spacing="6" minHeight="120">
+                        <Label text="⬡" styleClass="ws-empty-icon" />
+                        <Label text="No website assessments have been performed yet." styleClass="ws-empty-title" />
+                        <Label text="Register an authorized website and run a scan to monitor web vulnerabilities." styleClass="ws-empty-desc" />
+                    </VBox>
+                </placeholder>
+            </TableView>
+        </VBox>
+
+        <!-- ============================================================= -->
+        <!-- ROW 3: API SECURITY OVERVIEW                                  -->
+        <!-- ============================================================= -->
+        <VBox spacing="14" styleClass="ws-card">
+            <HBox alignment="CENTER_LEFT">
+                <VBox spacing="2" HBox.hgrow="ALWAYS">
+                    <Label styleClass="ws-card-title" text="API Security Overview" />
+                    <Label styleClass="ws-card-subtitle" text="SEARCH-BASED MUTATION TESTING, SPECIFICATION ANALYSIS &amp; COVERAGE" />
+                </VBox>
+                <Button onAction="#onViewAllApiProjects" styleClass="ws-btn-secondary" text="View All API Projects →" />
+            </HBox>
+
+            <!-- Metric Badges Strip -->
+            <HBox spacing="12" style="-fx-background-color: #F8FAFC; -fx-padding: 10 16; -fx-background-radius: 6; -fx-border-color: #E2E8F0; -fx-border-radius: 6;">
+                <HBox spacing="6" alignment="CENTER_LEFT">
+                    <Label text="API Projects:" style="-fx-font-size: 11px; -fx-text-fill: #64748B;" />
+                    <Label fx:id="lblApiProjectsChip" text="0" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #1E293B;" />
+                </HBox>
+                <Label text="•" style="-fx-text-fill: #CBD5E1;" />
+                <HBox spacing="6" alignment="CENTER_LEFT">
+                    <Label text="Endpoints Discovered:" style="-fx-font-size: 11px; -fx-text-fill: #64748B;" />
+                    <Label fx:id="lblApiEndpoints" text="0" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #1E293B;" />
+                </HBox>
+                <Label text="•" style="-fx-text-fill: #CBD5E1;" />
+                <HBox spacing="6" alignment="CENTER_LEFT">
+                    <Label text="API Scans Run:" style="-fx-font-size: 11px; -fx-text-fill: #64748B;" />
+                    <Label fx:id="lblApiScansChip" text="0" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #1E293B;" />
+                </HBox>
+                <Label text="•" style="-fx-text-fill: #CBD5E1;" />
+                <HBox spacing="6" alignment="CENTER_LEFT">
+                    <Label text="Test Cases Generated:" style="-fx-font-size: 11px; -fx-text-fill: #64748B;" />
+                    <Label fx:id="lblApiTestCasesGenChip" text="0" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #1E293B;" />
+                </HBox>
+                <Label text="•" style="-fx-text-fill: #CBD5E1;" />
+                <HBox spacing="6" alignment="CENTER_LEFT">
+                    <Label text="Executed Requests:" style="-fx-font-size: 11px; -fx-text-fill: #64748B;" />
+                    <Label fx:id="lblApiTestCasesExecChip" text="0" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #1E293B;" />
+                </HBox>
+                <Label text="•" style="-fx-text-fill: #CBD5E1;" />
+                <HBox spacing="6" alignment="CENTER_LEFT">
+                    <Label text="Total API Findings:" style="-fx-font-size: 11px; -fx-text-fill: #64748B;" />
+                    <Label fx:id="lblApiFindingsChip" text="0" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #7C3AED;" />
+                </HBox>
+            </HBox>
+
+            <Region styleClass="ws-section-divider" />
+
+            <!-- API Testing Category Distribution Table & Chart -->
+            <HBox spacing="16">
+                <!-- Category Table -->
+                <VBox spacing="8" HBox.hgrow="ALWAYS">
+                    <Label text="Test-Case Generation &amp; Execution by Category" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #334155;" />
+                    <TableView fx:id="tableApiCategories" styleClass="ws-table" prefHeight="190">
+                        <columns>
+                            <TableColumn fx:id="colCatName" text="Test Category" prefWidth="190" />
+                            <TableColumn fx:id="colCatGenerated" text="Generated Cases" prefWidth="120" />
+                            <TableColumn fx:id="colCatExecuted" text="Executed Requests" prefWidth="120" />
+                            <TableColumn fx:id="colCatFindings" text="Associated Findings" prefWidth="130" />
+                        </columns>
+                        <placeholder>
+                            <Label text="No API mutation test cases generated yet." styleClass="ws-empty-desc" />
+                        </placeholder>
+                    </TableView>
+                </VBox>
+
+                <!-- Category Bar Chart -->
+                <VBox spacing="8" prefWidth="440">
+                    <Label text="Category Generation Volume" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #334155;" />
+                    <BarChart fx:id="chartApiCategories" animated="false" legendVisible="false" prefHeight="190">
+                        <xAxis>
+                            <CategoryAxis fx:id="axisApiCatX" label="Strategy Category" />
+                        </xAxis>
+                        <yAxis>
+                            <NumberAxis fx:id="axisApiCatY" label="Test Count" minorTickVisible="false" tickUnit="10" />
+                        </yAxis>
+                    </BarChart>
+                </VBox>
+            </HBox>
+        </VBox>
+
+        <!-- ============================================================= -->
+        <!-- ROW 4: VULNERABILITY SEVERITY DISTRIBUTION & BREAKDOWN        -->
         <!-- ============================================================= -->
         <HBox spacing="16">
-
-            <!-- Severity Distribution Chart -->
-            <VBox spacing="12" styleClass="ws-card" HBox.hgrow="ALWAYS">
+            <!-- Severity Chart -->
+            <VBox spacing="12" styleClass="ws-card" HBox.hgrow="ALWAYS" prefWidth="480">
                 <VBox spacing="2">
-                    <Label styleClass="ws-card-title" text="Vulnerability Distribution" />
-                    <Label styleClass="ws-card-subtitle" text="FINDINGS BY SEVERITY" />
+                    <Label styleClass="ws-card-title" text="Overall Vulnerability Severity Distribution" />
+                    <Label styleClass="ws-card-subtitle" text="COMBINED SECURITY EXPOSURE (WEBSITES + APIS)" />
                 </VBox>
                 <Region styleClass="ws-section-divider" />
 
-                <!-- Chart – visible when data exists -->
-                <BarChart fx:id="severityChart" animated="false"
-                          legendVisible="false" prefHeight="200">
-                    <xAxis>
-                        <CategoryAxis fx:id="severityXAxis" label="Severity" />
-                    </xAxis>
-                    <yAxis>
-                        <NumberAxis fx:id="severityYAxis" label="Count"
-                                    minorTickVisible="false" tickUnit="1" />
-                    </yAxis>
-                </BarChart>
-
-                <!-- Empty state – visible when no data -->
-                <StackPane fx:id="chartEmptyState" minHeight="160" VBox.vgrow="ALWAYS">
-                    <VBox alignment="CENTER" spacing="8">
-                        <Label styleClass="ws-empty-icon" text="⬦" />
-                        <Label styleClass="ws-empty-title" text="No findings yet" />
-                        <Label styleClass="ws-empty-desc"
-                               text="Run a security scan to see vulnerability distribution." />
+                <StackPane minHeight="210" VBox.vgrow="ALWAYS">
+                    <PieChart fx:id="chartSeverityDistribution" animated="false" legendVisible="true" prefHeight="210" />
+                    <VBox fx:id="chartEmptyState" alignment="CENTER" spacing="6" minHeight="140">
+                        <Label text="⬦" styleClass="ws-empty-icon" />
+                        <Label text="No security findings recorded yet" styleClass="ws-empty-title" />
+                        <Label text="Run security assessments to view vulnerability distribution." styleClass="ws-empty-desc" />
                     </VBox>
                 </StackPane>
             </VBox>
 
-            <!-- Recent Scans -->
-            <VBox spacing="12" styleClass="ws-card" HBox.hgrow="ALWAYS">
+            <!-- Website vs API Breakdown -->
+            <VBox spacing="12" styleClass="ws-card" HBox.hgrow="ALWAYS" prefWidth="540">
                 <VBox spacing="2">
-                    <Label styleClass="ws-card-title" text="Recent Scans" />
-                    <Label styleClass="ws-card-subtitle" text="LATEST ASSESSMENT ACTIVITY" />
+                    <Label styleClass="ws-card-title" text="Vulnerability Breakdown by Target Engine" />
+                    <Label styleClass="ws-card-subtitle" text="SEVERITY PROFILES FOR WEBSITE DAST VS API FUZZING" />
                 </VBox>
                 <Region styleClass="ws-section-divider" />
 
-                <TableView fx:id="scansTable" styleClass="ws-table" VBox.vgrow="ALWAYS" prefHeight="200">
-                    <columns>
-                        <TableColumn fx:id="colScanSite"     text="Website"  prefWidth="130" />
-                        <TableColumn fx:id="colScanDate"     text="Date"     prefWidth="130" />
-                        <TableColumn fx:id="colScanStatus"   text="Status"   prefWidth="90"  />
-                        <TableColumn fx:id="colScanFindings" text="Findings" prefWidth="70"  />
-                    </columns>
-                </TableView>
+                <HBox spacing="16" VBox.vgrow="ALWAYS">
+                    <!-- Website Findings Breakdown -->
+                    <VBox spacing="8" HBox.hgrow="ALWAYS" style="-fx-background-color: #F8FAFC; -fx-padding: 12; -fx-background-radius: 6; -fx-border-color: #E2E8F0; -fx-border-radius: 6;">
+                        <Label text="WEBSITE FINDINGS" style="-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #2563EB;" />
+                        <HBox alignment="CENTER_LEFT">
+                            <Label text="CRITICAL" styleClass="ws-badge-critical-text" prefWidth="100" />
+                            <Region HBox.hgrow="ALWAYS" />
+                            <Label fx:id="lblWebCrit" text="0" style="-fx-font-weight: bold; -fx-text-fill: #DC2626;" />
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT">
+                            <Label text="HIGH" styleClass="ws-badge-high-text" prefWidth="100" />
+                            <Region HBox.hgrow="ALWAYS" />
+                            <Label fx:id="lblWebHigh" text="0" style="-fx-font-weight: bold; -fx-text-fill: #EA580C;" />
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT">
+                            <Label text="MEDIUM" styleClass="ws-badge-medium-text" prefWidth="100" />
+                            <Region HBox.hgrow="ALWAYS" />
+                            <Label fx:id="lblWebMed" text="0" style="-fx-font-weight: bold; -fx-text-fill: #D97706;" />
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT">
+                            <Label text="LOW" styleClass="ws-badge-low-text" prefWidth="100" />
+                            <Region HBox.hgrow="ALWAYS" />
+                            <Label fx:id="lblWebLow" text="0" style="-fx-font-weight: bold; -fx-text-fill: #2563EB;" />
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT">
+                            <Label text="INFORMATIONAL" styleClass="ws-badge-info-text" prefWidth="100" />
+                            <Region HBox.hgrow="ALWAYS" />
+                            <Label fx:id="lblWebInfo" text="0" style="-fx-font-weight: bold; -fx-text-fill: #64748B;" />
+                        </HBox>
+                    </VBox>
 
-                <!-- Empty state -->
-                <VBox fx:id="scansEmptyState" alignment="CENTER" spacing="8" minHeight="120">
-                    <Label styleClass="ws-empty-icon" text="⬦" />
-                    <Label styleClass="ws-empty-title" text="No scans conducted" />
-                    <Label styleClass="ws-empty-desc"
-                           text="Start a security assessment to see results here." />
-                </VBox>
+                    <!-- API Findings Breakdown -->
+                    <VBox spacing="8" HBox.hgrow="ALWAYS" style="-fx-background-color: #F8FAFC; -fx-padding: 12; -fx-background-radius: 6; -fx-border-color: #E2E8F0; -fx-border-radius: 6;">
+                        <Label text="API FINDINGS" style="-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #7C3AED;" />
+                        <HBox alignment="CENTER_LEFT">
+                            <Label text="CRITICAL" styleClass="ws-badge-critical-text" prefWidth="100" />
+                            <Region HBox.hgrow="ALWAYS" />
+                            <Label fx:id="lblApiCrit" text="0" style="-fx-font-weight: bold; -fx-text-fill: #DC2626;" />
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT">
+                            <Label text="HIGH" styleClass="ws-badge-high-text" prefWidth="100" />
+                            <Region HBox.hgrow="ALWAYS" />
+                            <Label fx:id="lblApiHigh" text="0" style="-fx-font-weight: bold; -fx-text-fill: #EA580C;" />
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT">
+                            <Label text="MEDIUM" styleClass="ws-badge-medium-text" prefWidth="100" />
+                            <Region HBox.hgrow="ALWAYS" />
+                            <Label fx:id="lblApiMed" text="0" style="-fx-font-weight: bold; -fx-text-fill: #D97706;" />
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT">
+                            <Label text="LOW" styleClass="ws-badge-low-text" prefWidth="100" />
+                            <Region HBox.hgrow="ALWAYS" />
+                            <Label fx:id="lblApiLow" text="0" style="-fx-font-weight: bold; -fx-text-fill: #2563EB;" />
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT">
+                            <Label text="INFORMATIONAL" styleClass="ws-badge-info-text" prefWidth="100" />
+                            <Region HBox.hgrow="ALWAYS" />
+                            <Label fx:id="lblApiInfo" text="0" style="-fx-font-weight: bold; -fx-text-fill: #64748B;" />
+                        </HBox>
+                    </VBox>
+                </HBox>
             </VBox>
         </HBox>
 
         <!-- ============================================================= -->
-        <!-- ROW 3 – RECENT WEBSITES                                        -->
+        <!-- ROW 5: RECENT SECURITY ACTIVITY (UNIFIED TABLE)               -->
         <!-- ============================================================= -->
-        <VBox spacing="12" styleClass="ws-card">
-            <HBox alignment="CENTER_LEFT">
-                <VBox spacing="2" HBox.hgrow="ALWAYS">
-                    <Label styleClass="ws-card-title" text="Recent Websites" />
-                    <Label styleClass="ws-card-subtitle" text="RECENTLY REGISTERED TARGETS" />
-                </VBox>
-            </HBox>
+        <VBox spacing="14" styleClass="ws-card">
+            <VBox spacing="2">
+                <Label styleClass="ws-card-title" text="Recent Security Activity" />
+                <Label styleClass="ws-card-subtitle" text="LATEST 10 AUDITED ASSESSMENTS ACROSS WEBSITES AND APIS" />
+            </VBox>
             <Region styleClass="ws-section-divider" />
 
-            <TableView fx:id="websitesTable" styleClass="ws-table" prefHeight="180">
+            <TableView fx:id="tableRecentActivity" styleClass="ws-table" prefHeight="230">
                 <columns>
-                    <TableColumn fx:id="colSiteName"     text="Name"        prefWidth="160" />
-                    <TableColumn fx:id="colSiteUrl"      text="URL"         prefWidth="220" />
-                    <TableColumn fx:id="colSiteAdded"    text="Added"       prefWidth="140" />
-                    <TableColumn fx:id="colSiteLastScan" text="Last Scan"   prefWidth="140" />
-                    <TableColumn fx:id="colSiteStatus"   text="Status"      prefWidth="90"  />
+                    <TableColumn fx:id="colActScanId" text="Scan ID" prefWidth="95" />
+                    <TableColumn fx:id="colActTargetName" text="Target Name" prefWidth="210" />
+                    <TableColumn fx:id="colActTargetType" text="Target Type" prefWidth="105" />
+                    <TableColumn fx:id="colActScanDate" text="Scan Date" prefWidth="135" />
+                    <TableColumn fx:id="colActDuration" text="Duration" prefWidth="85" />
+                    <TableColumn fx:id="colActUnitsTested" text="Units Tested" prefWidth="110" />
+                    <TableColumn fx:id="colActFindings" text="Findings" prefWidth="80" />
+                    <TableColumn fx:id="colActStatus" text="Scan Status" prefWidth="105" />
+                    <TableColumn fx:id="colActAction" text="Action" prefWidth="110" />
                 </columns>
+                <placeholder>
+                    <VBox alignment="CENTER" spacing="6" minHeight="120">
+                        <Label text="⬦" styleClass="ws-empty-icon" />
+                        <Label text="No security assessments conducted yet" styleClass="ws-empty-title" />
+                        <Label text="Launch a website or API scan to review live assessment activity." styleClass="ws-empty-desc" />
+                    </VBox>
+                </placeholder>
             </TableView>
-
-            <!-- Empty state -->
-            <VBox fx:id="websitesEmptyState" alignment="CENTER" spacing="8" minHeight="100">
-                <Label styleClass="ws-empty-icon" text="⬡" />
-                <Label styleClass="ws-empty-title" text="No websites registered" />
-                <Label styleClass="ws-empty-desc"
-                       text="Add an authorized website to begin monitoring." />
-            </VBox>
         </VBox>
 
         <!-- ============================================================= -->
-        <!-- ROW 4 – API SECURITY TESTING                                  -->
+        <!-- ROW 6: CRITICAL SECURITY FINDINGS                             -->
         <!-- ============================================================= -->
-        <VBox spacing="12" styleClass="ws-card">
-            <HBox alignment="CENTER_LEFT">
-                <VBox spacing="2" HBox.hgrow="ALWAYS">
-                    <Label styleClass="ws-card-title" text="API Security Testing Overview" />
-                    <Label styleClass="ws-card-subtitle" text="AUTOMATED SEARCH-BASED API ASSESSMENT" />
-                </VBox>
-                <Button onAction="#onOpenApiTesting" styleClass="ws-btn-primary" text="⚡ Open API Projects" />
-            </HBox>
+        <VBox spacing="14" styleClass="ws-card">
+            <VBox spacing="2">
+                <Label styleClass="ws-card-title" text="Critical &amp; High Security Findings" />
+                <Label styleClass="ws-card-subtitle" text="TOP 5 UNRESOLVED VULNERABILITIES REQUIRING IMMEDIATE ATTENTION" />
+            </VBox>
             <Region styleClass="ws-section-divider" />
 
-            <GridPane hgap="16" vgap="12">
-                <columnConstraints>
-                    <ColumnConstraints percentWidth="33.3" />
-                    <ColumnConstraints percentWidth="33.3" />
-                    <ColumnConstraints percentWidth="33.4" />
-                </columnConstraints>
-
-                <HBox alignment="CENTER_LEFT" spacing="14" styleClass="ws-stat-card" GridPane.columnIndex="0">
-                    <HBox alignment="CENTER" styleClass="ws-stat-icon-blue">
-                        <Label styleClass="ws-icon-text-blue" text="⚡" />
-                    </HBox>
-                    <VBox spacing="4">
-                        <Label styleClass="ws-stat-label" text="API PROJECTS" />
-                        <Label fx:id="statApiProjects" styleClass="ws-stat-value" text="0" />
-                        <Label styleClass="ws-stat-indicator-neutral" text="Imported specifications" />
+            <TableView fx:id="tableCriticalFindings" styleClass="ws-table" prefHeight="200">
+                <columns>
+                    <TableColumn fx:id="colCritName" text="Finding Name" prefWidth="250" />
+                    <TableColumn fx:id="colCritTarget" text="Target" prefWidth="180" />
+                    <TableColumn fx:id="colCritType" text="Type" prefWidth="85" />
+                    <TableColumn fx:id="colCritCategory" text="Vulnerability Category" prefWidth="180" />
+                    <TableColumn fx:id="colCritSeverity" text="Severity" prefWidth="95" />
+                    <TableColumn fx:id="colCritConfidence" text="Confidence" prefWidth="95" />
+                    <TableColumn fx:id="colCritStatus" text="Review Status" prefWidth="95" />
+                    <TableColumn fx:id="colCritAction" text="Action" prefWidth="105" />
+                </columns>
+                <placeholder>
+                    <VBox alignment="CENTER" spacing="6" minHeight="120">
+                        <Label text="🛡" styleClass="ws-empty-icon" />
+                        <Label text="No unresolved critical or high severity findings" styleClass="ws-empty-title" />
+                        <Label text="Any critical vulnerabilities detected during assessments will appear here." styleClass="ws-empty-desc" />
                     </VBox>
-                </HBox>
+                </placeholder>
+            </TableView>
+        </VBox>
 
-                <HBox alignment="CENTER_LEFT" spacing="14" styleClass="ws-stat-card" GridPane.columnIndex="1">
-                    <HBox alignment="CENTER" styleClass="ws-stat-icon-green">
-                        <Label styleClass="ws-icon-text-green" text="▶" />
-                    </HBox>
-                    <VBox spacing="4">
-                        <Label styleClass="ws-stat-label" text="API SCANS EXECUTED" />
-                        <Label fx:id="statApiScans" styleClass="ws-stat-value" text="0" />
-                        <Label styleClass="ws-stat-indicator-neutral" text="Completed assessments" />
-                    </VBox>
-                </HBox>
+        <!-- ============================================================= -->
+        <!-- ROW 7: QUICK ACTIONS                                          -->
+        <!-- ============================================================= -->
+        <VBox spacing="12" styleClass="ws-card">
+            <VBox spacing="2">
+                <Label styleClass="ws-card-title" text="Security Quick Actions" />
+                <Label styleClass="ws-card-subtitle" text="COMMONLY USED DEFENSIVE ASSESSMENT WORKFLOWS" />
+            </VBox>
+            <Region styleClass="ws-section-divider" />
 
-                <HBox alignment="CENTER_LEFT" spacing="14" styleClass="ws-stat-card" GridPane.columnIndex="2">
-                    <HBox alignment="CENTER" styleClass="ws-stat-icon-red">
-                        <Label styleClass="ws-icon-text-red" text="⚠" />
-                    </HBox>
-                    <VBox spacing="4">
-                        <Label styleClass="ws-stat-label" text="API FINDINGS DISCOVERED" />
-                        <Label fx:id="statApiFindings" styleClass="ws-stat-value" text="0" />
-                        <Label styleClass="ws-stat-indicator-neutral" text="Security vulnerabilities" />
-                    </VBox>
-                </HBox>
-            </GridPane>
+            <HBox spacing="16">
+                <Button onAction="#onActionRegisterWebsite" styleClass="ws-btn-primary" style="-fx-font-size: 13px; -fx-padding: 10 20;" text="🌐 Register Website" />
+                <Button onAction="#onActionAddApiProject" styleClass="ws-btn-primary" style="-fx-background-color: #7C3AED; -fx-font-size: 13px; -fx-padding: 10 20;" text="⚡ Add API Project" />
+                <Button onAction="#onActionStartWebsiteScan" styleClass="ws-btn-secondary" style="-fx-font-size: 13px; -fx-padding: 10 20;" text="▶ Start Website Scan" />
+                <Button onAction="#onActionStartApiScan" styleClass="ws-btn-secondary" style="-fx-font-size: 13px; -fx-padding: 10 20;" text="🛡 Start API Security Test" />
+            </HBox>
         </VBox>
 
     </VBox>
