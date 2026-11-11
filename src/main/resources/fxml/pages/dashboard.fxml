@@ -180,6 +180,9 @@
 
             <!-- Website Overview Table -->
             <TableView fx:id="tableWebsiteOverview" styleClass="ws-table" prefHeight="210">
+                <columnResizePolicy>
+                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                </columnResizePolicy>
                 <columns>
                     <TableColumn fx:id="colWebName" text="Website Name" prefWidth="150" />
                     <TableColumn fx:id="colWebUrl" text="Target URL" prefWidth="230" />
@@ -254,12 +257,15 @@
                 <!-- Category Table -->
                 <VBox spacing="8" HBox.hgrow="ALWAYS">
                     <Label text="Test-Case Generation &amp; Execution by Category" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #334155;" />
-                    <TableView fx:id="tableApiCategories" styleClass="ws-table" prefHeight="190">
+                    <TableView fx:id="tableApiCategories" styleClass="ws-table" prefHeight="245">
+                        <columnResizePolicy>
+                            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                        </columnResizePolicy>
                         <columns>
-                            <TableColumn fx:id="colCatName" text="Test Category" prefWidth="190" />
-                            <TableColumn fx:id="colCatGenerated" text="Generated Cases" prefWidth="120" />
-                            <TableColumn fx:id="colCatExecuted" text="Executed Requests" prefWidth="120" />
-                            <TableColumn fx:id="colCatFindings" text="Associated Findings" prefWidth="130" />
+                            <TableColumn fx:id="colCatName" text="Test Category" prefWidth="170" />
+                            <TableColumn fx:id="colCatGenerated" text="Generated" prefWidth="90" />
+                            <TableColumn fx:id="colCatExecuted" text="Executed" prefWidth="90" />
+                            <TableColumn fx:id="colCatFindings" text="Findings" prefWidth="90" />
                         </columns>
                         <placeholder>
                             <Label text="No API mutation test cases generated yet." styleClass="ws-empty-desc" />
@@ -270,7 +276,7 @@
                 <!-- Category Bar Chart -->
                 <VBox spacing="8" prefWidth="440">
                     <Label text="Category Generation Volume" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #334155;" />
-                    <BarChart fx:id="chartApiCategories" animated="false" legendVisible="false" prefHeight="190">
+                    <BarChart fx:id="chartApiCategories" animated="false" legendVisible="false" prefHeight="245">
                         <xAxis>
                             <CategoryAxis fx:id="axisApiCatX" label="Strategy Category" />
                         </xAxis>
@@ -386,7 +392,10 @@
             </VBox>
             <Region styleClass="ws-section-divider" />
 
-            <TableView fx:id="tableRecentActivity" styleClass="ws-table" prefHeight="230">
+            <TableView fx:id="tableRecentActivity" styleClass="ws-table" prefHeight="250">
+                <columnResizePolicy>
+                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                </columnResizePolicy>
                 <columns>
                     <TableColumn fx:id="colActScanId" text="Scan ID" prefWidth="95" />
                     <TableColumn fx:id="colActTargetName" text="Target Name" prefWidth="210" />
@@ -418,7 +427,10 @@
             </VBox>
             <Region styleClass="ws-section-divider" />
 
-            <TableView fx:id="tableCriticalFindings" styleClass="ws-table" prefHeight="200">
+            <TableView fx:id="tableCriticalFindings" styleClass="ws-table" prefHeight="240">
+                <columnResizePolicy>
+                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                </columnResizePolicy>
                 <columns>
                     <TableColumn fx:id="colCritName" text="Finding Name" prefWidth="250" />
                     <TableColumn fx:id="colCritTarget" text="Target" prefWidth="180" />

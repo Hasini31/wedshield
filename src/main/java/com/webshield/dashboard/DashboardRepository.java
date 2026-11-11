@@ -203,67 +203,39 @@ public class DashboardRepository {
             findingsMap.put(cat, 0);
         }
 
-        // Generated counts per category
-        String sqlGen = """
-            SELECT tc.category, COUNT(*) AS cnt
+        String sql = """
+            SELECT CASE
+                     WHEN tc.category = 'VALID' THEN 'VALID_SMOKE'
+                     WHEN tc.category = 'BOUNDARY' THEN 'BOUNDARY'
+                     WHEN tc.strategy = 'MISSING_REQUIRED_FIELD' THEN 'MISSING_REQUIRED'
+                     WHEN tc.category = 'MUTATION' THEN 'SECURITY_PROBES'
+                     ELSE 'TYPE_CONFUSION'
+                   END AS mapped_cat,
+                   COUNT(DISTINCT tc.id) AS gen_cnt,
+                   COUNT(DISTINCT e.id) AS exec_cnt,
+                   COUNT(DISTINCT f.id) AS find_cnt
             FROM api_test_case_results tc
             JOIN api_scans s ON tc.scan_id = s.id
+            LEFT JOIN api_executions e ON e.scan_id = tc.scan_id AND e.test_case_id = tc.test_case_id
+            LEFT JOIN api_findings f ON f.execution_uuid = e.execution_uuid
             WHERE s.user_id = ?
-            GROUP BY tc.category
+            GROUP BY mapped_cat
             """;
-        try (Connection c = getConnection(); PreparedStatement ps = c.prepareStatement(sqlGen)) {
-            ps.setInt(1, userId);
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    String cat = rs.getString("category");
-                    if (cat != null) generatedMap.put(cat.toUpperCase(), rs.getInt("cnt"));
-                }
-            }
-        } catch (SQLException e) {
-            log.debug("loadApiCategoryStats: sqlGen info: {}", e.getMessage());
-        }
 
-        // Executed counts per category
-        String sqlExec = """
-            SELECT tc.category, COUNT(DISTINCT e.id) AS cnt
-            FROM api_test_case_results tc
-            JOIN api_scans s ON tc.scan_id = s.id
-            JOIN api_executions e ON e.scan_id = tc.scan_id AND e.test_case_id = tc.test_case_id
-            WHERE s.user_id = ?
-            GROUP BY tc.category
-            """;
-        try (Connection c = getConnection(); PreparedStatement ps = c.prepareStatement(sqlExec)) {
+        try (Connection c = getConnection(); PreparedStatement ps = c.prepareStatement(sql)) {
             ps.setInt(1, userId);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    String cat = rs.getString("category");
-                    if (cat != null) executedMap.put(cat.toUpperCase(), rs.getInt("cnt"));
+                    String cat = rs.getString("mapped_cat");
+                    if (cat != null) {
+                        generatedMap.put(cat, rs.getInt("gen_cnt"));
+                        executedMap.put(cat, rs.getInt("exec_cnt"));
+                        findingsMap.put(cat, rs.getInt("find_cnt"));
+                    }
                 }
             }
         } catch (SQLException e) {
-            log.debug("loadApiCategoryStats: sqlExec info: {}", e.getMessage());
-        }
-
-        // Findings per category
-        String sqlFind = """
-            SELECT tc.category, COUNT(DISTINCT f.id) AS cnt
-            FROM api_findings f
-            JOIN api_executions e ON f.execution_uuid = e.execution_uuid
-            JOIN api_test_case_results tc ON e.scan_id = tc.scan_id AND e.test_case_id = tc.test_case_id
-            JOIN api_scans s ON f.scan_id = s.id
-            WHERE s.user_id = ?
-            GROUP BY tc.category
-            """;
-        try (Connection c = getConnection(); PreparedStatement ps = c.prepareStatement(sqlFind)) {
-            ps.setInt(1, userId);
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    String cat = rs.getString("category");
-                    if (cat != null) findingsMap.put(cat.toUpperCase(), rs.getInt("cnt"));
-                }
-            }
-        } catch (SQLException e) {
-            log.debug("loadApiCategoryStats: sqlFind info: {}", e.getMessage());
+            log.debug("loadApiCategoryStats info: {}", e.getMessage());
         }
 
         List<ApiCategoryStat> list = new ArrayList<>();
