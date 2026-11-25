@@ -29,7 +29,7 @@
 
 ---
 
-📄 **Full College Project Documentation:** The complete 11-chapter formal academic report is available in [PROJECT_REPORT.md](PROJECT_REPORT.md).
+📄 **Full College Project Documentation:** The complete 11-chapter formal academic report is available in [PROJECT_REPORT.md](PROJECT_REPORT.md) | 📥 **Download Official PDF Report:** [WebShield_Project_ReportJava.pdf](WebShield_Project_ReportJava.pdf)
 
 ---
 
