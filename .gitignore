@@ -23,7 +23,7 @@ logs/
 reports/
 
 # Media & Videos (exceeds GitHub 100MB limit)
-
+*.mp4
 *.avi
 *.mov
 
