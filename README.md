@@ -12,11 +12,13 @@
 ## 🎥 Full Video Demonstration
 
 <div align="center">
-  <video src="Video Project 3.mp4" controls width="100%" style="width: 100%; max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 6px 20px rgba(0,0,0,0.25);" preload="metadata">
-    <source src="Video Project 3.mp4" type="video/mp4">
-    <source src="proje.mp4" type="video/mp4">
-    <p>Your browser or Markdown viewer does not support embedded videos. You can play or download the presentation video directly: <a href="Video Project 3.mp4"><b>Video Project 3.mp4</b></a>.</p>
-  </video>
+
+[![Watch Demonstration Video on Google Drive](https://img.shields.io/badge/▶_WATCH_FULL_DEMONSTRATION-GOOGLE_DRIVE-4285F4?style=for-the-badge&logo=googledrive&logoColor=white)](https://drive.google.com/file/d/1pRF_jsxh_mKnpEdg8l1hQeoTasNBomcj/view?usp=sharing)
+
+### 🔗 **[Click Here to Watch the Video Demonstration on Google Drive](https://drive.google.com/file/d/1pRF_jsxh_mKnpEdg8l1hQeoTasNBomcj/view?usp=sharing)**
+
+*(Direct Link: [https://drive.google.com/file/d/1pRF_jsxh_mKnpEdg8l1hQeoTasNBomcj/view?usp=sharing](https://drive.google.com/file/d/1pRF_jsxh_mKnpEdg8l1hQeoTasNBomcj/view?usp=sharing))*
+
 </div>
 
 ### 👥 Video Presentation Flow
