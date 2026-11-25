@@ -12,38 +12,22 @@
 ## 🎥 Full Video Demonstration
 
 <div align="center">
-  <video src="Video Project 3.mp4" controls width="100%" style="width: 100%; max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 6px 20px rgba(0,0,0,0.25);" playsinline>
+  <video src="Video Project 3.mp4" controls width="100%" style="width: 100%; max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 6px 20px rgba(0,0,0,0.25);" preload="metadata">
     <source src="Video Project 3.mp4" type="video/mp4">
     <source src="proje.mp4" type="video/mp4">
-    <p>Your browser or Markdown viewer does not support embedded videos. You can play or download the presentation directly: <a href="Video Project 3.mp4"><b>Video Project 3.mp4</b></a>.</p>
+    <p>Your browser or Markdown viewer does not support embedded videos. You can play or download the presentation video directly: <a href="Video Project 3.mp4"><b>Video Project 3.mp4</b></a>.</p>
   </video>
 </div>
 
-<p align="center">
-  <i>Full walkthrough covering authentication, website crawling, XSS/SQLi vulnerability detection, OpenAPI specification ingestion, test case synthesis, MIO evolutionary fuzzing, regression diffing, and Google Gemini AI report generation.</i>
-</p>
+### 👥 Video Presentation Flow
+* **Speaker 1: Hasini** – Application Foundation, Authentication, Security Command Center & Database Persistence
+* **Speaker 2: Sahithi** – Jsoup Website Crawling & Vulnerability Analyzers (XSS Canary Probing, SQL Error Detection, Headers, Cookies)
+* **Speaker 3: Namratha** – OpenAPI / Swagger Ingestion, Autonomous Test Generation (Boundary, Invalid, Mutation) & MIO Optimization
+* **Speaker 4: Aruna** – Rate-Limited API Fuzzing, OWASP Security Analysis, Regression Diffs & Google Gemini AI Report Generation
 
 ---
 
-## 🎓 Academic Project Report & Team Information
-
-**Institution:** SRM University AP  
-**Department:** Computer Science and Engineering  
-**Academic Years:** [2024–2028]  
-**Faculty Guide:** Dr. Isunuri Bala Venkateswarlu (Assistant Professor, Dept. of CSE)  
-**Date of Submission:** 23-11-2026  
-
-📄 **Full Project Report:** Complete 11-chapter formal academic documentation is available in [PROJECT_REPORT.md](PROJECT_REPORT.md).
-
-### Team Members & Contributions
-
-| Member | Registration No. | Main Responsibility Area | Key Deliverables |
-| :--- | :--- | :--- | :--- |
-| **Hasini** | AP24110011843 | Application Foundation & Authentication | JavaFX + Spring Boot lifecycle (`MainApp`), BCrypt Auth (`PasswordService`, `AuthValidator`), Dashboard command center, Spring Data JPA / MySQL entities. |
-| **Sahithi** | AP24110011878 | Website Security Testing & Crawling | Jsoup crawling (`WebCrawler`, `FormExtractor`), XSS active canary reflection (`InputReflectionAnalyzer`), SQL error signatures (`SqlErrorAnalyzer`), background scanning (`ScanTask`). |
-| **Namratha** | AP24110011814 | OpenAPI Parsing & Test Generation | Swagger parsing (`OpenApiParser`), Conformance/Boundary/Invalid test generators (`BoundaryValueGenerator`), Mutation engine, MIO evolutionary search (`EvolutionaryTestEngine`). |
-| **Aruna** | AP24110011842 | API Execution, Diffs & AI Reporting | Rate-limited HTTP fuzzer (`ApiExecutionEngine`), OWASP API Top 10 rules (`ApiSecurityAnalyzer`), scan comparison engine (`ApiPersistenceService`), real Gemini LLM integration (`GeminiLlmProvider`), zero-dependency PDF writer. |
-
+📄 **Full College Project Documentation:** The complete 11-chapter formal academic report is available in [PROJECT_REPORT.md](PROJECT_REPORT.md).
 
 ---
 
