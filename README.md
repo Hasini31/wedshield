@@ -9,6 +9,22 @@
 
 ---
 
+## 🎥 Full Video Demonstration
+
+<div align="center">
+  <video src="Video Project 3.mp4" controls width="100%" style="width: 100%; max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 6px 20px rgba(0,0,0,0.25);" playsinline>
+    <source src="Video Project 3.mp4" type="video/mp4">
+    <source src="proje.mp4" type="video/mp4">
+    <p>Your browser or Markdown viewer does not support embedded videos. You can play or download the presentation directly: <a href="Video Project 3.mp4"><b>Video Project 3.mp4</b></a>.</p>
+  </video>
+</div>
+
+<p align="center">
+  <i>Full walkthrough covering authentication, website crawling, XSS/SQLi vulnerability detection, OpenAPI specification ingestion, test case synthesis, MIO evolutionary fuzzing, regression diffing, and Google Gemini AI report generation.</i>
+</p>
+
+---
+
 ## 🎓 Academic Project Report & Team Information
 
 **Institution:** SRM University AP  
@@ -28,27 +44,6 @@
 | **Namratha** | AP24110011814 | OpenAPI Parsing & Test Generation | Swagger parsing (`OpenApiParser`), Conformance/Boundary/Invalid test generators (`BoundaryValueGenerator`), Mutation engine, MIO evolutionary search (`EvolutionaryTestEngine`). |
 | **Aruna** | AP24110011842 | API Execution, Diffs & AI Reporting | Rate-limited HTTP fuzzer (`ApiExecutionEngine`), OWASP API Top 10 rules (`ApiSecurityAnalyzer`), scan comparison engine (`ApiPersistenceService`), real Gemini LLM integration (`GeminiLlmProvider`), zero-dependency PDF writer. |
 
----
-
-## 🎥 Video Demonstration
-
-<!-- VIDEO_DEMONSTRATION_PLACEHOLDER_START -->
-### Project Demonstration Video
-
-Watch our end-to-end walkthrough demonstrating user authentication, website crawling, XSS/SQLi vulnerability detection, OpenAPI specification ingestion, automated test generation, MIO evolutionary fuzzing, regression diffing, and Gemini AI report generation:
-
-> **Video File:** [`proje.mp4`](proje.mp4) (or `Video Project 3.mp4` in project root)
-
-```html
-<video width="850" height="480" controls>
-  <source src="proje.mp4" type="video/mp4">
-  <source src="Video Project 3.mp4" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
-```
-
-*(If viewing on GitHub, download or stream [`proje.mp4`](proje.mp4) directly from the repository).*
-<!-- VIDEO_DEMONSTRATION_PLACEHOLDER_END -->
 
 ---
 
