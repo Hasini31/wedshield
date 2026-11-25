@@ -20,6 +20,23 @@
       fx:controller="com.webshield.ui.controllers.ReportsController">
 
     <!-- ===================================================================== -->
+    <!-- TOP BAR: WEBSITE TARGET, SCAN RUN SELECTOR & AI REPORT GENERATION      -->
+    <!-- ===================================================================== -->
+    <HBox alignment="CENTER_LEFT" spacing="12" styleClass="ws-card"
+          style="-fx-background-radius: 0; -fx-border-radius: 0; -fx-border-width: 0 0 1 0; -fx-border-color: #E2E6ED; -fx-padding: 12 24;">
+        <Label text="🌐 Choose Website:" style="-fx-font-weight: bold; -fx-text-fill: #1E293B; -fx-font-size: 12px;" />
+        <ComboBox fx:id="cbWebsiteTarget" promptText="All Websites" styleClass="ws-combo" prefWidth="210" />
+
+        <Label text="📅 Scan Date &amp; Run:" style="-fx-font-weight: bold; -fx-text-fill: #1E293B; -fx-font-size: 12px;" />
+        <ComboBox fx:id="cbScanRun" promptText="All Scans" styleClass="ws-combo" prefWidth="300" />
+
+        <Region HBox.hgrow="ALWAYS" />
+
+        <Button fx:id="btnGenerateAiReport" onAction="#onGenerateAiReport" text="🤖 Generate AI Security Report"
+                style="-fx-background-color: #2563EB; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 12px; -fx-padding: 7 16; -fx-background-radius: 4; -fx-cursor: hand;" />
+    </HBox>
+
+    <!-- ===================================================================== -->
     <!-- TOP: 6 Summary Stat Cards                                             -->
     <!-- ===================================================================== -->
     <VBox spacing="12" styleClass="ws-content" style="-fx-padding: 16 20 8 20;">
@@ -37,7 +54,7 @@
             <VBox styleClass="ws-stat-card" spacing="4" GridPane.columnIndex="0">
                 <Label styleClass="ws-stat-label" text="TOTAL FINDINGS" />
                 <Label fx:id="lblCardTotal" styleClass="ws-stat-value" text="0" />
-                <Label styleClass="ws-stat-desc" text="Across all active scans" />
+                <Label fx:id="lblCardTotalDesc" styleClass="ws-stat-desc" text="Across all active scans" />
             </VBox>
 
             <!-- Critical -->
@@ -90,13 +107,13 @@
         <!-- LEFT: Findings Table & Search Bar -->
         <VBox spacing="0">
             <!-- Filter & Search Toolbar -->
-            <HBox alignment="CENTER_LEFT" spacing="8" styleClass="ws-card"
+            <HBox alignment="CENTER_LEFT" spacing="10" styleClass="ws-card"
                   style="-fx-background-radius: 0; -fx-border-radius: 0; -fx-border-width: 0 0 1 0; -fx-border-color: #E2E6ED; -fx-padding: 10 16;">
                 <TextField fx:id="tfSearch" promptText="Search finding, URL, or parameter..."
-                           styleClass="ws-text-field" prefWidth="210" />
-                <ComboBox fx:id="cbSeverityFilter" promptText="All severities" styleClass="ws-combo" prefWidth="130" />
-                <ComboBox fx:id="cbCategoryFilter" promptText="All categories" styleClass="ws-combo" prefWidth="130" />
-                <ComboBox fx:id="cbStatusFilter" promptText="All statuses" styleClass="ws-combo" prefWidth="120" />
+                           styleClass="ws-text-field" prefWidth="230" />
+                <ComboBox fx:id="cbSeverityFilter" promptText="All severities" styleClass="ws-combo" prefWidth="140" />
+                <ComboBox fx:id="cbCategoryFilter" promptText="All categories" styleClass="ws-combo" prefWidth="140" />
+                <ComboBox fx:id="cbStatusFilter" promptText="All statuses" styleClass="ws-combo" prefWidth="130" />
                 <Button onAction="#onRefresh" styleClass="ws-btn-secondary" text="🔄 Refresh" />
                 <Region HBox.hgrow="ALWAYS" />
                 <Label fx:id="lblTotalFindingsText" styleClass="ws-badge-info-text" text="0 findings"
@@ -124,7 +141,7 @@
         </VBox>
 
         <!-- RIGHT: Finding Inspector Details -->
-        <ScrollPane fitToWidth="true" styleClass="ws-scroll-pane">
+        <ScrollPane fitToWidth="true" minHeight="0" styleClass="ws-scroll-pane">
             <VBox spacing="16" styleClass="ws-content" style="-fx-padding: 16;">
 
                 <!-- Detail Pane (visible when finding selected) -->

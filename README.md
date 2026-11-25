@@ -1,253 +1,260 @@
 # WebShield – Automated Website and API Security Testing Platform
 
-WebShield is a desktop cybersecurity application developed in Java for defensive website and API security assessments. It enables developers and security engineers to evaluate websites they own or are authorized to assess through automated crawling, structural discovery, and defensive security checks.
+[![Java](https://img.shields.io/badge/Java-21%20LTS-orange.svg)](https://www.oracle.com/java/)
+[![JavaFX](https://img.shields.io/badge/JavaFX-21.0.2-blue.svg)](https://openjfx.io/)
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.2.5-brightgreen.svg)](https://spring.io/projects/spring-boot)
+[![MySQL](https://img.shields.io/badge/MySQL-8.0-blue.svg)](https://www.mysql.com/)
+[![AI Model](https://img.shields.io/badge/Google%20Gemini-3.1%20Flash%20Lite-purple.svg)](https://ai.google.dev/)
+[![Tests](https://img.shields.io/badge/Tests-408%2B%20Passing-success.svg)](src/test/java)
 
 ---
 
-## Technical Stack
+## 🎓 Academic Project Report & Team Information
 
-* **Language**: Java 21 LTS (Eclipse Temurin Hotspot)
-* **User Interface**: JavaFX 21 (FXML + CSS)
-* **Architecture**: Core Java (OOP, Encapsulation, Clean Separation of Concerns)
-* **Build System**: Apache Maven 3.9+
-* **HTML Parsing**: Jsoup 1.17.2
-* **JSON Processing**: Jackson 2.17.0
-* **Logging**: SLF4J 2.0.12 + Logback 1.5.3
-* **Testing**: JUnit 5 (Jupiter 5.10.2)
-* **Database**: MySQL 8+ via JDBC & Connection Management
-* **Password Security**: BCrypt (`org.mindrot:jbcrypt`)
+**Institution:** SRM University AP  
+**Department:** Computer Science and Engineering  
+**Academic Years:** [2024–2028]  
+**Faculty Guide:** Dr. Isunuri Bala Venkateswarlu (Assistant Professor, Dept. of CSE)  
+**Date of Submission:** 23-11-2026  
 
-> **Design Principle**: WebShield is built entirely on Core Java and JavaFX. It avoids bloated enterprise frameworks (such as Spring Boot or Spring Security) and does not rely on external running ZAP/EvoMaster instances, APIs, or CLIs.
+📄 **Full Project Report:** Complete 11-chapter formal academic documentation is available in [PROJECT_REPORT.md](PROJECT_REPORT.md).
+
+### Team Members & Contributions
+
+| Member | Registration No. | Main Responsibility Area | Key Deliverables |
+| :--- | :--- | :--- | :--- |
+| **Hasini** | AP24110011843 | Application Foundation & Authentication | JavaFX + Spring Boot lifecycle (`MainApp`), BCrypt Auth (`PasswordService`, `AuthValidator`), Dashboard command center, Spring Data JPA / MySQL entities. |
+| **Sahithi** | AP24110011878 | Website Security Testing & Crawling | Jsoup crawling (`WebCrawler`, `FormExtractor`), XSS active canary reflection (`InputReflectionAnalyzer`), SQL error signatures (`SqlErrorAnalyzer`), background scanning (`ScanTask`). |
+| **Namratha** | AP24110011814 | OpenAPI Parsing & Test Generation | Swagger parsing (`OpenApiParser`), Conformance/Boundary/Invalid test generators (`BoundaryValueGenerator`), Mutation engine, MIO evolutionary search (`EvolutionaryTestEngine`). |
+| **Aruna** | AP24110011842 | API Execution, Diffs & AI Reporting | Rate-limited HTTP fuzzer (`ApiExecutionEngine`), OWASP API Top 10 rules (`ApiSecurityAnalyzer`), scan comparison engine (`ApiPersistenceService`), real Gemini LLM integration (`GeminiLlmProvider`), zero-dependency PDF writer. |
 
 ---
 
-## Project Structure
+## 🎥 Video Demonstration
+
+<!-- VIDEO_DEMONSTRATION_PLACEHOLDER_START -->
+### Project Demonstration Video
+
+Watch our end-to-end walkthrough demonstrating user authentication, website crawling, XSS/SQLi vulnerability detection, OpenAPI specification ingestion, automated test generation, MIO evolutionary fuzzing, regression diffing, and Gemini AI report generation:
+
+> **Video File:** [`proje.mp4`](proje.mp4) (or `Video Project 3.mp4` in project root)
+
+```html
+<video width="850" height="480" controls>
+  <source src="proje.mp4" type="video/mp4">
+  <source src="Video Project 3.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+```
+
+*(If viewing on GitHub, download or stream [`proje.mp4`](proje.mp4) directly from the repository).*
+<!-- VIDEO_DEMONSTRATION_PLACEHOLDER_END -->
+
+---
+
+## 🚀 Key Features
+
+* **Dual Testing Architecture**: Unified platform for both traditional multi-page HTML web applications and RESTful API endpoints.
+* **Autonomous Web Crawling**: Jsoup-driven spider following internal link boundaries, extracting HTML forms, HTTP methods, and input controls.
+* **Active Web Vulnerability Detection**:
+  * *Reflected XSS*: Unique UUID canary token probing (`ws_probe_...`) verifying unencoded reflection in response bodies.
+  * *SQL Injection*: Multi-DBMS error signature matching across MySQL, PostgreSQL, MSSQL, Oracle, and SQLite.
+  * *Security Headers*: Detection of missing CSP, HSTS, X-Frame-Options, and X-Content-Type-Options.
+  * *Cookie Security*: Inspection of `Set-Cookie` directives for missing `Secure`, `HttpOnly`, and `SameSite` attributes.
+* **OpenAPI / Swagger Ingestion**: Ingests OpenAPI 3.x and Swagger 2.0 specifications in JSON or YAML format with remote entity resolution disabled (preventing SSRF).
+* **Algorithmic Test Case Generation**:
+  * *Valid Inputs*: Schema-compliant conformance payloads.
+  * *Boundary Values*: Min/max numbers, length boundaries, character overflows.
+  * *Invalid Inputs*: Schema type mismatches, missing required parameters, malformed syntax.
+  * *Mutation Fuzzing*: Systematic bit, regex, syntax, and JSON structural perturbations.
+* **Many-Objective Optimization (MIO)**: Generational evolutionary search optimizing test suites toward maximum endpoint coverage and fault discovery.
+* **Asynchronous HTTP Fuzzer**: Built on Java 21 `HttpClient` with token-bucket rate limiting (QPS), concurrency semaphores, and target safety validation.
+* **OWASP API Top 10 Analysis**: Fault-isolated rule evaluation mapping findings to standard CWE identifiers.
+* **Differential Scan & Regression Engine**: Direct version-to-version diffing showing **New Regressions**, **Resolved Findings**, and **Persistent Issues** with mutual exclusion and one-click swap (`⇄`).
+* **Google Gemini AI LLM Integration**: Direct REST API calls to Google AI Studio (`gemini-3.1-flash-lite`) providing root-cause explanations and remediation code with zero mock fallback.
+* **Zero-Dependency PDF Engine**: Spec-compliant ISO 1.4 byte-stream builder generating publication-ready reports with tables, banners, and pagination without external dependencies.
+
+---
+
+## 🛠️ Technology Stack
+
+| Component | Technology | Version | Purpose |
+| :--- | :--- | :--- | :--- |
+| **Language** | Java Standard Edition | **21 LTS** | Core language (Records, pattern matching, `HttpClient`) |
+| **GUI Framework** | OpenJFX (JavaFX) | **21.0.2** | Native desktop UI with FXML and CSS |
+| **Application IoC** | Spring Boot | **3.2.5** | Dependency injection, lifecycle management |
+| **Persistence / ORM** | Spring Data JPA / Hibernate | **3.2.5** | Entity mapping and repository abstraction |
+| **Database** | MySQL Server / Connector/J | **8.0 / 8.3.0** | Relational data persistence |
+| **Connection Pool** | HikariCP | **5.1.0** | High-performance JDBC connection pooling |
+| **HTML Crawler** | Jsoup | **1.17.2** | DOM traversal, link discovery, and form extraction |
+| **API Parser** | Swagger Parser v3 | **2.1.20** | OpenAPI v2 & v3 JSON/YAML parsing |
+| **JSON/YAML Engine** | Jackson Databind & SnakeYAML | **2.17.0** | Data serialization and Gemini REST payload formatting |
+| **Password Hashing** | jBCrypt | **0.4** | Salted one-way BCrypt hashing |
+| **HTTP Engine** | Java HTTP Client | **Java 21** | Asynchronous HTTP/2 and HTTP/1.1 transport |
+| **AI LLM Engine** | Google Gemini REST API | `gemini-3.1-flash-lite` | Real-time remediation and vulnerability explanation |
+| **PDF Engine** | SimplePdfWriter (Custom) | **PDF 1.4** | Native zero-dependency PDF document generation |
+| **Testing** | JUnit 5 & Mockito | **5.10.2 / 5.11.0** | Automated test suite (408+ passing tests) |
+
+---
+
+## 📂 Project Structure
 
 ```
 WebShield/
 ├── pom.xml                               # Maven project configuration & dependencies
-├── README.md                             # Setup, architecture, and execution guide
-├── src/
-│   ├── main/
-│   │   ├── java/com/webshield/
-│   │   │   ├── Main.java                 # Standard JVM application launcher
-│   │   │   ├── MainApp.java              # JavaFX Application lifecycle & Stage manager
-│   │   │   ├── config/                   # Configuration parameters & safety settings
-│   │   │   ├── ui/
-│   │   │   │   ├── controllers/          # FXML screen controllers (e.g. MainController)
-│   │   │   │   └── components/           # Reusable UI widgets and custom cells
-│   │   │   ├── auth/                     # Authentication, hashing, and session management
-│   │   │   ├── website/                  # Target registration, scope & domain validation
-│   │   │   ├── crawler/                  # Link discovery, form parsing, URL canonicalization
-│   │   │   ├── http/                     # Java HttpClient manager, request/response handlers
-│   │   │   ├── assessment/               # Defensive security analyzers & detection rules
-│   │   │   ├── scan/                     # Multithreaded scan engine & progress trackers
-│   │   │   ├── findings/                 # Vulnerability models, severity & evidence storage
-│   │   │   ├── database/                 # JDBC connection pooling and DAO repositories
-│   │   │   ├── models/                   # Core business domain entities
-│   │   │   └── utils/                    # SSRF prevention, IP validation, formatters
-│   │   └── resources/
-│   │       ├── fxml/                     # FXML layout definitions (main.fxml)
-│   │       ├── css/                      # Application styling (styles.css)
-│   │       ├── images/                   # Icons and graphic assets
-│   │       └── logback.xml               # Logback logging configuration
-│   └── test/
-│       └── java/com/webshield/           # JUnit 5 integration and unit test suite
+├── docker-compose.yml                    # MySQL 8 database container configuration
+├── README.md                             # Project overview, setup, and presentation guide
+├── PROJECT_REPORT.md                     # Complete academic project report (SRM University AP)
+│
+├── src/main/java/com/webshield/
+│   ├── Main.java                         # Standard JVM application bootstrap
+│   ├── MainApp.java                      # JavaFX + Spring Boot integration launcher
+│   ├── WebShieldApplication.java         # Spring Boot @SpringBootApplication class
+│   │
+│   ├── api/                              # API Security Testing Engine
+│   │   ├── analysis/                     # OWASP API Top 10 rules, CWE mapping, findings
+│   │   ├── dto/                          # Immutable Data Transfer Objects
+│   │   ├── execution/                    # Rate-limited HTTP execution engine, safety validator
+│   │   ├── generation/                   # Valid, Boundary, Invalid test generators
+│   │   ├── llm/                          # Google Gemini LLM provider, prompt builder, service
+│   │   ├── models/                       # OpenAPI domain models (Endpoints, Schemas)
+│   │   ├── mutation/                     # Mutation engine & genetic operators
+│   │   ├── parser/                       # OpenAPI 3.x / Swagger 2.0 parsers
+│   │   ├── reporting/                    # API PDF report generator & SimplePdfWriter
+│   │   ├── repository/                   # Spring Data JPA repositories for API domain
+│   │   ├── search/                       # Evolutionary MIO search engine & fitness scoring
+│   │   └── service/                      # Persistence service & scan comparison engine
+│   │
+│   ├── assessment/                       # Website Security Analyzers (XSS, SQLi, Headers, Cookies)
+│   ├── auth/                             # BCrypt password hashing, validation, session manager
+│   ├── config/                           # SpringContext bean registry
+│   ├── crawler/                          # Jsoup crawler, link/form/input extractors
+│   ├── dashboard/                        # Telemetry repository, service, command center metrics
+│   ├── database/                         # JPA Entities & repositories
+│   ├── findings/                         # Finding deduplication, classification, lifecycle
+│   ├── http/                             # Website HTTP request manager & response handlers
+│   ├── models/                           # User, Website, and Scan domain models
+│   ├── scan/                             # Multithreaded scan engine & progress trackers
+│   ├── ui/                               # JavaFX controllers & dialogs
+│   └── website/                          # Website management service & AI reporting
+│
+├── src/main/resources/
+│   ├── application.properties            # Database connection & pooling config
+│   ├── css/styles.css                    # Professional dark navy desktop styling
+│   ├── database/                         # SQL migration schemas (01 through 04)
+│   └── fxml/                             # JavaFX FXML screen templates
+│
+└── src/test/java/com/webshield/          # Comprehensive JUnit 5 test suite (408+ tests)
 ```
 
 ---
 
-## Setup and Execution Instructions
+## ⚡ Quick Start Instructions
 
 ### Prerequisites
-1. **Java Development Kit**: JDK 21 or later (`JAVA_HOME` pointed to JDK 21).
-2. **Apache Maven**: Version 3.8 or 3.9+.
+* **Java Development Kit**: JDK 21 LTS or newer.
+* **Apache Maven**: Version 3.8+ or 3.9+.
+* **Docker & Docker Compose**: For running the MySQL 8 database.
 
-Verify your environment:
+---
+
+### Step 1: Start the MySQL Database
+From the project root directory, run:
 ```bash
-java -version
-mvn -version
+docker compose up -d
 ```
+*(Starts the `webshield-mysql` container on port `3306` with all schemas auto-initialized).*
 
-### Build the Project
-Compile the source code and run all JUnit 5 verification tests:
-```bash
-mvn clean test
-```
+---
 
-### Database Setup (Docker Compose)
-Start the MySQL database container:
-```bash
-docker-compose up -d
-```
-The database will automatically initialize using `src/main/resources/database/schema.sql`.
-Configure credentials in `src/main/resources/database.properties` (or copy from `database.properties.template`).
+### Step 2: Configure Gemini API Key
+To enable real Google Gemini AI security report generation, set the environment variable:
 
-### Run the Application
-Run the JavaFX application directly using the JavaFX Maven plugin:
+* **Windows PowerShell**:
+  ```powershell
+  $env:GEMINI_API_KEY="your_google_ai_studio_api_key_here"
+  ```
+* **Windows Command Prompt (CMD)**:
+  ```cmd
+  set GEMINI_API_KEY=your_google_ai_studio_api_key_here
+  ```
+* **Linux / macOS**:
+  ```bash
+  export GEMINI_API_KEY="your_google_ai_studio_api_key_here"
+  ```
+
+---
+
+### Step 3: Run the Application
+Launch the WebShield desktop application:
 ```bash
 mvn javafx:run
 ```
+*(Alternatively, execute directly via `mvn compile exec:java -Dexec.mainClass="com.webshield.Main"`).*
 
-Or execute directly with Java:
+---
+
+### Step 4: Run Tests
+Run the entire 408+ test verification suite:
 ```bash
-mvn compile exec:java -Dexec.mainClass="com.webshield.Main"
+mvn test
 ```
 
 ---
 
-## Security & Ethical Assessment Boundary
-WebShield is designed exclusively for authorized testing and defensive educational purposes:
-* Assessments are strictly confined to user-registered, authorized targets.
-* Out-of-scope navigation and requests to private networks, loopback addresses, and cloud metadata services are blocked by default.
-* Payloads are strictly non-destructive (utilizing safe canary strings and defensive error signature matching).
+## 💻 Key Code Implementation Highlights
 
----
-
-## Implemented Modules (Part 1.6 to 1.9)
-
-### 1. Website Management
-* **Target Registration & Validation**: Restricts testing exclusively to HTTP/HTTPS schemes, performs URL canonicalization, and enforces explicit authorization confirmation (`WebsiteValidator`).
-* **CRUD & Scope Isolation**: Manages registered targets per authenticated user with full search, edit, delete, and detail tracking (`WebsiteService`, `WebsiteRepository`).
-* **Target Details**: Detailed page with metric counters, interactive website structure `TreeView`, and discovered endpoints table.
-
-### 2. Website Crawling and Discovery
-* **Autonomous BFS Crawler**: Modeled after OWASP ZAP's spider architecture using breadcrumb depth tracking, visited URL tracking, and canonicalization (`WebCrawler`, `URLNormalizer`, `VisitedURLTracker`).
-* **Jsoup-powered Link & Form Extraction**: Discovers HTML links (`<a>`, `<link>`, `<iframe>`) and forms (`<form>`, `<input>`, `<textarea>`, `<select>`, `<button>`) with attributes (`required`, `maxlength`, `pattern`).
-* **Database Persistence**: Discovered pages, forms, and input fields are persisted transactionally to MySQL (`discovered_pages`, `forms`, `input_fields`).
-* **Defensive Scope Guard**: Rejects static binary media (.png, .pdf, .zip, etc.) and enforces SSRF blocking against cloud metadata and private networks (`URLDiscovery`).
-
-### 3. HTTP Communication Engine
-* **Modern Java HttpClient**: Asynchronous and synchronous non-blocking transport with custom connection timeouts, user agent headers, and size limits (`HttpClientManager`).
-* **Request & Response Models**: Structured representation of methods, headers, status codes, bodies, and timings (`HttpRequestData`, `HttpResponseData`, `HttpRequestBuilder`, `HttpResponseHandler`).
-* **Security Header & Cookie Parsers**: Detailed inspection for security headers and full parsing of `Set-Cookie` directives including `HttpOnly`, `Secure`, and `SameSite` (`CookieParser`, `HttpHeaderAnalyzer`).
-* **Safe Redirect Handler**: Re-validates redirect schemes and domains against the target's authorized scope (`RedirectHandler`).
-
-### 4. Website Security Assessment Engine
-* **Strategy Pattern Architecture**: Modular `AssessmentRule` implementations orchestrated by `SecurityAssessmentEngine`.
-* **5 Assessment Categories**:
-  1. **Security Headers**: Analyzes missing `Content-Security-Policy`, `Strict-Transport-Security`, `X-Frame-Options`, `X-Content-Type-Options`, and `Referrer-Policy`.
-  2. **Cookie Security**: Flags cookies missing `HttpOnly`, `Secure`, or `SameSite` flags.
-  3. **Input Reflection Analysis**: Tests query parameters with unique, non-destructive benign canary markers (`ws_probe_*`) to identify potential unescaped reflection without false-positive over-classification.
-  4. **SQL Error Anomaly Detection**: Probes inputs with non-destructive syntax anomalies and matches responses against a comprehensive regex dictionary of DBMS error signatures (MySQL, PostgreSQL, Oracle, MS SQL Server, SQLite).
-  5. **Input Validation Assessment**: Evaluates form fields for missing server-side input validation indicators.
-* **Results & Evidence Storage**: Persists findings with severity, confidence, evidence excerpts, and remediation recommendations to `scan_findings` and `scans` tables.
-
----
-
-## Implemented Modules (Part 1.10 to 1.12)
-
-### 5. Scan Management Module (`com.webshield.scan`)
-* **Scan Configuration**: Allows operators to customize crawl depth (1–10), maximum pages (1–500), request timeouts (1–120s), rate-limit delays (0–10,000ms), and granularly enable/disable assessment categories (`ScanConfiguration`).
-* **Scan Execution Workflow**: Coordinates scan lifecycles through explicit states: `PENDING` ➔ `INITIALIZING` ➔ `CRAWLING` ➔ `ASSESSING` ➔ `SAVING_RESULTS` ➔ `COMPLETED` / `CANCELLED` / `FAILED` (`ScanStatus`, `ScanTask`).
-* **Cooperative Cancellation**: Gracefully halts in-progress crawler and assessment threads without leaving uncommitted transactions or corrupt database states.
-* **Scan Manager**: Thread-safe background execution backed by daemon `ExecutorService`, maintaining an active scan registry and dispatching `ScanExecutionResult` futures (`ScanManager`, `ScanService`).
-* **Real-time Progress Tracker**: Thread-safe tracking of discovered pages, tested pages, remaining pages, checks completed, findings count, elapsed duration, and active operation status (`ScanProgressTracker`).
-
-### 6. Vulnerability Finding Management Module (`com.webshield.findings`)
-* **Structured Domain Model**: Unified `SecurityFinding` representing detected vulnerabilities with website association, OWASP category, target URL, affected parameter, HTTP method, severity, confidence level, finding review status, and structured evidence (`FindingEvidence`).
-* **Finding Deduplication**: Eliminates duplicate alerts within a scan based on composite keys `(websiteId, url, parameter, category)`, retaining higher severity and richer evidence (`FindingDeduplicator`).
-* **Finding Classification & Scoring**: Standardizes severity weights (0–10), overall risk scoring (0–100), and confidence heuristics (`FindingClassifier`).
-* **Lifecycle & Audit History**: Supports finding review statuses (`Open`, `Under Review`, `Resolved`, `False Positive`) with audit trail logging of analyst updates (`FindingStatus`, `FindingHistoryService`, `FindingService`).
-
-### 7. Scan Results Interface (`com.webshield.ui.controllers.ReportsController`)
-* **Summary Cards**: 6 top metric cards displaying real-time counts for Total Findings, Critical, High, Medium, Low, and Informational findings.
-* **Filterable & Searchable Findings Table**: Multi-parameter filtering by severity, vulnerability category, and review status, coupled with free-text search across finding names, URLs, and parameters.
-* **Finding Inspector (Master-Detail)**: Full inspection panel displaying vulnerability descriptions, security impact, HTTP request headers and response evidence excerpts, remediation guidance, and status update controls (`False Positive`, `Resolved`, `Under Review`, `Open`).
-
-### 8. Scan History Module (`com.webshield.ui.controllers.ScanHistoryController`)
-* **Historical Scan Audit**: Tabular view of all previous security assessments with scan ID, target website, start timestamp, execution duration, status, pages tested, and findings count.
-* **Results Navigation**: One-click "View Results" action and row double-click navigates directly to the Reports view pre-filtered for that specific scan.
-* **Filtering & Searching**: Instant search by target name or scan ID, with dropdown filters for scan status and registered websites.
-
-### 9. Dashboard Integration & Reliability
-* **Dynamic Statistics**: Overview stat cards (Total Websites, Total Scans, Total Vulnerabilities, Critical Findings), severity distribution bar chart, and recent scan/target tables query MySQL directly for the authenticated operator.
-* **Navigation Cache Invalidation**: Automatic cache invalidation ensures the dashboard displays up-to-date data immediately following scan completion.
-
----
-
-## Implemented Modules (Part 2: Intelligent API Security Testing Engine)
-
-### Module A: API Project Management and OpenAPI Import (`com.webshield.api.service`)
-* **Project Organization**: Multi-tenant API project management isolating OpenAPI/Swagger specifications per operator (`ApiProjectService`, `ApiProjectEntity`).
-* **Format Agnostic Import**: Imports JSON and YAML specifications via raw upload, file upload, or authorized URL endpoint retrieval (`ApiSpecificationImporter`).
-* **Specification Validation**: Enforces size bounds, format checks, and metadata extraction prior to persistence.
-
-### Module B: OpenAPI Parser and Endpoint Extractor (`com.webshield.api.parser`)
-* **Multi-Version Support**: Complete parsing support for OpenAPI 3.0.x, 3.1.x, and Swagger 2.0 (`OpenApiParser`).
-* **Local Reference Resolution**: High-performance internal `$ref` pointer resolution for component schemas and parameters (`SchemaResolver`).
-* **Anti-SSRF & Cycle Protection**: Enforces `MAX_RECURSION_DEPTH = 30`, tracks active resolution stacks to prevent circular references, and blocks remote URL resolution for security.
-* **Endpoint & Parameter Modeling**: Deconstructs operations into rich models (`ApiEndpoint`, `ApiParameter`, `RequestBodyDefinition`, `ResponseDefinition`).
-
-### Module C: Rule-Based API Test-Case Generation (`com.webshield.api.generation`)
-* **Constraint Awareness**: Extracts and respects types, min/max numbers, minLength/maxLength strings, formats (email, uuid, date-time), regex patterns, and enums.
-* **Multi-Category Test Strategies**:
-  * `VALID_SMOKE`: Generates baseline conforming requests satisfying all schema constraints.
-  * `BOUNDARY`: Generates edge cases (min-1, max+1, empty strings, exact boundaries).
-  * `MISSING_REQUIRED`: Systematically omits required headers, query params, and body fields.
-  * `TYPE_CONFUSION`: Replaces integers with strings, objects with arrays, and booleans with null.
-  * `SECURITY_PROBES`: Injects benign canary tokens (`ws_probe_*`, `' OR '1'='1`) to evaluate server sanitization.
-* **Reproducibility**: Deterministic seeded generation via Java `Random(seed)` with automatic test-case deduplication.
-
-### Module D: Input Mutation Engine (`com.webshield.api.mutation`)
-* **Controlled Exploration**: Accepts valid or boundary test cases and systematically explores adjacent input spaces without uncontrolled random noise (`MutationEngine`).
-* **Mutation Operators**: Boundary mutations, type confusion, null/empty injection, payload injection, format violations, and structural tampering (`MutationOperatorRegistry`).
-* **Immutability & Lineage**: Deep-copy cloning guarantees original test cases are never modified in-place; mutated cases maintain parent-child lineage identifiers.
-
-### Module E: Evolutionary Search & MIO Algorithm (`com.webshield.api.search`)
-* **Many Independent Objective (MIO) Architecture**: Manages multi-objective fitness archives keyed by endpoint, method, status code class (2xx, 3xx, 4xx, 5xx), and vulnerability vectors (`ObjectiveArchive`, `SearchObjective`).
-* **Candidate Selection & Elitism**: Balances exploitation of high-fitness individuals with exploration of unvisited objectives using tournament selection and adaptive mutation probabilities.
-* **Budget & Termination**: Respects evaluation count limits, time budgets, convergence thresholds, and cooperative cancellation tokens.
-
-### Module F: API Execution Engine (`com.webshield.api.execution`)
-* **Defense-in-Depth Anti-SSRF**: `TargetSafetyValidator` strictly blocks loopback (`127.0.0.1`, `::1`), private subnets (`10.0.0.0/8`, `172.16.0.0/12`, `192.168.0.0/16`), and cloud metadata (`169.254.169.254`, `metadata.google.internal`).
-* **Redirect Revalidation**: Manual redirect tracer re-verifies destination schemes, domains, and IP bounds at every hop.
-* **Traffic Shaping & Concurrency**: Token-bucket rate limiter (`RateLimiter`) and semaphore-controlled concurrency bounds protect target availability.
-* **Memory & Safety Gates**: Streams and truncates response bodies exceeding 1 MB (`maxResponseSizeBytes`); mutating methods (`POST`, `PUT`, `PATCH`, `DELETE`) require explicit authorization.
-
-### Module G: API Security Response Analysis (`com.webshield.api.analysis`)
-* **7 Security Analysis Rules**:
-  1. `SENSITIVE_DATA_EXPOSURE`: Identifies unredacted tokens, API keys, passwords, and private keys.
-  2. `INFORMATION_DISCLOSURE`: Flags detailed DBMS stack traces, framework debug banners, and internal server paths.
-  3. `SECURITY_HEADERS`: Checks API headers for missing HSTS, CSP, and content-type enforcement.
-  4. `UNAUTHENTICATED_ACCESS`: Detects sensitive administrative operations reachable without credentials.
-  5. `INJECTION_REFLECTION`: Detects unescaped reflection of probe markers in response bodies.
-  6. `SERVER_ERROR_ANALYSIS`: Differentiates legitimate 500 errors from unhandled crashes.
-  7. `INPUT_VALIDATION_FAILURE`: Identifies servers failing to enforce OpenAPI schema constraints.
-* **Standard Mapping**: Direct mapping to OWASP API Top 10 (2023) and Common Weakness Enumeration (CWE).
-* **Exception Isolation**: Analyzers run under isolated try-catch blocks to prevent faulty rules from halting the scan pipeline.
-
-### Module H: API Persistence & Multi-Tenant Security (`com.webshield.api.service`)
-* **Complete MySQL Persistence**: Stores scans, execution records, mutated test cases, security findings, and aggregate metrics in MySQL InnoDB tables (`api_scans`, `api_executions`, `api_findings`, `api_test_case_results`, `api_scan_statistics`).
-* **Multi-User Isolation & Anti-IDOR**: All queries and mutations verify tenant ownership (`Objects.equals(entity.getUserId(), userId)`) throwing `SecurityException` upon mismatch.
-* **Data Sanitization**: Automatically redacts Bearer tokens, Basic auth, API keys, and passwords before database write; truncates large response bodies to 64 KB.
-
-### Module I: API Testing JavaFX User Interface (`com.webshield.ui.controllers`)
-* **Comprehensive Screen Suite**: 10 dedicated FXML views and controllers for API project management, specification inspection, scan configuration, real-time execution console, test case tables, execution details, security findings, historical trends, and scan comparisons.
-* **Asynchronous Execution**: All long-running search and execution operations run in background daemon threads with cooperative cancellation, updating UI via `Platform.runLater`.
-* **Prototype Scoping**: All controllers are `@Scope("prototype")` Spring components, preventing UI state contamination across page transitions.
-
-### Module J: Advanced Reporting & LLM Integration (`com.webshield.api.reporting`, `com.webshield.api.llm`)
-* **Zero-Dependency PDF Generation**: Native ISO 32000-1 / PDF 1.4 binary document builder (`SimplePdfWriter`, `PdfReportGenerator`) with cover page, running headers/footers, A4 pagination, tables, colored severity badges, and code blocks.
-* **Sanitized HTML Reports**: Fully standalone, responsive CSS reports (`HtmlReportGenerator`) with comprehensive HTML entity escaping and sensitive data redaction.
-* **Sandboxed LLM Finding Explanations**: Pluggable AI integration (`LlmService`, `HttpLlmProvider`, `MockLlmProvider`) utilizing strict fenced prompt boundaries (`<<<UNTRUSTED_SCANNER_EVIDENCE>>>`), pre-transmission credential redaction, consent flags, and response XSS sanitization. AI explanations cannot alter scanner findings.
-
----
-
-## Automated Verification Suite
-
-The WebShield verification suite runs through Maven Surefire with 100% pass rate:
-
-```bash
-mvn clean test
+### 1. Dual Container Startup (`MainApp.java`)
+```java
+@Override
+public void init() throws Exception {
+    ConfigurableApplicationContext context = new SpringApplicationBuilder(WebShieldApplication.class)
+            .headless(false)
+            .web(WebApplicationType.NONE)
+            .run(getParameters().getRaw().toArray(new String[0]));
+    SpringContext.setApplicationContext(context);
+}
 ```
 
-* **Total Tests Executed**: 412
-* **Passing**: 412
-* **Failures**: 0
-* **Errors**: 0
-* **Skipped**: 0
-* **Test Suites**: 51 suites spanning Part 1 Website Assessment, Part 2 Modules A–J, Spring Context Integration, and FXML resource validation.
+### 2. Active Canary Token XSS Detection (`InputReflectionAnalyzer.java`)
+```java
+String canary = "ws_probe_" + UUID.randomUUID().toString().substring(0, 8);
+String probeUrl = replaceQueryParam(page.getUrl(), param, canary);
+HttpResponseData res = context.getHttpManager().execute(HttpRequestBuilder.get(probeUrl).build(), targetDomain);
 
+if (res != null && res.getBody() != null && res.getBody().contains(canary)) {
+    results.add(new AssessmentResult("Unfiltered Parameter Reflection (XSS Indicator)", 
+        "Input Handling", "WS-REF-002", probeUrl, param, "GET", Severity.HIGH, ...));
+}
+```
 
+### 3. Generational MIO Evolutionary Search (`EvolutionaryTestEngine.java`)
+```java
+while (progress.getCurrentGeneration() < activeConfig.getMaxGenerations()
+        && progress.getEvaluationsCompleted() < activeConfig.getEvaluationBudget()) {
+    int gen = progress.incrementGeneration();
+    CandidateSelector.SelectionChoice choice = selector.selectNextCandidate(archive, spec);
+    ApiTestCase candidate = choice.candidateToEvaluate();
+    EvaluationResult evalRes = safeEvaluate(activeEvaluator, candidate);
+    for (SearchObjective obj : archive.getRegisteredObjectives().values()) {
+        FitnessScore score = fitnessEvaluator.evaluate(obj, candidate, evalRes);
+        archive.offer(obj, candidate, evalRes, score, gen);
+    }
+}
+```
 
+### 4. Native Google Gemini AI Client (`GeminiLlmProvider.java`)
+```java
+HttpRequest httpRequest = HttpRequest.newBuilder()
+        .uri(URI.create(GEMINI_API_BASE + model + ":generateContent?key=" + config.apiKey().trim()))
+        .header("Content-Type", "application/json")
+        .POST(HttpRequest.BodyPublishers.ofString(requestJson, StandardCharsets.UTF_8))
+        .timeout(Duration.ofSeconds(30))
+        .build();
+HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+```
+
+---
+
+## 📜 Ethical Assessment Policy
+WebShield is built strictly for authorized security auditing, defensive hardening, and educational research. Users must only scan systems they own or have explicit written permission to test.

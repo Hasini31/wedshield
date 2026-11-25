@@ -25,11 +25,24 @@
         <Button fx:id="btnCompare" onAction="#onCompareScans" styleClass="ws-btn-primary" text="⚖ Compare Scans" />
     </HBox>
 
-    <ScrollPane fitToWidth="true" fitToHeight="true" styleClass="ws-scroll-pane" VBox.vgrow="ALWAYS">
+    <ScrollPane fitToWidth="true" minHeight="0" styleClass="ws-scroll-pane" VBox.vgrow="ALWAYS">
         <VBox spacing="16" styleClass="ws-content">
 
-            <!-- Selection Bar: Scan A vs Scan B -->
-            <VBox spacing="12" styleClass="ws-card">
+            <!-- Target Application & Version Comparison Selector -->
+            <VBox spacing="14" styleClass="ws-card">
+                <!-- Target Application Filter -->
+                <VBox spacing="6">
+                    <HBox alignment="CENTER_LEFT" spacing="8">
+                        <Label styleClass="ws-stat-label" text="TARGET API PROJECT / APPLICATION" />
+                        <Region HBox.hgrow="ALWAYS" />
+                        <Label fx:id="lblProjectScanCount" style="-fx-font-size: 12px; -fx-text-fill: #64748B;" text="" />
+                    </HBox>
+                    <ComboBox fx:id="cbProject" maxWidth="Infinity" styleClass="ws-combo-box" promptText="Select target project to compare its versions..." />
+                </VBox>
+
+                <!-- Clean Divider -->
+                <Region style="-fx-background-color: #E2E8F0; -fx-pref-height: 1px;" />
+
                 <GridPane hgap="16" vgap="10">
                     <columnConstraints>
                         <ColumnConstraints percentWidth="48" />
@@ -38,16 +51,17 @@
                     </columnConstraints>
 
                     <VBox spacing="4" GridPane.columnIndex="0">
-                        <Label styleClass="ws-stat-label" text="BASELINE SCAN (SCAN A)" />
+                        <Label styleClass="ws-stat-label" text="BASELINE SCAN (SCAN A - EARLIER VERSION)" />
                         <ComboBox fx:id="cbScanA" maxWidth="Infinity" styleClass="ws-combo-box" promptText="Select baseline scan..." />
                     </VBox>
 
-                    <HBox alignment="CENTER" GridPane.columnIndex="1">
-                        <Label styleClass="ws-stat-value" text="VS" style="-fx-font-size: 14px; -fx-text-fill: #94A3B8;" />
-                    </HBox>
+                    <VBox alignment="CENTER" spacing="2" GridPane.columnIndex="1">
+                        <Label styleClass="ws-stat-value" text="VS" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #94A3B8;" />
+                        <Button fx:id="btnSwap" text="⇄" onAction="#onSwapScans" styleClass="ws-btn-secondary" style="-fx-font-size: 13px; -fx-padding: 2 8; -fx-cursor: hand;" />
+                    </VBox>
 
                     <VBox spacing="4" GridPane.columnIndex="2">
-                        <Label styleClass="ws-stat-label" text="COMPARISON SCAN (SCAN B)" />
+                        <Label styleClass="ws-stat-label" text="COMPARISON SCAN (SCAN B - NEWER VERSION)" />
                         <ComboBox fx:id="cbScanB" maxWidth="Infinity" styleClass="ws-combo-box" promptText="Select comparison scan..." />
                     </VBox>
                 </GridPane>

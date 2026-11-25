@@ -128,6 +128,11 @@ class ApiReportServiceTest {
 
         String tail = new String(pdfBytes, Math.max(0, pdfBytes.length - 100), Math.min(pdfBytes.length, 100));
         assertTrue(tail.contains("%%EOF"), "Must end with standard PDF EOF marker");
+
+        // Verify that Cover Page Table does not collide with navy banner
+        String fullPdf = new String(pdfBytes, java.nio.charset.StandardCharsets.ISO_8859_1);
+        assertTrue(fullPdf.contains("Assessment Report Details"));
+        assertTrue(fullPdf.contains("606.89 Td (Assessment Report Details) Tj"));
     }
 
     @Test

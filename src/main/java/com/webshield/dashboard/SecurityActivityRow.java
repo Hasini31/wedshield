@@ -38,3 +38,4 @@ public class SecurityActivityRow {
     public int    getFindingsCount() { return findingsCount; }
     public String getScanStatus()    { return scanStatus; }
 }
+

@@ -170,14 +170,6 @@
 
                     <Region HBox.hgrow="ALWAYS" />
 
-                    <!-- Scope badge -->
-                    <HBox alignment="CENTER" styleClass="ws-topbar-scope-badge">
-                        <Label styleClass="ws-topbar-scope-text" text="Authorized Targets Only" />
-                    </HBox>
-
-                    <!-- Vertical rule -->
-                    <Region styleClass="ws-topbar-separator" />
-
                     <!-- User profile -->
                     <HBox alignment="CENTER_LEFT" spacing="10">
                         <HBox alignment="CENTER" styleClass="ws-user-avatar">

@@ -32,6 +32,7 @@
                 <Label fx:id="lblWebsiteUrl" styleClass="ws-breadcrumb" text="https://example.com" />
             </VBox>
             <Region HBox.hgrow="ALWAYS" />
+            <Button onAction="#onOpenScanHistory" styleClass="ws-btn-secondary" text="📜 Scan History" />
             <Button fx:id="btnStartScan" onAction="#onStartSecurityScan" styleClass="ws-btn-secondary" text="🛡 Start Assessment" />
             <Button fx:id="btnCrawl" onAction="#onCrawlWebsite" styleClass="ws-btn-primary" text="🕸 Crawl Website" />
         </HBox>

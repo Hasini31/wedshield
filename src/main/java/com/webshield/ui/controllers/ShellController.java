@@ -340,6 +340,10 @@ public class ShellController {
         pageCache.remove("scan_history");
         navigateTo("scan_history",   navHistory,   "Scan History",   "Assessment Log");
     }
+
+    public void openScanHistory() {
+        onNavHistory();
+    }
     @FXML private void onNavReports() {
         pageCache.remove("reports");
         navigateTo("reports",        navReports,   "Reports",        "Findings & Vulnerabilities");

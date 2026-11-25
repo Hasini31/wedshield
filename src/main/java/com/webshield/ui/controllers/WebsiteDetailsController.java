@@ -219,6 +219,13 @@ public class WebsiteDetailsController {
     }
 
     @FXML
+    private void onOpenScanHistory() {
+        if (ShellController.getInstance() != null) {
+            ShellController.getInstance().openScanHistory();
+        }
+    }
+
+    @FXML
     private void onBack() {
         if (ShellController.getInstance() != null) {
             ShellController.getInstance().openWebsites();

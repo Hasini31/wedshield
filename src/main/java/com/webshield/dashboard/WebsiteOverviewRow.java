@@ -45,3 +45,4 @@ public class WebsiteOverviewRow {
     public String getScanStatus()       { return scanStatus; }
     public Long   getLastScanId()       { return lastScanId; }
 }
+

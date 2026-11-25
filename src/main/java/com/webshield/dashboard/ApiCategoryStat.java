@@ -9,3 +9,4 @@ public record ApiCategoryStat(
         int executedCount,
         int findingsCount
 ) {}
+

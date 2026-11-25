@@ -27,7 +27,7 @@
         <Button onAction="#onLaunchScan" styleClass="ws-btn-primary" text="▶ Launch Scan Execution" />
     </HBox>
 
-    <ScrollPane fitToWidth="true" styleClass="ws-scroll-pane" VBox.vgrow="ALWAYS">
+    <ScrollPane fitToWidth="true" minHeight="0" styleClass="ws-scroll-pane" VBox.vgrow="ALWAYS">
         <VBox spacing="16" styleClass="ws-content">
 
             <!-- Section 1: Target API Project -->
@@ -184,22 +184,22 @@
                             <ColumnConstraints percentWidth="50" />
                         </columnConstraints>
 
-                        <VBox spacing="4" GridPane.columnIndex="0">
+                        <VBox spacing="4" GridPane.columnIndex="0" GridPane.rowIndex="0">
                             <Label styleClass="ws-stat-label" text="TIMEOUT (MS)" />
                             <Spinner fx:id="spRequestTimeoutMs" editable="true" maxWidth="Infinity" />
                         </VBox>
 
-                        <VBox spacing="4" GridPane.columnIndex="1">
+                        <VBox spacing="4" GridPane.columnIndex="1" GridPane.rowIndex="0">
                             <Label styleClass="ws-stat-label" text="MAX RESPONSE (BYTES)" />
                             <Spinner fx:id="spMaxResponseSizeBytes" editable="true" maxWidth="Infinity" />
                         </VBox>
 
-                        <VBox spacing="4" GridPane.columnIndex="0">
+                        <VBox spacing="4" GridPane.columnIndex="0" GridPane.rowIndex="1">
                             <Label styleClass="ws-stat-label" text="RATE LIMIT (REQ/SEC)" />
                             <Spinner fx:id="spRateLimitRps" editable="true" maxWidth="Infinity" />
                         </VBox>
 
-                        <VBox spacing="4" GridPane.columnIndex="1">
+                        <VBox spacing="4" GridPane.columnIndex="1" GridPane.rowIndex="1">
                             <Label styleClass="ws-stat-label" text="CONCURRENCY (THREADS)" />
                             <Spinner fx:id="spConcurrency" editable="true" maxWidth="Infinity" />
                         </VBox>
@@ -216,6 +216,9 @@
                     </HBox>
                 </VBox>
             </GridPane>
+
+            <!-- Bottom breathing room to ensure full accessibility above window edge -->
+            <Region minHeight="32" prefHeight="32" />
 
         </VBox>
     </ScrollPane>

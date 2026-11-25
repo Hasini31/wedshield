@@ -36,7 +36,7 @@
         <Region HBox.hgrow="ALWAYS" />
     </HBox>
 
-    <ScrollPane fitToWidth="true" fitToHeight="true" styleClass="ws-scroll-pane" VBox.vgrow="ALWAYS">
+    <ScrollPane fitToWidth="true" minHeight="0" styleClass="ws-scroll-pane" VBox.vgrow="ALWAYS">
         <VBox spacing="0" styleClass="ws-content">
             <VBox spacing="14" styleClass="ws-card" VBox.vgrow="ALWAYS">
                 <HBox alignment="CENTER_LEFT">
@@ -56,7 +56,7 @@
                         <TableColumn fx:id="colStatus"       text="Status"     prefWidth="110" />
                         <TableColumn fx:id="colFindings"     text="Findings"   prefWidth="90"  />
                         <TableColumn fx:id="colCritical"     text="Critical"   prefWidth="80"  />
-                        <TableColumn fx:id="colActions"      text=""           prefWidth="90"  />
+                        <TableColumn fx:id="colActions"      text="Actions"    prefWidth="190" />
                     </columns>
                     <placeholder>
                         <VBox alignment="CENTER" spacing="12" minHeight="240">

@@ -108,12 +108,14 @@ public class DashboardRepository {
         int apiTestCasesExecuted = 0;
         int totalApiFindings = 0;
         int criticalApiFindings = 0;
+        String lastApiScanDate = "—";
         String sqlApiScans = """
             SELECT COUNT(*),
                    COALESCE(SUM(total_generated_test_cases), 0),
                    COALESCE(SUM(total_executed_requests), 0),
                    COALESCE(SUM(total_findings), 0),
-                   COALESCE(SUM(critical_count), 0)
+                   COALESCE(SUM(critical_count), 0),
+                   MAX(created_at)
             FROM api_scans WHERE user_id = ?
             """;
         try (Connection c = getConnection(); PreparedStatement ps = c.prepareStatement(sqlApiScans)) {
@@ -125,6 +127,10 @@ public class DashboardRepository {
                     apiTestCasesExecuted = rs.getInt(3);
                     totalApiFindings = rs.getInt(4);
                     criticalApiFindings = rs.getInt(5);
+                    Timestamp maxCreated = rs.getTimestamp(6);
+                    if (maxCreated != null) {
+                        lastApiScanDate = maxCreated.toLocalDateTime().format(FMT);
+                    }
                 }
             }
         } catch (SQLException e) {
@@ -159,7 +165,9 @@ public class DashboardRepository {
                 criticalWebsiteFindings, criticalApiFindings, criticalFindings,
                 webSeverity, apiSeverity, combinedSeverity,
                 websitesScanned, totalPagesDiscovered, totalPagesTested,
-                lastWebsiteScanDate, totalApiEndpoints, categoryStats
+                lastWebsiteScanDate, totalApiEndpoints,
+                lastApiScanDate,
+                categoryStats
         );
     }
 
@@ -297,6 +305,70 @@ public class DashboardRepository {
             }
         } catch (SQLException e) {
             log.error("loadWebsiteOverview failed", e);
+        }
+        return rows;
+    }
+
+    /* ------------------------------------------------------------------
+     * API Project Overview Table (Section C)
+     * ------------------------------------------------------------------ */
+
+    public List<ApiProjectOverviewRow> loadApiProjectOverview(int userId) {
+        String sql = """
+            SELECT p.id, p.name,
+                   CONCAT(p.spec_type, ' (', p.spec_format, ')') AS spec_display,
+                   p.endpoints_count,
+                   COUNT(DISTINCT s_all.id) AS scans_run,
+                   COALESCE(SUM(s_all.total_generated_test_cases), 0) AS total_gen,
+                   COALESCE(SUM(s_all.total_executed_requests), 0) AS total_exec,
+                   (SELECT COUNT(*) FROM api_findings af WHERE af.api_project_id = p.id) AS total_findings,
+                   (SELECT COUNT(*) FROM api_findings af WHERE af.api_project_id = p.id AND af.severity = 'CRITICAL') AS crit_count,
+                   (SELECT COUNT(*) FROM api_findings af WHERE af.api_project_id = p.id AND af.severity = 'HIGH') AS high_count,
+                   (SELECT COUNT(*) FROM api_findings af WHERE af.api_project_id = p.id AND af.severity = 'MEDIUM') AS med_count,
+                   (SELECT COUNT(*) FROM api_findings af WHERE af.api_project_id = p.id AND af.severity = 'LOW') AS low_count,
+                   (SELECT COUNT(*) FROM api_findings af WHERE af.api_project_id = p.id AND af.severity = 'INFORMATIONAL') AS info_count,
+                   s_latest.created_at AS last_scan_date,
+                   s_latest.status AS last_scan_status,
+                   s_latest.id AS last_scan_id
+            FROM api_projects p
+            LEFT JOIN api_scans s_all ON s_all.api_project_id = p.id
+            LEFT JOIN api_scans s_latest ON s_latest.id = (
+                SELECT s2.id FROM api_scans s2 WHERE s2.api_project_id = p.id ORDER BY s2.created_at DESC LIMIT 1
+            )
+            WHERE p.user_id = ?
+            GROUP BY p.id, p.name, p.spec_type, p.spec_format, p.endpoints_count,
+                     s_latest.created_at, s_latest.status, s_latest.id, p.updated_at, p.created_at
+            ORDER BY p.updated_at DESC, p.created_at DESC
+            """;
+        List<ApiProjectOverviewRow> rows = new ArrayList<>();
+        try (Connection c = getConnection(); PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Timestamp scanTs = rs.getTimestamp("last_scan_date");
+                    long scanId = rs.getLong("last_scan_id");
+                    rows.add(new ApiProjectOverviewRow(
+                            rs.getLong("id"),
+                            rs.getString("name"),
+                            rs.getString("spec_display"),
+                            rs.getInt("endpoints_count"),
+                            rs.getInt("scans_run"),
+                            rs.getInt("total_gen"),
+                            rs.getInt("total_exec"),
+                            rs.getInt("total_findings"),
+                            rs.getInt("crit_count"),
+                            rs.getInt("high_count"),
+                            rs.getInt("med_count"),
+                            rs.getInt("low_count"),
+                            rs.getInt("info_count"),
+                            scanTs != null ? scanTs.toLocalDateTime().format(FMT) : "Not Scanned",
+                            rs.getString("last_scan_status") != null ? rs.getString("last_scan_status") : "IDLE",
+                            scanId > 0 ? scanId : null
+                    ));
+                }
+            }
+        } catch (SQLException e) {
+            log.error("loadApiProjectOverview failed", e);
         }
         return rows;
     }

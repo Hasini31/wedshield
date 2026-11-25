@@ -1102,4 +1102,87 @@ public class ApiUiControllersTest {
         assertEquals(1, tableNew.getItems().size());
         assertEquals(1, tableRes.getItems().size());
     }
+
+    @Test
+    @DisplayName("26: ApiScanComparisonController - Rejects cross-project scan comparisons and enforces same target")
+    void testScanComparisonRejectsCrossProjectScans() throws Exception {
+        ApiScanComparisonController controller = new ApiScanComparisonController(new TestApiPersistenceService());
+
+        ComboBox<ApiProject> cbProj = new ComboBox<>();
+        ComboBox<ApiScanDto> cbScanA = new ComboBox<>();
+        ComboBox<ApiScanDto> cbScanB = new ComboBox<>();
+        Label lblStatus = new Label();
+        Label lblProjectCount = new Label();
+        Button btnCompare = new Button();
+
+        setField(controller, "cbProject", cbProj);
+        setField(controller, "cbScanA", cbScanA);
+        setField(controller, "cbScanB", cbScanB);
+        setField(controller, "lblComparisonStatus", lblStatus);
+        setField(controller, "lblProjectScanCount", lblProjectCount);
+        setField(controller, "btnCompare", btnCompare);
+
+        controller.setBackgroundLoadingEnabled(false);
+        controller.initialize();
+
+        // Scan 1 from Project 100, Scan 2 from Project 200
+        ApiScanDto scanProj1 = new ApiScanDto(10L, 100L, 1L, "Target-A-v1", ApiScanStatus.COMPLETED,
+                java.time.LocalDateTime.now(), java.time.LocalDateTime.now(), 1000L, 5, 10, 10, 5, 0, 1, 2, 2, 0,
+                "{}", "{}", "COMPLETED", null, java.time.LocalDateTime.now(), java.time.LocalDateTime.now());
+        ApiScanDto scanProj2 = new ApiScanDto(20L, 200L, 1L, "Target-B-v1", ApiScanStatus.COMPLETED,
+                java.time.LocalDateTime.now(), java.time.LocalDateTime.now(), 1000L, 5, 10, 10, 8, 1, 2, 3, 2, 0,
+                "{}", "{}", "COMPLETED", null, java.time.LocalDateTime.now(), java.time.LocalDateTime.now());
+
+        cbScanA.setValue(scanProj1);
+        cbScanB.setValue(scanProj2);
+
+        controller.onCompareScans();
+
+        assertEquals("Cannot compare scans from different targets. Both scans must belong to the same project.", lblStatus.getText());
+    }
+
+    @Test
+    @DisplayName("27: ApiScanComparisonController - Mutually exclusive options prevent selecting same scan in both boxes")
+    void testScanComparisonMutualExclusionExcludesSelectedScan() throws Exception {
+        ApiScanComparisonController controller = new ApiScanComparisonController(new TestApiPersistenceService());
+
+        ComboBox<ApiProject> cbProj = new ComboBox<>();
+        ComboBox<ApiScanDto> cbScanA = new ComboBox<>();
+        ComboBox<ApiScanDto> cbScanB = new ComboBox<>();
+        Label lblStatus = new Label();
+        Label lblProjectCount = new Label();
+        Button btnCompare = new Button();
+
+        setField(controller, "cbProject", cbProj);
+        setField(controller, "cbScanA", cbScanA);
+        setField(controller, "cbScanB", cbScanB);
+        setField(controller, "lblComparisonStatus", lblStatus);
+        setField(controller, "lblProjectScanCount", lblProjectCount);
+        setField(controller, "btnCompare", btnCompare);
+
+        controller.setBackgroundLoadingEnabled(false);
+        controller.initialize();
+
+        ApiScanDto s4 = new ApiScanDto(4L, 100L, 1L, "Scan-4", ApiScanStatus.COMPLETED,
+                java.time.LocalDateTime.now(), java.time.LocalDateTime.now(), 1000L, 5, 10, 10, 5, 0, 1, 2, 2, 0,
+                "{}", "{}", "COMPLETED", null, java.time.LocalDateTime.now(), java.time.LocalDateTime.now());
+        ApiScanDto s5 = new ApiScanDto(5L, 100L, 1L, "Scan-5", ApiScanStatus.COMPLETED,
+                java.time.LocalDateTime.now(), java.time.LocalDateTime.now(), 1000L, 5, 10, 10, 5, 0, 1, 2, 2, 0,
+                "{}", "{}", "COMPLETED", null, java.time.LocalDateTime.now(), java.time.LocalDateTime.now());
+        ApiScanDto s6 = new ApiScanDto(6L, 100L, 1L, "Scan-6", ApiScanStatus.COMPLETED,
+                java.time.LocalDateTime.now(), java.time.LocalDateTime.now(), 1000L, 5, 10, 10, 5, 0, 1, 2, 2, 0,
+                "{}", "{}", "COMPLETED", null, java.time.LocalDateTime.now(), java.time.LocalDateTime.now());
+
+        java.lang.reflect.Method populateM = ApiScanComparisonController.class.getDeclaredMethod("populateScansForProject", List.class);
+        populateM.setAccessible(true);
+        populateM.invoke(controller, List.of(s6, s5, s4));
+
+        // Scan A has s5 selected -> s5 must NOT be an option in cbScanB
+        assertEquals(s5, cbScanA.getValue());
+        assertFalse(cbScanB.getItems().contains(s5), "Scan B options must exclude the scan selected in Scan A");
+
+        // Scan B has s6 selected -> s6 must NOT be an option in cbScanA
+        assertEquals(s6, cbScanB.getValue());
+        assertFalse(cbScanA.getItems().contains(s6), "Scan A options must exclude the scan selected in Scan B");
+    }
 }

@@ -49,6 +49,7 @@ public class DashboardStatistics {
 
     // Section C API Overview Metrics
     private final int totalApiEndpoints;
+    private final String lastApiScanDate;
     private final List<ApiCategoryStat> apiCategoryStats;
 
     /**
@@ -64,7 +65,31 @@ public class DashboardStatistics {
              findingsBySeverity, Map.of("CRITICAL", 0, "HIGH", 0, "MEDIUM", 0, "LOW", 0, "INFORMATIONAL", 0),
              findingsBySeverity,
              0, 0, 0, "—",
-             0, List.of());
+             0, "—", List.of());
+    }
+
+    /**
+     * Backward-compatible 23-parameter constructor.
+     */
+    public DashboardStatistics(int totalWebsites, int activeWebsites, int totalApiProjects,
+                               int totalWebsiteScans, int totalApiScans, int totalScans,
+                               int apiTestCasesGenerated, int apiTestCasesExecuted,
+                               int totalWebsiteFindings, int totalApiFindings, int totalFindings,
+                               int criticalWebsiteFindings, int criticalApiFindings, int criticalFindings,
+                               Map<String, Integer> websiteFindingsBySeverity,
+                               Map<String, Integer> apiFindingsBySeverity,
+                               Map<String, Integer> findingsBySeverity,
+                               int websitesScanned, int totalPagesDiscovered, int totalPagesTested,
+                               String lastWebsiteScanDate, int totalApiEndpoints,
+                               List<ApiCategoryStat> apiCategoryStats) {
+        this(totalWebsites, activeWebsites, totalApiProjects,
+             totalWebsiteScans, totalApiScans, totalScans,
+             apiTestCasesGenerated, apiTestCasesExecuted,
+             totalWebsiteFindings, totalApiFindings, totalFindings,
+             criticalWebsiteFindings, criticalApiFindings, criticalFindings,
+             websiteFindingsBySeverity, apiFindingsBySeverity, findingsBySeverity,
+             websitesScanned, totalPagesDiscovered, totalPagesTested,
+             lastWebsiteScanDate, totalApiEndpoints, "—", apiCategoryStats);
     }
 
     /**
@@ -80,6 +105,7 @@ public class DashboardStatistics {
                                Map<String, Integer> findingsBySeverity,
                                int websitesScanned, int totalPagesDiscovered, int totalPagesTested,
                                String lastWebsiteScanDate, int totalApiEndpoints,
+                               String lastApiScanDate,
                                List<ApiCategoryStat> apiCategoryStats) {
         this.totalWebsites = totalWebsites;
         this.activeWebsites = activeWebsites;
@@ -103,6 +129,7 @@ public class DashboardStatistics {
         this.totalPagesTested = totalPagesTested;
         this.lastWebsiteScanDate = lastWebsiteScanDate != null ? lastWebsiteScanDate : "—";
         this.totalApiEndpoints = totalApiEndpoints;
+        this.lastApiScanDate = lastApiScanDate != null ? lastApiScanDate : "—";
         this.apiCategoryStats = apiCategoryStats != null ? apiCategoryStats : List.of();
     }
 
@@ -118,7 +145,7 @@ public class DashboardStatistics {
                 0, 0, 0,
                 emptySev, emptySev, emptySev,
                 0, 0, 0, "—",
-                0, List.of()
+                0, "—", List.of()
         );
     }
 
@@ -144,5 +171,6 @@ public class DashboardStatistics {
     public int getTotalPagesTested()           { return totalPagesTested; }
     public String getLastWebsiteScanDate()     { return lastWebsiteScanDate; }
     public int getTotalApiEndpoints()          { return totalApiEndpoints; }
+    public String getLastApiScanDate()         { return lastApiScanDate; }
     public List<ApiCategoryStat> getApiCategoryStats() { return apiCategoryStats; }
 }

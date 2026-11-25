@@ -52,6 +52,15 @@ public class DashboardService {
     }
 
     /**
+     * Returns the list of registered API projects for the API Security Overview table.
+     */
+    public List<ApiProjectOverviewRow> getApiProjectOverview() {
+        User user = SessionManager.getInstance().getCurrentUser();
+        if (user == null) return List.of();
+        return repo.loadApiProjectOverview(user.getId());
+    }
+
+    /**
      * Returns the latest 10 unified security activities across website and API scans.
      */
     public List<SecurityActivityRow> getRecentSecurityActivity() {

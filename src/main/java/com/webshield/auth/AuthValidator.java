@@ -38,10 +38,19 @@ public class AuthValidator {
     public void validatePasswordStrength(String password) {
         validateNotBlank(password, "Password");
         if (password.length() < 8) {
-            throw new IllegalArgumentException("Password must be at least 8 characters");
+            throw new IllegalArgumentException("Password must be at least 8 characters long");
         }
-        if (!password.matches(".*[A-Z].*") || !password.matches(".*[a-z].*") || !password.matches(".*\\d.*")) {
-            throw new IllegalArgumentException("Password must contain upper‑case, lower‑case letters and a digit");
+        if (!password.matches(".*[A-Z].*")) {
+            throw new IllegalArgumentException("Password must contain at least one uppercase letter (A-Z)");
+        }
+        if (!password.matches(".*[a-z].*")) {
+            throw new IllegalArgumentException("Password must contain at least one lowercase letter (a-z)");
+        }
+        if (!password.matches(".*\\d.*")) {
+            throw new IllegalArgumentException("Password must contain at least one number (0-9)");
+        }
+        if (!password.matches(".*[^a-zA-Z0-9].*")) {
+            throw new IllegalArgumentException("Password must contain at least one special symbol (e.g. !@#$%^&*()_+-=)");
         }
     }
 

@@ -27,7 +27,7 @@
         <Button fx:id="btnStartScan" onAction="#onStartScan" styleClass="ws-btn-primary" text="▶ Start Scan" />
     </HBox>
 
-    <ScrollPane fitToWidth="true" styleClass="ws-scroll-pane" VBox.vgrow="ALWAYS">
+    <ScrollPane fitToWidth="true" minHeight="0" styleClass="ws-scroll-pane" VBox.vgrow="ALWAYS">
         <VBox spacing="16" styleClass="ws-content">
 
             <!-- Target Selection Card -->

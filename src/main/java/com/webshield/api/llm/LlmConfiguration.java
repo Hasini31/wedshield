@@ -4,6 +4,7 @@ import java.time.Duration;
 
 /**
  * Immutable configuration settings for LLM provider integration.
+ * Prioritizes Google Gemini AI Studio integration.
  */
 public record LlmConfiguration(
         boolean enabled,
@@ -16,10 +17,13 @@ public record LlmConfiguration(
         Duration timeout,
         boolean externalSharingAllowed
 ) {
-    public static final String DEFAULT_PROVIDER = "mock";
-    public static final String DEFAULT_ENDPOINT = "https://api.openai.com/v1/chat/completions";
-    public static final String DEFAULT_MODEL = "gpt-4o-mini";
-    public static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(20);
+    public static final String DEFAULT_PROVIDER = "gemini";
+    public static final String DEFAULT_ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent";
+    public static final String DEFAULT_MODEL = "gemini-3.1-flash-lite";
+    public static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(60);
+
+    // Configured via GEMINI_API_KEY environment variable
+    public static final String CONFIGURED_FALLBACK_KEY = "";
 
     public LlmConfiguration {
         providerName = (providerName != null && !providerName.isBlank()) ? providerName : DEFAULT_PROVIDER;
@@ -27,32 +31,46 @@ public record LlmConfiguration(
         modelName = (modelName != null && !modelName.isBlank()) ? modelName : DEFAULT_MODEL;
         timeout = timeout != null ? timeout : DEFAULT_TIMEOUT;
         temperature = Math.max(0.0, Math.min(1.0, temperature));
-        maxTokens = maxTokens > 0 ? maxTokens : 1000;
+        maxTokens = maxTokens > 0 ? maxTokens : 8192;
     }
 
     /**
-     * Creates a secure default configuration attempting resolution from environment variables.
+     * Creates configuration from GEMINI_API_KEY environment variable or configured secure key.
      */
     public static LlmConfiguration fromEnvironment() {
-        String key = System.getenv("WEBSHIELD_LLM_API_KEY");
+        String key = System.getenv("GEMINI_API_KEY");
+        if (key == null || key.isBlank()) {
+            key = System.getProperty("GEMINI_API_KEY");
+        }
+        if (key == null || key.isBlank()) {
+            key = System.getenv("WEBSHIELD_LLM_API_KEY");
+        }
         if (key == null || key.isBlank()) {
             key = System.getenv("OPENAI_API_KEY");
         }
+        if (key == null || key.isBlank()) {
+            key = CONFIGURED_FALLBACK_KEY;
+        }
+
         String endpoint = System.getenv("WEBSHIELD_LLM_ENDPOINT");
         String model = System.getenv("WEBSHIELD_LLM_MODEL");
         String provider = System.getenv("WEBSHIELD_LLM_PROVIDER");
 
         boolean isKeyPresent = key != null && !key.isBlank();
+        String activeProvider = (provider != null && !provider.isBlank()) ? provider : (isKeyPresent ? "gemini" : "mock");
+        String activeModel = (model != null && !model.isBlank()) ? model : DEFAULT_MODEL;
+        String activeEndpoint = (endpoint != null && !endpoint.isBlank()) ? endpoint : DEFAULT_ENDPOINT;
+
         return new LlmConfiguration(
                 isKeyPresent,
-                (provider != null && !provider.isBlank()) ? provider : (isKeyPresent ? "openai" : "mock"),
-                (endpoint != null && !endpoint.isBlank()) ? endpoint : DEFAULT_ENDPOINT,
+                activeProvider,
+                activeEndpoint,
                 isKeyPresent ? key : "",
-                (model != null && !model.isBlank()) ? model : DEFAULT_MODEL,
+                activeModel,
                 0.2,
-                1024,
+                8192,
                 DEFAULT_TIMEOUT,
-                false
+                true // Enabled for verified reports
         );
     }
 
@@ -73,4 +91,3 @@ public record LlmConfiguration(
         );
     }
 }
-

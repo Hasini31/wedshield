@@ -11,7 +11,10 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
+import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -76,12 +79,24 @@ public class ScanHistoryController {
         colFindings.setCellValueFactory(d -> new SimpleStringProperty(String.valueOf(d.getValue().getFindingsCount())));
         colCritical.setCellValueFactory(d -> new SimpleStringProperty(String.valueOf(d.getValue().getPagesTested())));
 
-        // Action column: View Results button
+        // Action column: View Results and AI Report buttons
         colActions.setCellFactory(col -> new TableCell<>() {
+            private final Button btnAi = new Button("📄 AI Report");
             private final Button btnView = new Button("View Results");
+            private final HBox box = new HBox(6, btnAi, btnView);
             {
+                box.setAlignment(Pos.CENTER_LEFT);
+                btnAi.setStyle("-fx-background-color: #2563EB; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 11px; -fx-padding: 3 8; -fx-background-radius: 4; -fx-cursor: hand;");
                 btnView.getStyleClass().add("ws-btn-secondary");
-                btnView.setStyle("-fx-font-size: 11px; -fx-padding: 3 8;");
+                btnView.setStyle("-fx-font-size: 11px; -fx-padding: 3 8; -fx-cursor: hand;");
+
+                btnAi.setOnAction(event -> {
+                    ScanRecord record = getTableView().getItems().get(getIndex());
+                    if (record != null) {
+                        com.webshield.ui.dialogs.AiReportViewerDialog.show(record.getId(), (Stage) getTableView().getScene().getWindow());
+                    }
+                });
+
                 btnView.setOnAction(event -> {
                     ScanRecord record = getTableView().getItems().get(getIndex());
                     if (record != null) {
@@ -96,7 +111,7 @@ public class ScanHistoryController {
                 if (empty) {
                     setGraphic(null);
                 } else {
-                    setGraphic(btnView);
+                    setGraphic(box);
                 }
             }
         });

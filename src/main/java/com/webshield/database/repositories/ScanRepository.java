@@ -91,6 +91,29 @@ public class ScanRepository {
         return Optional.empty();
     }
 
+    public Optional<ScanRecord> findById(long scanId) {
+        String sql = """
+                SELECT s.id, s.website_id, s.user_id, s.status, s.crawl_depth, s.max_pages,
+                       s.timeout_seconds, s.pages_discovered, s.pages_tested, s.findings_count,
+                       s.started_at, s.completed_at, s.created_at, w.name AS website_name
+                FROM scans s
+                JOIN websites w ON s.website_id = w.id
+                WHERE s.id = ?
+                """;
+        try (Connection conn = DatabaseConfig.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setLong(1, scanId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return Optional.of(mapRow(rs));
+                }
+            }
+        } catch (SQLException e) {
+            log.error("Failed to find scan id={}", scanId, e);
+        }
+        return Optional.empty();
+    }
+
     public long createScan(long websiteId, int userId, int depth, int maxPages, int timeout,
                            boolean headers, boolean cookies, boolean reflection, boolean checkSql, boolean inputVal) {
         String insertSql = """
@@ -120,7 +143,17 @@ public class ScanRepository {
             ps.executeUpdate();
             try (ResultSet rs = ps.getGeneratedKeys()) {
                 if (rs.next()) {
-                    return rs.getLong(1);
+                    long generatedId = rs.getLong(1);
+                    try (PreparedStatement psWeb = conn.prepareStatement(
+                            "UPDATE websites SET last_scan_at = ?, updated_at = ? WHERE id = ?")) {
+                        psWeb.setTimestamp(1, Timestamp.valueOf(now));
+                        psWeb.setTimestamp(2, Timestamp.valueOf(now));
+                        psWeb.setLong(3, websiteId);
+                        psWeb.executeUpdate();
+                    } catch (SQLException eWeb) {
+                        log.warn("Failed to update website last_scan_at on createScan for websiteId={}", websiteId, eWeb);
+                    }
+                    return generatedId;
                 }
             }
         } catch (SQLException e) {
@@ -159,6 +192,7 @@ public class ScanRepository {
 
     public boolean completeScan(long scanId, String status, int pagesDiscovered, int pagesTested,
                                 int findingsCount, String errorMessage) {
+        LocalDateTime now = LocalDateTime.now();
         try (Connection conn = DatabaseConfig.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(COMPLETE_SCAN)) {
 
@@ -166,10 +200,22 @@ public class ScanRepository {
             ps.setInt(2, pagesDiscovered);
             ps.setInt(3, pagesTested);
             ps.setInt(4, findingsCount);
-            ps.setTimestamp(5, Timestamp.valueOf(LocalDateTime.now()));
+            ps.setTimestamp(5, Timestamp.valueOf(now));
             ps.setString(6, errorMessage);
             ps.setLong(7, scanId);
-            return ps.executeUpdate() > 0;
+            boolean updated = ps.executeUpdate() > 0;
+            if (updated) {
+                try (PreparedStatement psWeb = conn.prepareStatement(
+                        "UPDATE websites SET last_scan_at = ?, updated_at = ? WHERE id = (SELECT website_id FROM scans WHERE id = ?)")) {
+                    psWeb.setTimestamp(1, Timestamp.valueOf(now));
+                    psWeb.setTimestamp(2, Timestamp.valueOf(now));
+                    psWeb.setLong(3, scanId);
+                    psWeb.executeUpdate();
+                } catch (SQLException eWeb) {
+                    log.warn("Failed to update website last_scan_at for scan id={}", scanId, eWeb);
+                }
+            }
+            return updated;
         } catch (SQLException e) {
             log.error("Failed to finalize scan id={}", scanId, e);
             return false;

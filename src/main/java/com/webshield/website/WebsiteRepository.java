@@ -38,7 +38,13 @@ public class WebsiteRepository {
 
     private static final String SELECT_BY_ID = """
             SELECT w.id, w.user_id, w.name, w.url, w.description, w.is_authorized, w.status,
-                   w.last_scan_at, w.created_at, w.updated_at,
+                   CASE
+                       WHEN MAX(s.created_at) IS NULL THEN w.last_scan_at
+                       WHEN w.last_scan_at IS NULL THEN MAX(s.created_at)
+                       WHEN MAX(s.created_at) > w.last_scan_at THEN MAX(s.created_at)
+                       ELSE w.last_scan_at
+                   END AS last_scan_at,
+                   w.created_at, w.updated_at,
                    COALESCE(SUM(s.findings_count), 0) AS total_findings,
                    COALESCE(MAX(s.pages_discovered), 0) AS total_pages
             FROM websites w
@@ -50,7 +56,13 @@ public class WebsiteRepository {
 
     private static final String SELECT_ALL_BY_USER = """
             SELECT w.id, w.user_id, w.name, w.url, w.description, w.is_authorized, w.status,
-                   w.last_scan_at, w.created_at, w.updated_at,
+                   CASE
+                       WHEN MAX(s.created_at) IS NULL THEN w.last_scan_at
+                       WHEN w.last_scan_at IS NULL THEN MAX(s.created_at)
+                       WHEN MAX(s.created_at) > w.last_scan_at THEN MAX(s.created_at)
+                       ELSE w.last_scan_at
+                   END AS last_scan_at,
+                   w.created_at, w.updated_at,
                    COALESCE(SUM(s.findings_count), 0) AS total_findings,
                    COALESCE(MAX(s.pages_discovered), 0) AS total_pages
             FROM websites w
@@ -121,6 +133,21 @@ public class WebsiteRepository {
         }
     }
 
+    public boolean updateLastScan(long websiteId, LocalDateTime lastScanAt) {
+        String sql = "UPDATE websites SET last_scan_at = ?, updated_at = ? WHERE id = ?";
+        LocalDateTime now = LocalDateTime.now();
+        try (Connection conn = DatabaseConfig.getInstance().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setTimestamp(1, Timestamp.valueOf(lastScanAt != null ? lastScanAt : now));
+            ps.setTimestamp(2, Timestamp.valueOf(now));
+            ps.setLong(3, websiteId);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            log.error("Failed to update last scan for website id={}", websiteId, e);
+            return false;
+        }
+    }
+
     public boolean delete(long websiteId, int userId) {
         try (Connection conn = DatabaseConfig.getInstance().getConnection();
              PreparedStatement stmt = conn.prepareStatement(DELETE_SQL)) {
@@ -148,6 +175,22 @@ public class WebsiteRepository {
             }
         } catch (SQLException e) {
             log.error("Failed to find website id: {} for user: {}", websiteId, userId, e);
+        }
+        return Optional.empty();
+    }
+
+    public Optional<Website> findById(long websiteId) {
+        String sql = "SELECT id, user_id, name, url, description, status, last_scan_at, created_at, updated_at FROM websites WHERE id = ?";
+        try (Connection conn = DatabaseConfig.getInstance().getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setLong(1, websiteId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return Optional.of(mapRow(rs));
+                }
+            }
+        } catch (SQLException e) {
+            log.error("Failed to find website id: {}", websiteId, e);
         }
         return Optional.empty();
     }

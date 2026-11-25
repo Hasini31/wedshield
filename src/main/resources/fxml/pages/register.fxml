@@ -54,7 +54,9 @@
             <VBox spacing="5">
                 <Label text="Password" styleClass="ws-field-label" />
                 <PasswordField fx:id="passwordField" styleClass="ws-text-field"
-                               promptText="Min 8 chars, upper, lower, digit" />
+                               promptText="Min 8 chars, uppercase, lowercase, number &amp; symbol" />
+                <Label text="Must include uppercase (A-Z), lowercase (a-z), number (0-9), and symbol (!@#$%^&amp;*)."
+                       style="-fx-font-size: 11px; -fx-text-fill: #64748B;" wrapText="true" />
             </VBox>
 
             <!-- Confirm Password -->

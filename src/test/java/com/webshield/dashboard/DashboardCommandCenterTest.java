@@ -86,6 +86,7 @@ class DashboardCommandCenterTest {
         assertTrue(service.getCriticalFindings().isEmpty());
         assertTrue(service.getRecentWebsites().isEmpty());
         assertTrue(service.getRecentScans().isEmpty());
+        assertTrue(service.getApiProjectOverview().isEmpty());
     }
 
     @Test
@@ -105,6 +106,9 @@ class DashboardCommandCenterTest {
         List<WebsiteOverviewRow> overview = service.getWebsiteOverview();
         assertNotNull(overview);
 
+        List<ApiProjectOverviewRow> apiOverview = service.getApiProjectOverview();
+        assertNotNull(apiOverview);
+
         List<SecurityActivityRow> activities = service.getRecentSecurityActivity();
         assertNotNull(activities);
 
@@ -123,6 +127,29 @@ class DashboardCommandCenterTest {
         assertEquals(18, web.getPagesTested());
         assertEquals(5, web.getTotalFindings());
         assertEquals(1, web.getCriticalFindings());
+        assertEquals(2, web.getHighFindings());
+        assertEquals("10 Nov 2026 12:00", web.getLastScan());
+        assertEquals("COMPLETED", web.getScanStatus());
+        assertEquals(101L, web.getLastScanId());
+
+        ApiProjectOverviewRow apiRow = new ApiProjectOverviewRow(5L, "Swagger Petstore", "OPENAPI_3 (JSON)", 14, 3, 45, 120, 10, 1, 2, 3, 2, 2, "15 Nov 2026 14:00", "COMPLETED", 55L);
+        assertEquals(5L, apiRow.getId());
+        assertEquals("Swagger Petstore", apiRow.getName());
+        assertEquals("OPENAPI_3 (JSON)", apiRow.getSpecDisplay());
+        assertEquals(14, apiRow.getEndpointsCount());
+        assertEquals(3, apiRow.getScansRun());
+        assertEquals(45, apiRow.getTestCasesGenerated());
+        assertEquals(120, apiRow.getRequestsExecuted());
+        assertEquals(10, apiRow.getTotalFindings());
+        assertEquals(1, apiRow.getCriticalFindings());
+        assertEquals(2, apiRow.getHighFindings());
+        assertEquals(3, apiRow.getMediumFindings());
+        assertEquals(2, apiRow.getLowFindings());
+        assertEquals(2, apiRow.getInfoFindings());
+        assertEquals("15 Nov 2026 14:00", apiRow.getLastScanDate());
+        assertEquals("COMPLETED", apiRow.getStatus());
+        assertEquals(55L, apiRow.getLastScanId());
+        assertEquals(1, apiRow.getFindingsBySeverity().get("CRITICAL"));
         assertEquals(2, web.getHighFindings());
         assertEquals("10 Nov 2026 12:00", web.getLastScan());
         assertEquals("COMPLETED", web.getScanStatus());
@@ -150,3 +177,4 @@ class DashboardCommandCenterTest {
         assertEquals(202L, crit.getScanId());
     }
 }
+

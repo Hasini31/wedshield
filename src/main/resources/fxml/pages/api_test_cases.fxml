@@ -25,7 +25,7 @@
         <ComboBox fx:id="cbScans" prefWidth="280" styleClass="ws-combo-box" promptText="Select a scan..." />
     </HBox>
 
-    <ScrollPane fitToWidth="true" fitToHeight="true" styleClass="ws-scroll-pane" VBox.vgrow="ALWAYS">
+    <ScrollPane fitToWidth="true" minHeight="0" styleClass="ws-scroll-pane" VBox.vgrow="ALWAYS">
         <VBox spacing="16" styleClass="ws-content">
 
             <!-- Split View: Table on Left, Details on Right -->

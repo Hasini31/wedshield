@@ -87,8 +87,8 @@ public class PdfReportGenerator implements ApiReportGenerator {
             drawMetricBox(writer, SimplePdfWriter.MARGIN + (4 * (boxWidth + 5.0f)), startY, boxWidth, boxHeight, "Info", String.valueOf(data.getInfoCount()), 0.39f, 0.45f, 0.55f);
             drawMetricBox(writer, SimplePdfWriter.MARGIN + (5 * (boxWidth + 5.0f)), startY, boxWidth, boxHeight, "Total", String.valueOf(data.findings().size()), 0.21f, 0.42f, 0.90f);
 
-            // Advance current Y
-            writer.checkPageSpace(boxHeight + 15.0f);
+            // Advance current Y past the boxes
+            writer.setCurrentY(startY - boxHeight - 15.0f);
 
             ApiScanDto scan = data.scan();
             String obs = String.format("During this scan, %d HTTP requests were executed against %d API endpoints over %s. ",
@@ -197,6 +197,7 @@ public class PdfReportGenerator implements ApiReportGenerator {
                     String fTitle = "#" + (index++) + " " + f.title() + " [" + f.severity() + "]";
                     writer.addText(fTitle, SimplePdfWriter.MARGIN, writer.getCurrentY(), "F2", 11.0f, r, g, b);
                     writer.drawLine(SimplePdfWriter.MARGIN, writer.getCurrentY() - 2.0f, SimplePdfWriter.MARGIN + SimplePdfWriter.CONTENT_WIDTH, writer.getCurrentY() - 2.0f, 0.85f, 0.88f, 0.92f, 1.0f);
+                    writer.decrementY(14.0f);
 
                     // Finding Meta
                     String meta = String.format("Endpoint: %s %s  |  Confidence: %s  |  OWASP: %s  |  CWE: %s",
@@ -215,6 +216,7 @@ public class PdfReportGenerator implements ApiReportGenerator {
                     // Observed Evidence
                     if (f.evidence() != null && !f.evidence().isBlank()) {
                         writer.addText("Observed Evidence:", SimplePdfWriter.MARGIN, writer.getCurrentY(), "F2", 8.0f, 0.35f, 0.40f, 0.50f);
+                        writer.decrementY(14.0f);
                         writer.addCodeBlock(RedactionUtils.redactSensitiveData(f.evidence()), SimplePdfWriter.MARGIN, SimplePdfWriter.CONTENT_WIDTH);
                     }
 
@@ -294,22 +296,27 @@ public class PdfReportGenerator implements ApiReportGenerator {
 
     private void buildCoverPage(SimplePdfWriter writer, ApiReportData data, ApiReportConfiguration config) {
         // Dark Navy Banner Box
-        writer.drawRect(0, SimplePdfWriter.PAGE_HEIGHT - 220.0f, SimplePdfWriter.PAGE_WIDTH, 220.0f, 0.09f, 0.14f, 0.22f, true); // #172338
+        float bannerHeight = 200.0f;
+        float bannerY = SimplePdfWriter.PAGE_HEIGHT - bannerHeight;
+        writer.drawRect(0, bannerY, SimplePdfWriter.PAGE_WIDTH, bannerHeight, 0.09f, 0.14f, 0.22f, true); // #172338
         // Royal Blue Accent Stripe
-        writer.drawRect(0, SimplePdfWriter.PAGE_HEIGHT - 226.0f, SimplePdfWriter.PAGE_WIDTH, 6.0f, 0.21f, 0.42f, 0.90f, true); // #356AE6
+        writer.drawRect(0, bannerY - 6.0f, SimplePdfWriter.PAGE_WIDTH, 6.0f, 0.21f, 0.42f, 0.90f, true); // #356AE6
 
-        // WebShield Brand
-        writer.addText("WebShield Security Platform", SimplePdfWriter.MARGIN, SimplePdfWriter.PAGE_HEIGHT - 75.0f, "F2", 22.0f, 1.0f, 1.0f, 1.0f);
-        writer.addText("AUTOMATED API SECURITY TESTING ENGINE", SimplePdfWriter.MARGIN, SimplePdfWriter.PAGE_HEIGHT - 95.0f, "F2", 9.0f, 0.58f, 0.64f, 0.72f);
+        // WebShield Brand inside banner
+        writer.addText("WebShield Security Platform", SimplePdfWriter.MARGIN, bannerY + 140.0f, "F2", 22.0f, 1.0f, 1.0f, 1.0f);
+        writer.addText("AUTOMATED API SECURITY TESTING ENGINE", SimplePdfWriter.MARGIN, bannerY + 120.0f, "F2", 9.0f, 0.58f, 0.64f, 0.72f);
 
-        // Report Title
-        writer.addText(config.reportTitle(), SimplePdfWriter.MARGIN, SimplePdfWriter.PAGE_HEIGHT - 145.0f, "F2", 16.0f, 1.0f, 1.0f, 1.0f);
-        writer.addText("Comprehensive Dynamic Vulnerability Assessment", SimplePdfWriter.MARGIN, SimplePdfWriter.PAGE_HEIGHT - 165.0f, "F1", 11.0f, 0.85f, 0.88f, 0.92f);
+        // Report Title inside banner
+        writer.addText(config.reportTitle(), SimplePdfWriter.MARGIN, bannerY + 68.0f, "F2", 16.0f, 1.0f, 1.0f, 1.0f);
+        writer.addText("Comprehensive Dynamic Vulnerability Assessment", SimplePdfWriter.MARGIN, bannerY + 48.0f, "F1", 10.5f, 0.85f, 0.88f, 0.92f);
+
+        // Position currentY safely below the banner with proper padding
+        writer.setCurrentY(bannerY - 35.0f);
 
         // Cover Page Meta Table
-        float metaY = SimplePdfWriter.PAGE_HEIGHT - 280.0f;
-        writer.addText("Assessment Report Details", SimplePdfWriter.MARGIN, metaY, "F2", 13.0f, 0.09f, 0.14f, 0.22f);
-        writer.drawLine(SimplePdfWriter.MARGIN, metaY - 4.0f, SimplePdfWriter.MARGIN + SimplePdfWriter.CONTENT_WIDTH, metaY - 4.0f, 0.85f, 0.88f, 0.92f, 1.0f);
+        writer.addText("Assessment Report Details", SimplePdfWriter.MARGIN, writer.getCurrentY(), "F2", 13.0f, 0.09f, 0.14f, 0.22f);
+        writer.drawLine(SimplePdfWriter.MARGIN, writer.getCurrentY() - 4.0f, SimplePdfWriter.MARGIN + SimplePdfWriter.CONTENT_WIDTH, writer.getCurrentY() - 4.0f, 0.85f, 0.88f, 0.92f, 1.0f);
+        writer.decrementY(16.0f);
 
         String[] cHeaders = {"Attribute", "Assessment Value"};
         float[] cWidths = {160.0f, 355.0f};
@@ -324,7 +331,8 @@ public class PdfReportGenerator implements ApiReportGenerator {
         );
         writer.addTable(cHeaders, cWidths, cRows);
 
-        // Confidentiality Box at bottom of cover
+        // Position confidentiality box cleanly below table
+        writer.decrementY(12.0f);
         String notice = "CONFIDENTIALITY NOTICE: This document contains proprietary security analysis and vulnerability details " +
                 "for authorized internal personnel only. Unauthorized distribution, copying, or dissemination is strictly prohibited.";
         writer.addCalloutBox("Confidential Document", notice, 0.86f, 0.15f, 0.15f);

@@ -37,7 +37,7 @@
     <!-- ===================================================================== -->
     <!-- TABLE                                                                -->
     <!-- ===================================================================== -->
-    <ScrollPane fitToWidth="true" fitToHeight="true" styleClass="ws-scroll-pane" VBox.vgrow="ALWAYS">
+    <ScrollPane fitToWidth="true" minHeight="0" styleClass="ws-scroll-pane" VBox.vgrow="ALWAYS">
         <VBox spacing="0" styleClass="ws-content">
 
             <VBox spacing="14" styleClass="ws-card" VBox.vgrow="ALWAYS">

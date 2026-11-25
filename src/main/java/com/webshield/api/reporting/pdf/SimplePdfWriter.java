@@ -19,9 +19,18 @@ public class SimplePdfWriter {
 
     private final List<PageContent> pages = new ArrayList<>();
     private PageContent currentPage;
+    private String headerTitle = "WebShield Security Assessment Report";
 
     public SimplePdfWriter() {
         newPage();
+    }
+
+    public void setHeaderTitle(String headerTitle) {
+        this.headerTitle = (headerTitle != null && !headerTitle.isBlank()) ? headerTitle : "WebShield Security Assessment Report";
+    }
+
+    public String getHeaderTitle() {
+        return headerTitle;
     }
 
     public static class PageContent {
@@ -40,6 +49,14 @@ public class SimplePdfWriter {
 
     public float getCurrentY() {
         return currentPage.currentY;
+    }
+
+    public void decrementY(float amount) {
+        currentPage.currentY -= amount;
+    }
+
+    public void setCurrentY(float y) {
+        currentPage.currentY = y;
     }
 
     public void checkPageSpace(float requiredHeight) {
@@ -187,9 +204,9 @@ public class SimplePdfWriter {
             if (i > 0) { // skip header/footer on cover
                 // Running Header
                 String hStr = String.format(java.util.Locale.US,
-                        "BT /F1 8.00 Tf 0.45 0.50 0.58 rg %.2f %.2f Td (WebShield API Security Assessment Report) Tj ET\n" +
+                        "BT /F1 8.00 Tf 0.45 0.50 0.58 rg %.2f %.2f Td (%s) Tj ET\n" +
                         "0.50 w 0.85 0.88 0.92 RG %.2f %.2f m %.2f %.2f l S\n",
-                        MARGIN, PAGE_HEIGHT - MARGIN + 4.0f,
+                        MARGIN, PAGE_HEIGHT - MARGIN + 4.0f, escapePdfText(headerTitle),
                         MARGIN, PAGE_HEIGHT - MARGIN, MARGIN + CONTENT_WIDTH, PAGE_HEIGHT - MARGIN);
                 bos.write(hStr.getBytes(StandardCharsets.US_ASCII));
 
@@ -279,10 +296,22 @@ public class SimplePdfWriter {
     }
 
     private String escapePdfText(String text) {
-        return text.replace("\\", "\\\\")
+        if (text == null) return "";
+        String clean = text
+                .replace("\u2022", "- ")  // Bullet
+                .replace("\u2013", "-")   // En-dash
+                .replace("\u2014", "-")   // Em-dash
+                .replace("\u2018", "'")   // Left single quote
+                .replace("\u2019", "'")   // Right single quote
+                .replace("\u201C", "\"")  // Left double quote
+                .replace("\u201D", "\"")  // Right double quote
+                .replace("\u2026", "...") // Ellipsis
+                .replaceAll("[\\p{So}\\p{Cn}]", ""); // Strip emojis and unassigned symbols
+
+        return clean.replace("\\", "\\\\")
                 .replace("(", "\\(")
                 .replace(")", "\\)")
-                .replaceAll("[^\\x20-\\x7E]", "?"); // ensure standard ASCII encoding
+                .replaceAll("[^\\x20-\\x7E]", " ");
     }
 
     private List<String> wrapText(String text, float fontSize, float maxWidth) {

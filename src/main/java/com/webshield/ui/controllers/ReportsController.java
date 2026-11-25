@@ -2,11 +2,15 @@ package com.webshield.ui.controllers;
 
 import com.webshield.assessment.models.Severity;
 import com.webshield.auth.SessionManager;
+import com.webshield.config.SpringContext;
+import com.webshield.database.repositories.ScanRecord;
 import com.webshield.findings.FindingClassifier;
 import com.webshield.findings.FindingService;
 import com.webshield.findings.FindingStatus;
 import com.webshield.models.SecurityFinding;
 import com.webshield.models.User;
+import com.webshield.scan.ScanService;
+import com.webshield.ui.dialogs.AiReportViewerDialog;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -16,6 +20,7 @@ import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
@@ -23,9 +28,11 @@ import org.springframework.stereotype.Component;
 
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Controller for the Reports page (vulnerability findings master-detail inspector).
+ * Supports website target and scan run filtering with dedicated Gemini AI Report generation.
  */
 @Component
 @Scope("prototype")
@@ -33,9 +40,16 @@ public class ReportsController {
 
     private static final Logger log = LoggerFactory.getLogger(ReportsController.class);
     private static final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm");
+    private static final DateTimeFormatter FMT_SCAN = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
+    // Top Selector Bar
+    @FXML private ComboBox<String> cbWebsiteTarget;
+    @FXML private ComboBox<String> cbScanRun;
+    @FXML private Button btnGenerateAiReport;
 
     // Summary Cards
     @FXML private Label lblCardTotal;
+    @FXML private Label lblCardTotalDesc;
     @FXML private Label lblCardCritical;
     @FXML private Label lblCardHigh;
     @FXML private Label lblCardMedium;
@@ -77,17 +91,29 @@ public class ReportsController {
     @FXML private Label lblStatusUpdated;
 
     private final FindingService findingService;
+    private final ScanService scanService;
+
     private final ObservableList<SecurityFinding> masterList = FXCollections.observableArrayList();
     private FilteredList<SecurityFinding> filteredList;
 
+    private final List<ScanRecord> userScans = new ArrayList<>();
+    private final Map<String, ScanRecord> scanItemMap = new LinkedHashMap<>();
+
     private Long filterScanId = null;
+    private String selectedWebsite = "All Websites";
+    private boolean updatingCombos = false;
 
     public ReportsController() {
-        this(com.webshield.config.SpringContext.getBean(FindingService.class));
+        this(SpringContext.getBean(FindingService.class), SpringContext.getBean(ScanService.class));
     }
 
     public ReportsController(FindingService findingService) {
+        this(findingService, SpringContext.getBean(ScanService.class));
+    }
+
+    public ReportsController(FindingService findingService, ScanService scanService) {
         this.findingService = findingService != null ? findingService : new FindingService();
+        this.scanService = scanService != null ? scanService : new ScanService();
     }
 
     @FXML
@@ -95,7 +121,7 @@ public class ReportsController {
         configureTable();
         configureFilters();
         configureInspector();
-        loadFindings();
+        loadScansAndFindings();
     }
 
     private void configureTable() {
@@ -116,6 +142,7 @@ public class ReportsController {
     }
 
     private void configureFilters() {
+        // Table search and toolbar filters
         cbSeverityFilter.setItems(FXCollections.observableArrayList(
                 "All severities", "CRITICAL", "HIGH", "MEDIUM", "LOW", "INFORMATIONAL"
         ));
@@ -139,11 +166,105 @@ public class ReportsController {
         cbStatusFilter.valueProperty().addListener((obs, oldV, newV) -> applyFilters());
 
         tableFindings.setItems(filteredList);
+
+        // Website and Scan Run selector listeners
+        if (cbWebsiteTarget != null) {
+            cbWebsiteTarget.valueProperty().addListener((obs, oldV, newV) -> {
+                if (updatingCombos || newV == null) return;
+                onWebsiteSelected(newV);
+            });
+        }
+
+        if (cbScanRun != null) {
+            cbScanRun.valueProperty().addListener((obs, oldV, newV) -> {
+                if (updatingCombos || newV == null) return;
+                onScanRunSelected(newV);
+            });
+        }
     }
 
     private void configureInspector() {
         cbUpdateStatus.setItems(FXCollections.observableArrayList(FindingStatus.values()));
         cbUpdateStatus.getSelectionModel().select(FindingStatus.OPEN);
+    }
+
+    private void onWebsiteSelected(String website) {
+        selectedWebsite = website;
+        updatingCombos = true;
+        try {
+            populateScanRunCombo(website);
+        } finally {
+            updatingCombos = false;
+        }
+
+        // Auto-select the first scan item or all scans
+        if (cbScanRun != null && !cbScanRun.getItems().isEmpty()) {
+            cbScanRun.getSelectionModel().selectFirst();
+            onScanRunSelected(cbScanRun.getValue());
+        } else {
+            filterScanId = null;
+            applyFilters();
+        }
+    }
+
+    private void populateScanRunCombo(String website) {
+        if (cbScanRun == null) return;
+        scanItemMap.clear();
+
+        List<ScanRecord> matches;
+        if (website == null || website.equals("All Websites")) {
+            matches = new ArrayList<>(userScans);
+        } else {
+            matches = userScans.stream()
+                    .filter(s -> s.getWebsiteName() != null && s.getWebsiteName().equalsIgnoreCase(website))
+                    .collect(Collectors.toList());
+        }
+
+        ObservableList<String> items = FXCollections.observableArrayList();
+        String allOption = (website == null || website.equals("All Websites"))
+                ? "All Scans (" + matches.size() + " total)"
+                : "All Scans for " + website + " (" + matches.size() + ")";
+        items.add(allOption);
+
+        for (ScanRecord r : matches) {
+            String dateStr = r.getStartedAt() != null
+                    ? r.getStartedAt().format(FMT_SCAN)
+                    : (r.getCreatedAt() != null ? r.getCreatedAt().format(FMT_SCAN) : "Unknown Date");
+            String label = "Scan #" + r.getId() + " — " + dateStr + " (" + r.getFindingsCount() + " findings)";
+            items.add(label);
+            scanItemMap.put(label, r);
+        }
+
+        cbScanRun.setItems(items);
+    }
+
+    private void onScanRunSelected(String selectedLabel) {
+        if (selectedLabel == null) return;
+
+        if (scanItemMap.containsKey(selectedLabel)) {
+            ScanRecord r = scanItemMap.get(selectedLabel);
+            filterScanId = r.getId();
+            if (lblCardTotalDesc != null) {
+                lblCardTotalDesc.setText("Scan #" + r.getId() + " (" + r.getWebsiteName() + ")");
+            }
+            if (btnGenerateAiReport != null) {
+                btnGenerateAiReport.setText("🤖 Generate AI Report for Scan #" + r.getId());
+            }
+        } else {
+            filterScanId = null;
+            if (lblCardTotalDesc != null) {
+                if (selectedWebsite != null && !selectedWebsite.equals("All Websites")) {
+                    lblCardTotalDesc.setText("Across all scans for " + selectedWebsite);
+                } else {
+                    lblCardTotalDesc.setText("Across all active scans");
+                }
+            }
+            if (btnGenerateAiReport != null) {
+                btnGenerateAiReport.setText("🤖 Generate AI Security Report");
+            }
+        }
+
+        applyFilters();
     }
 
     private void applyFilters() {
@@ -152,10 +273,27 @@ public class ReportsController {
         String category = cbCategoryFilter.getValue();
         String status = cbStatusFilter.getValue();
 
+        // Compute website-specific scan IDs when a website is selected but no specific scan is picked
+        Set<Long> websiteScanIds = null;
+        if (filterScanId == null && selectedWebsite != null && !selectedWebsite.equals("All Websites")) {
+            websiteScanIds = userScans.stream()
+                    .filter(s -> s.getWebsiteName() != null && s.getWebsiteName().equalsIgnoreCase(selectedWebsite))
+                    .map(ScanRecord::getId)
+                    .collect(Collectors.toSet());
+        }
+
+        final Set<Long> finalWebsiteScanIds = websiteScanIds;
+
         filteredList.setPredicate(finding -> {
-            // Scan ID filter if navigation came from scan history
-            if (filterScanId != null && finding.getScanId() != filterScanId) {
-                return false;
+            // Specific Scan ID filter
+            if (filterScanId != null) {
+                if (finding.getScanId() != filterScanId) {
+                    return false;
+                }
+            } else if (finalWebsiteScanIds != null) {
+                if (!finalWebsiteScanIds.contains(finding.getScanId())) {
+                    return false;
+                }
             }
 
             // Search text
@@ -213,34 +351,148 @@ public class ReportsController {
 
     public void filterByScanId(long scanId) {
         this.filterScanId = scanId;
+        syncScanSelection(scanId);
         applyFilters();
     }
 
-    public void loadFindings() {
+    private void syncScanSelection(long scanId) {
+        if (userScans.isEmpty() || cbWebsiteTarget == null || cbScanRun == null) return;
+
+        ScanRecord target = userScans.stream().filter(s -> s.getId() == scanId).findFirst().orElse(null);
+        if (target == null) return;
+
+        updatingCombos = true;
+        try {
+            if (target.getWebsiteName() != null) {
+                selectedWebsite = target.getWebsiteName();
+                cbWebsiteTarget.getSelectionModel().select(target.getWebsiteName());
+            }
+            populateScanRunCombo(selectedWebsite);
+
+            // Find matching scan label in scanItemMap
+            for (Map.Entry<String, ScanRecord> entry : scanItemMap.entrySet()) {
+                if (entry.getValue().getId() == scanId) {
+                    cbScanRun.getSelectionModel().select(entry.getKey());
+                    if (lblCardTotalDesc != null) {
+                        lblCardTotalDesc.setText("Scan #" + scanId + " (" + target.getWebsiteName() + ")");
+                    }
+                    if (btnGenerateAiReport != null) {
+                        btnGenerateAiReport.setText("🤖 Generate AI Report for Scan #" + scanId);
+                    }
+                    break;
+                }
+            }
+        } finally {
+            updatingCombos = false;
+        }
+    }
+
+    @FXML
+    private void onGenerateAiReport() {
+        Stage stage = (Stage) tableFindings.getScene().getWindow();
+
+        if (filterScanId != null && filterScanId > 0) {
+            AiReportViewerDialog.show(filterScanId, stage);
+            return;
+        }
+
+        SecurityFinding selected = tableFindings.getSelectionModel().getSelectedItem();
+        if (selected != null && selected.getScanId() > 0) {
+            AiReportViewerDialog.show(selected.getScanId(), stage);
+            return;
+        }
+
+        // If a website is selected, see if there's a scan available to run
+        if (!scanItemMap.isEmpty()) {
+            ScanRecord latest = scanItemMap.values().iterator().next();
+            Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+            confirm.setTitle("Generate AI Security Report");
+            confirm.setHeaderText("No Specific Scan Selected");
+            confirm.setContentText("Would you like to generate the AI Security Report for the latest scan (Scan #"
+                    + latest.getId() + " - " + latest.getWebsiteName() + ")?");
+            Optional<ButtonType> result = confirm.showAndWait();
+            if (result.isPresent() && result.get() == ButtonType.OK) {
+                AiReportViewerDialog.show(latest.getId(), stage);
+            }
+            return;
+        }
+
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Select Website Scan");
+        alert.setHeaderText("No Scan Selected");
+        alert.setContentText("Please select a website and scan date from the top dropdowns or click a finding in the table to generate an AI Security Report.");
+        alert.showAndWait();
+    }
+
+    public void loadScansAndFindings() {
         User user = SessionManager.getInstance().getCurrentUser();
         if (user == null) return;
 
-        Task<List<SecurityFinding>> task = new Task<>() {
+        Task<Void> task = new Task<>() {
+            private List<ScanRecord> loadedScans;
+            private List<SecurityFinding> loadedFindings;
+
             @Override
-            protected List<SecurityFinding> call() {
-                return findingService.getFindingsForUser(user.getId());
+            protected Void call() {
+                loadedScans = scanService.getUserScanHistory(user.getId());
+                loadedFindings = findingService.getFindingsForUser(user.getId());
+                return null;
             }
 
             @Override
             protected void succeeded() {
-                masterList.setAll(getValue());
+                userScans.clear();
+                if (loadedScans != null) {
+                    userScans.addAll(loadedScans);
+                }
+
+                masterList.setAll(loadedFindings != null ? loadedFindings : Collections.emptyList());
+
+                // Populate cbWebsiteTarget
+                if (cbWebsiteTarget != null) {
+                    updatingCombos = true;
+                    try {
+                        Set<String> sites = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+                        for (ScanRecord r : userScans) {
+                            if (r.getWebsiteName() != null && !r.getWebsiteName().isBlank()) {
+                                sites.add(r.getWebsiteName());
+                            }
+                        }
+                        ObservableList<String> siteItems = FXCollections.observableArrayList("All Websites");
+                        siteItems.addAll(sites);
+                        cbWebsiteTarget.setItems(siteItems);
+                        cbWebsiteTarget.getSelectionModel().selectFirst();
+
+                        populateScanRunCombo("All Websites");
+                        if (cbScanRun != null && !cbScanRun.getItems().isEmpty()) {
+                            cbScanRun.getSelectionModel().selectFirst();
+                        }
+                    } finally {
+                        updatingCombos = false;
+                    }
+                }
+
+                // If filterScanId was pre-set, synchronize
+                if (filterScanId != null) {
+                    syncScanSelection(filterScanId);
+                }
+
                 applyFilters();
             }
 
             @Override
             protected void failed() {
-                log.error("Failed to load security findings", getException());
+                log.error("Failed to load scans and findings", getException());
             }
         };
 
-        Thread t = new Thread(task, "load-findings-worker");
+        Thread t = new Thread(task, "load-scans-and-findings-worker");
         t.setDaemon(true);
         t.start();
+    }
+
+    public void loadFindings() {
+        loadScansAndFindings();
     }
 
     private void displayFindingDetail(SecurityFinding finding) {
@@ -310,6 +562,7 @@ public class ReportsController {
 
     @FXML
     private void onRefresh() {
-        loadFindings();
+        loadScansAndFindings();
     }
 }
+

@@ -38,3 +38,4 @@ public class CriticalFindingRow {
     public String getReviewStatus() { return reviewStatus; }
     public long   getScanId()       { return scanId; }
 }
+

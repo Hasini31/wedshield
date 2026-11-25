@@ -1,16 +1,26 @@
 package com.webshield.ui.controllers;
 
 import com.webshield.dashboard.*;
+import javafx.animation.Animation;
+import javafx.animation.Interpolator;
+import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.chart.*;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.Rectangle;
+import javafx.util.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
@@ -38,22 +48,37 @@ public class DashboardController {
     private static final Logger log = LoggerFactory.getLogger(DashboardController.class);
     private static final DateTimeFormatter TIME_FMT = DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm:ss");
 
+    /* ── Root Containers ───────────────────────────────────────────── */
+    @FXML private ScrollPane scrollPaneDashboard;
+    @FXML private VBox       dashboardContent;
+
     /* ── Top Header ─────────────────────────────────────────────────── */
     @FXML private Label  lblLastUpdated;
     @FXML private Button btnRefresh;
 
-    /* ── Row 1: Six Overall Metric Cards ────────────────────────────── */
+    /* ── Row 1: Five Overall Metric Cards ───────────────────────────── */
+    @FXML private VBox  cardWebsites;
+    @FXML private VBox  cardApiProjects;
+    @FXML private VBox  cardWebsiteScans;
+    @FXML private VBox  cardApiScans;
+    @FXML private VBox  cardTotalScans;
+
+    @FXML private Label lblTitleWebsites;
+    @FXML private Label lblTitleApiProjects;
+    @FXML private Label lblTitleWebsiteScans;
+    @FXML private Label lblTitleApiScans;
+    @FXML private Label lblTitleTotalScans;
+
     @FXML private Label statTotalWebsites;
     @FXML private Label statActiveWebsites;
     @FXML private Label statApiProjects;
+    @FXML private Label statApiProjectsSubtitle;
+    @FXML private Label statWebsiteScans;
+    @FXML private Label statWebsiteScansSubtitle;
+    @FXML private Label statApiScans;
+    @FXML private Label statApiScansSubtitle;
     @FXML private Label statTotalScans;
     @FXML private Label statScansBreakdown;
-    @FXML private Label statApiExecuted;
-    @FXML private Label statApiGenerated;
-    @FXML private Label statTotalFindings;
-    @FXML private Label statFindingsBreakdown;
-    @FXML private Label statCriticalFindings;
-    @FXML private Label statCriticalBreakdown;
 
     /* ── Row 2: Website Security Overview ───────────────────────────── */
     @FXML private Label lblWebRegistered;
@@ -82,16 +107,26 @@ public class DashboardController {
     @FXML private Label lblApiTestCasesGenChip;
     @FXML private Label lblApiTestCasesExecChip;
     @FXML private Label lblApiFindingsChip;
+    @FXML private Label lblApiLastScanChip;
 
-    @FXML private TableView<ApiCategoryStat>          tableApiCategories;
-    @FXML private TableColumn<ApiCategoryStat, String> colCatName;
-    @FXML private TableColumn<ApiCategoryStat, Number> colCatGenerated;
-    @FXML private TableColumn<ApiCategoryStat, Number> colCatExecuted;
-    @FXML private TableColumn<ApiCategoryStat, Number> colCatFindings;
+    @FXML private TableView<ApiProjectOverviewRow>          tableApiProjects;
+    @FXML private TableColumn<ApiProjectOverviewRow, String> colApiProjName;
+    @FXML private TableColumn<ApiProjectOverviewRow, String> colApiProjSpec;
+    @FXML private TableColumn<ApiProjectOverviewRow, Number> colApiProjEndpoints;
+    @FXML private TableColumn<ApiProjectOverviewRow, Number> colApiProjScans;
+    @FXML private TableColumn<ApiProjectOverviewRow, Number> colApiProjTestCases;
+    @FXML private TableColumn<ApiProjectOverviewRow, Number> colApiProjExecutions;
+    @FXML private TableColumn<ApiProjectOverviewRow, Number> colApiProjFindings;
+    @FXML private TableColumn<ApiProjectOverviewRow, Number> colApiProjCritical;
+    @FXML private TableColumn<ApiProjectOverviewRow, Number> colApiProjHigh;
+    @FXML private TableColumn<ApiProjectOverviewRow, String> colApiProjLastScan;
+    @FXML private TableColumn<ApiProjectOverviewRow, String> colApiProjStatus;
 
-    @FXML private BarChart<String, Number> chartApiCategories;
-    @FXML private CategoryAxis             axisApiCatX;
-    @FXML private NumberAxis               axisApiCatY;
+    @FXML private Button   btnResetApiSelection;
+    @FXML private Label    lblApiChartSubtitle;
+    @FXML private PieChart chartApiProjectFindings;
+    @FXML private VBox     chartApiEmptyState;
+    @FXML private Label    lblApiEmptyTitle;
 
     /* ── Row 4: Vulnerability Severity Distribution ─────────────────── */
     @FXML private PieChart chartSeverityDistribution;
@@ -121,18 +156,8 @@ public class DashboardController {
     @FXML private TableColumn<SecurityActivityRow, String> colActStatus;
     @FXML private TableColumn<SecurityActivityRow, Void>   colActAction;
 
-    /* ── Row 6: Critical Security Findings ──────────────────────────── */
-    @FXML private TableView<CriticalFindingRow>          tableCriticalFindings;
-    @FXML private TableColumn<CriticalFindingRow, String> colCritName;
-    @FXML private TableColumn<CriticalFindingRow, String> colCritTarget;
-    @FXML private TableColumn<CriticalFindingRow, String> colCritType;
-    @FXML private TableColumn<CriticalFindingRow, String> colCritCategory;
-    @FXML private TableColumn<CriticalFindingRow, String> colCritSeverity;
-    @FXML private TableColumn<CriticalFindingRow, String> colCritConfidence;
-    @FXML private TableColumn<CriticalFindingRow, String> colCritStatus;
-    @FXML private TableColumn<CriticalFindingRow, Void>   colCritAction;
-
     private final DashboardService service;
+    private Map<String, Integer> cachedApiFindingsBySeverity = Map.of();
 
     public DashboardController() {
         this(com.webshield.config.SpringContext.getBean(DashboardService.class));
@@ -147,13 +172,97 @@ public class DashboardController {
     @FXML
     public void initialize() {
         log.info("Initializing Unified Security Command Center Dashboard");
+        if (scrollPaneDashboard != null) {
+            scrollPaneDashboard.setFitToWidth(true);
+            scrollPaneDashboard.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        }
+        setupMetricCardHoverMarquees();
         configureTables();
         loadDataAsync();
+    }
+
+    private void setupMetricCardHoverMarquees() {
+        setupHoverMarquee(cardWebsites, lblTitleWebsites);
+        setupHoverMarquee(cardApiProjects, lblTitleApiProjects);
+        setupHoverMarquee(cardWebsiteScans, lblTitleWebsiteScans);
+        setupHoverMarquee(cardApiScans, lblTitleApiScans);
+        setupHoverMarquee(cardTotalScans, lblTitleTotalScans);
+    }
+
+    private void setupHoverMarquee(VBox card, Label label) {
+        if (label == null) return;
+
+        label.setWrapText(false);
+        label.setMinWidth(Region.USE_PREF_SIZE);
+        label.setPrefWidth(Region.USE_COMPUTED_SIZE);
+        label.setMaxWidth(Region.USE_PREF_SIZE);
+
+        Pane container = (label.getParent() instanceof Pane p) ? p : null;
+        if (container != null) {
+            Rectangle clip = new Rectangle();
+            clip.widthProperty().bind(container.widthProperty());
+            clip.heightProperty().bind(container.heightProperty());
+            container.setClip(clip);
+        }
+
+        final Animation[] activeAnimation = new Animation[1];
+
+        EventHandler<MouseEvent> onEnter = e -> {
+            if (activeAnimation[0] != null) {
+                activeAnimation[0].stop();
+            }
+            double labelWidth = label.prefWidth(-1);
+            double containerWidth = container != null ? container.getWidth() : (card != null ? card.getWidth() : 0);
+            double overflow = labelWidth - containerWidth;
+            if (overflow > 1.0) {
+                double currentX = label.getTranslateX();
+                double targetX = -overflow;
+                double remainingDist = Math.abs(targetX - currentX);
+                double durationMs = Math.max(600, remainingDist * 25);
+                TranslateTransition tt = new TranslateTransition(Duration.millis(durationMs), label);
+                tt.setToX(targetX);
+                tt.setInterpolator(Interpolator.EASE_BOTH);
+                activeAnimation[0] = tt;
+                tt.play();
+            }
+        };
+
+        EventHandler<MouseEvent> onExit = e -> {
+            if (activeAnimation[0] != null) {
+                activeAnimation[0].stop();
+            }
+            double currentX = label.getTranslateX();
+            if (Math.abs(currentX) > 0.5) {
+                double durationMs = Math.min(300, Math.max(120, Math.abs(currentX) * 8));
+                TranslateTransition tt = new TranslateTransition(Duration.millis(durationMs), label);
+                tt.setToX(0);
+                tt.setInterpolator(Interpolator.EASE_OUT);
+                activeAnimation[0] = tt;
+                tt.play();
+            } else {
+                label.setTranslateX(0);
+            }
+        };
+
+        if (card != null) {
+            card.setOnMouseEntered(onEnter);
+            card.setOnMouseExited(onExit);
+        }
+        if (container != null && container != card) {
+            container.setOnMouseEntered(onEnter);
+            container.setOnMouseExited(onExit);
+        }
+        label.setOnMouseEntered(onEnter);
+        label.setOnMouseExited(onExit);
     }
 
     /* ── Table Configuration & Cell Value Factories ────────────────── */
 
     private void configureTables() {
+        tableWebsiteOverview.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        tableApiProjects.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        tableRecentActivity.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
         // 1. Website Overview Table
         colWebName.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getName()));
         colWebUrl.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getUrl()));
@@ -206,11 +315,59 @@ public class DashboardController {
             }
         });
 
-        // 2. API Categories Table
-        colCatName.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().category()));
-        colCatGenerated.setCellValueFactory(d -> new SimpleIntegerProperty(d.getValue().generatedCount()));
-        colCatExecuted.setCellValueFactory(d -> new SimpleIntegerProperty(d.getValue().executedCount()));
-        colCatFindings.setCellValueFactory(d -> new SimpleIntegerProperty(d.getValue().findingsCount()));
+        // 2. API Projects Table
+        colApiProjName.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getName()));
+        colApiProjSpec.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getSpecDisplay()));
+        colApiProjEndpoints.setCellValueFactory(d -> new SimpleIntegerProperty(d.getValue().getEndpointsCount()));
+        colApiProjScans.setCellValueFactory(d -> new SimpleIntegerProperty(d.getValue().getScansRun()));
+        colApiProjTestCases.setCellValueFactory(d -> new SimpleIntegerProperty(d.getValue().getTestCasesGenerated()));
+        colApiProjExecutions.setCellValueFactory(d -> new SimpleIntegerProperty(d.getValue().getRequestsExecuted()));
+        colApiProjFindings.setCellValueFactory(d -> new SimpleIntegerProperty(d.getValue().getTotalFindings()));
+        colApiProjCritical.setCellValueFactory(d -> new SimpleIntegerProperty(d.getValue().getCriticalFindings()));
+        colApiProjHigh.setCellValueFactory(d -> new SimpleIntegerProperty(d.getValue().getHighFindings()));
+        colApiProjLastScan.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getLastScanDate()));
+
+        colApiProjStatus.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getStatus()));
+        colApiProjStatus.setCellFactory(col -> new TableCell<>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                    setGraphic(null);
+                } else {
+                    Label badge = new Label(item);
+                    badge.setStyle(getStatusBadgeStyle(item));
+                    setGraphic(badge);
+                    setText(null);
+                }
+            }
+        });
+
+        // Interactive Selection Listener: dynamically updates the findings pie chart
+        tableApiProjects.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, selected) -> {
+            if (selected != null) {
+                lblApiChartSubtitle.setText("Target: " + selected.getName());
+                populateApiProjectPieChart(selected.getFindingsBySeverity(), selected.getName());
+            } else {
+                lblApiChartSubtitle.setText("Target: All Projects (Overall)");
+                populateApiProjectPieChart(cachedApiFindingsBySeverity, "All Projects");
+            }
+        });
+
+        // Double-click row handler to view API project details
+        tableApiProjects.setRowFactory(tv -> {
+            TableRow<ApiProjectOverviewRow> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2 && !row.isEmpty()) {
+                    ApiProjectOverviewRow item = row.getItem();
+                    if (item != null && ShellController.getInstance() != null) {
+                        ShellController.getInstance().openApiProjectDetails(item.getId());
+                    }
+                }
+            });
+            return row;
+        });
 
         // 3. Recent Security Activity Table
         colActScanId.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getDisplayId()));
@@ -276,73 +433,6 @@ public class DashboardController {
                 setGraphic(empty ? null : btn);
             }
         });
-
-        // 4. Critical Findings Table
-        colCritName.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getFindingName()));
-        colCritTarget.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getTarget()));
-        colCritType.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getTargetType()));
-        colCritType.setCellFactory(col -> new TableCell<>() {
-            @Override
-            protected void updateItem(String item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null) {
-                    setGraphic(null);
-                    setText(null);
-                } else {
-                    Label badge = new Label(item);
-                    boolean isApi = "API".equalsIgnoreCase(item);
-                    String bg = isApi ? "#F5F3FF" : "#EFF6FF";
-                    String textCol = isApi ? "#7C3AED" : "#2563EB";
-                    badge.setStyle("-fx-background-color: " + bg + "; -fx-text-fill: " + textCol + "; -fx-font-size: 10px; -fx-font-weight: bold; -fx-padding: 2 6; -fx-background-radius: 4;");
-                    setGraphic(badge);
-                    setText(null);
-                }
-            }
-        });
-        colCritCategory.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getCategory()));
-        colCritSeverity.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getSeverity()));
-        colCritSeverity.setCellFactory(col -> new TableCell<>() {
-            @Override
-            protected void updateItem(String item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null) {
-                    setGraphic(null);
-                    setText(null);
-                } else {
-                    Label badge = new Label(item);
-                    boolean isCrit = "CRITICAL".equalsIgnoreCase(item);
-                    String bg = isCrit ? "#FEF2F2" : "#FFF7ED";
-                    String textCol = isCrit ? "#DC2626" : "#EA580C";
-                    badge.setStyle("-fx-background-color: " + bg + "; -fx-text-fill: " + textCol + "; -fx-font-size: 10px; -fx-font-weight: bold; -fx-padding: 2 6; -fx-background-radius: 4;");
-                    setGraphic(badge);
-                    setText(null);
-                }
-            }
-        });
-        colCritConfidence.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getConfidence()));
-        colCritStatus.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getReviewStatus()));
-        colCritAction.setCellFactory(col -> new TableCell<>() {
-            private final Button btn = new Button("View Details");
-            {
-                btn.getStyleClass().add("ws-btn-secondary");
-                btn.setStyle("-fx-font-size: 11px; -fx-padding: 3 8;");
-                btn.setOnAction(e -> {
-                    CriticalFindingRow row = getTableView().getItems().get(getIndex());
-                    if (row != null && ShellController.getInstance() != null) {
-                        if ("WEBSITE".equalsIgnoreCase(row.getTargetType())) {
-                            ShellController.getInstance().openReportsForScan(row.getScanId());
-                        } else {
-                            ShellController.getInstance().openApiFindingsForScan(row.getScanId());
-                        }
-                    }
-                });
-            }
-            @Override
-            protected void updateItem(Void item, boolean empty) {
-                super.updateItem(item, empty);
-                setGraphic(empty ? null : btn);
-            }
-        });
     }
 
     private String getStatusBadgeStyle(String status) {
@@ -373,22 +463,22 @@ public class DashboardController {
         Task<Void> task = new Task<>() {
             DashboardStatistics stats;
             List<WebsiteOverviewRow> websites;
+            List<ApiProjectOverviewRow> apiProjects;
             List<SecurityActivityRow> activities;
-            List<CriticalFindingRow> criticals;
 
             @Override
             protected Void call() {
                 stats = service.getStatistics();
                 websites = service.getWebsiteOverview();
+                apiProjects = service.getApiProjectOverview();
                 activities = service.getRecentSecurityActivity();
-                criticals = service.getCriticalFindings();
                 return null;
             }
 
             @Override
             protected void succeeded() {
                 Platform.runLater(() -> {
-                    populateUI(stats, websites, activities, criticals);
+                    populateUI(stats, websites, apiProjects, activities);
                     if (lblLastUpdated != null) {
                         lblLastUpdated.setText("Last refreshed: " + LocalDateTime.now().format(TIME_FMT));
                     }
@@ -416,20 +506,21 @@ public class DashboardController {
 
     private void populateUI(DashboardStatistics stats,
                             List<WebsiteOverviewRow> websites,
-                            List<SecurityActivityRow> activities,
-                            List<CriticalFindingRow> criticals) {
-        // Section A: Overall Metric Cards
+                            List<ApiProjectOverviewRow> apiProjects,
+                            List<SecurityActivityRow> activities) {
+        // Section A: Overall Metric Cards (5 Cards)
         statTotalWebsites.setText(String.valueOf(stats.getTotalWebsites()));
         statActiveWebsites.setText(stats.getActiveWebsites() + " active");
         statApiProjects.setText(String.valueOf(stats.getTotalApiProjects()));
-        statTotalScans.setText(String.valueOf(stats.getTotalScans()));
+        if (statApiProjectsSubtitle != null) {
+            statApiProjectsSubtitle.setText("OpenAPI specs");
+        }
+        statWebsiteScans.setText(String.valueOf(stats.getTotalWebsiteScans()));
+        statWebsiteScansSubtitle.setText(stats.getWebsitesScanned() + " targets scanned");
+        statApiScans.setText(String.valueOf(stats.getTotalApiScans()));
+        statApiScansSubtitle.setText(stats.getApiTestCasesExecuted() + " requests executed");
+        statTotalScans.setText(String.valueOf(stats.getTotalWebsiteScans() + stats.getTotalApiScans()));
         statScansBreakdown.setText(stats.getTotalWebsiteScans() + " Web · " + stats.getTotalApiScans() + " API");
-        statApiExecuted.setText(String.valueOf(stats.getApiTestCasesExecuted()));
-        statApiGenerated.setText(stats.getApiTestCasesExecuted() + " executed · " + stats.getApiTestCasesGenerated() + " gen");
-        statTotalFindings.setText(String.valueOf(stats.getTotalFindings()));
-        statFindingsBreakdown.setText(stats.getTotalWebsiteFindings() + " Web · " + stats.getTotalApiFindings() + " API");
-        statCriticalFindings.setText(String.valueOf(stats.getCriticalFindings()));
-        statCriticalBreakdown.setText(stats.getCriticalWebsiteFindings() + " Web · " + stats.getCriticalApiFindings() + " API");
 
         // Section B: Website Security Overview
         lblWebRegistered.setText(String.valueOf(stats.getTotalWebsites()));
@@ -447,10 +538,20 @@ public class DashboardController {
         lblApiTestCasesGenChip.setText(String.valueOf(stats.getApiTestCasesGenerated()));
         lblApiTestCasesExecChip.setText(String.valueOf(stats.getApiTestCasesExecuted()));
         lblApiFindingsChip.setText(String.valueOf(stats.getTotalApiFindings()));
+        if (lblApiLastScanChip != null) {
+            lblApiLastScanChip.setText(stats.getLastApiScanDate());
+        }
 
-        List<ApiCategoryStat> catStats = stats.getApiCategoryStats();
-        tableApiCategories.setItems(FXCollections.observableArrayList(catStats));
-        populateApiCategoryChart(catStats);
+        cachedApiFindingsBySeverity = stats.getApiFindingsBySeverity();
+        tableApiProjects.setItems(FXCollections.observableArrayList(apiProjects));
+
+        // Interactive findings pie chart synchronization
+        ApiProjectOverviewRow selected = tableApiProjects.getSelectionModel().getSelectedItem();
+        if (selected != null) {
+            populateApiProjectPieChart(selected.getFindingsBySeverity(), selected.getName());
+        } else {
+            populateApiProjectPieChart(cachedApiFindingsBySeverity, "All Projects (Overall)");
+        }
 
         // Section D: Severity Distribution & Engine Breakdown
         populateSeverityPieChart(stats.getFindingsBySeverity());
@@ -471,12 +572,69 @@ public class DashboardController {
 
         // Section E: Recent Security Activity Table
         tableRecentActivity.setItems(FXCollections.observableArrayList(activities));
-
-        // Section F: Critical Security Findings Table
-        tableCriticalFindings.setItems(FXCollections.observableArrayList(criticals));
     }
 
     /* ── Chart Population ──────────────────────────────────────────── */
+
+    @FXML
+    private void onResetApiProjectSelection() {
+        if (tableApiProjects != null) {
+            tableApiProjects.getSelectionModel().clearSelection();
+        }
+    }
+
+    private void populateApiProjectPieChart(Map<String, Integer> severityMap, String targetName) {
+        if (chartApiProjectFindings == null) return;
+        chartApiProjectFindings.getData().clear();
+
+        if (lblApiChartSubtitle != null) {
+            lblApiChartSubtitle.setText("Target: " + (targetName != null ? targetName : "All Projects"));
+        }
+
+        int total = severityMap != null ? severityMap.values().stream().mapToInt(Integer::intValue).sum() : 0;
+        boolean hasData = total > 0;
+
+        if (chartApiEmptyState != null) {
+            chartApiEmptyState.setVisible(!hasData);
+            chartApiEmptyState.setManaged(!hasData);
+        }
+        chartApiProjectFindings.setVisible(hasData);
+        chartApiProjectFindings.setManaged(hasData);
+
+        if (!hasData || severityMap == null) return;
+
+        ObservableList<PieChart.Data> pieData = FXCollections.observableArrayList();
+        for (String sev : List.of("CRITICAL", "HIGH", "MEDIUM", "LOW", "INFORMATIONAL")) {
+            int val = severityMap.getOrDefault(sev, 0);
+            if (val > 0) {
+                double pct = (val * 100.0) / total;
+                String displaySev = switch (sev) {
+                    case "INFORMATIONAL" -> "Info";
+                    case "CRITICAL" -> "Critical";
+                    case "HIGH" -> "High";
+                    case "MEDIUM" -> "Medium";
+                    case "LOW" -> "Low";
+                    default -> sev;
+                };
+                pieData.add(new PieChart.Data(String.format("%s: %d (%.1f%%)", displaySev, val, pct), val));
+            }
+        }
+        chartApiProjectFindings.setData(pieData);
+
+        // Apply distinct cybersecurity colors to slices
+        for (PieChart.Data d : pieData) {
+            if (d.getNode() != null) {
+                String name = d.getName().toUpperCase();
+                String col = "#64748B"; // default slate info
+                if (name.contains("CRITICAL")) col = "#DC2626";
+                else if (name.contains("HIGH")) col = "#EA580C";
+                else if (name.contains("MEDIUM")) col = "#D97706";
+                else if (name.contains("LOW")) col = "#2563EB";
+                d.getNode().setStyle("-fx-pie-color: " + col + ";");
+                Tooltip.install(d.getNode(), new Tooltip(d.getName()));
+            }
+        }
+    }
 
     private void populateSeverityPieChart(Map<String, Integer> severityMap) {
         chartSeverityDistribution.getData().clear();
@@ -512,31 +670,6 @@ public class DashboardController {
                 d.getNode().setStyle("-fx-pie-color: " + col + ";");
             }
         }
-    }
-
-    private void populateApiCategoryChart(List<ApiCategoryStat> catStats) {
-        if (chartApiCategories == null) return;
-        chartApiCategories.getData().clear();
-
-        XYChart.Series<String, Number> genSeries = new XYChart.Series<>();
-        genSeries.setName("Generated");
-
-        for (ApiCategoryStat st : catStats) {
-            genSeries.getData().add(new XYChart.Data<>(formatCategoryLabel(st.category()), st.generatedCount()));
-        }
-        chartApiCategories.getData().add(genSeries);
-    }
-
-    private String formatCategoryLabel(String cat) {
-        if (cat == null) return "";
-        return switch (cat.toUpperCase()) {
-            case "VALID_SMOKE" -> "Smoke";
-            case "BOUNDARY" -> "Boundary";
-            case "MISSING_REQUIRED" -> "Missing";
-            case "TYPE_CONFUSION" -> "Type";
-            case "SECURITY_PROBES" -> "Probes";
-            default -> cat;
-        };
     }
 
     /* ── Quick Actions Navigation ──────────────────────────────────── */

@@ -80,8 +80,7 @@ class AuthValidatorTest {
         @ValueSource(strings = {
             "ValidP@ssw0rd",
             "Secur3Pass!",
-            "Admin#2024Web",
-            "Password123"
+            "Admin#2024Web"
         })
         @DisplayName("Strong passwords pass validation")
         void testStrongPasswords(String password) {
@@ -92,10 +91,11 @@ class AuthValidatorTest {
         @NullAndEmptySource
         @ValueSource(strings = {
             "Short1A",          // < 8 chars
-            "nouppercase123",   // missing uppercase
-            "NOLOWERCASE123",   // missing lowercase
-            "NoDigitsInPassword",// missing digit
-            "12345678"          // no letters
+            "nouppercase123!",  // missing uppercase
+            "NOLOWERCASE123!",  // missing lowercase
+            "NoDigitsInPassword!",// missing digit
+            "Password123",      // missing special symbol
+            "12345678"          // no letters or symbols
         })
         @DisplayName("Weak passwords throw IllegalArgumentException")
         void testWeakPasswords(String password) {
