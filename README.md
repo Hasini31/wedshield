@@ -11,6 +11,8 @@
 
 ## 🎥 Application Demo Video
 
+[▶ Watch Application Demo (demo1.mp4)](https://github.com/Hasini31/wedshield/blob/main/demo1.mp4)
+
 <div align="center">
   <video src="demo1.mp4" controls width="100%" style="width: 100%; max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 6px 20px rgba(0,0,0,0.25);" preload="metadata">
     <source src="demo1.mp4" type="video/mp4">
