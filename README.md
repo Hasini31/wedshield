@@ -22,11 +22,10 @@
 </div>
 
 ### 👥 Video Presentation Flow
-* **Speaker 1: Hasini** – Application Foundation, Authentication, Security Command Center & Database Persistence
-* **Speaker 2: Sahithi** – Jsoup Website Crawling & Vulnerability Analyzers (XSS Canary Probing, SQL Error Detection, Headers, Cookies)
-* **Speaker 3: Namratha** – OpenAPI / Swagger Ingestion, Autonomous Test Generation (Boundary, Invalid, Mutation) & MIO Optimization
-* **Speaker 4: Aruna** – Rate-Limited API Fuzzing, OWASP Security Analysis, Regression Diffs & Google Gemini AI Report Generation
-
+* **Speaker 1: Hasini** 
+* **Speaker 2: Sahithi** 
+* **Speaker 3: Namratha** 
+* **Speaker 4: Aruna**
 ---
 
 📄 **Full College Project Documentation:** The complete 11-chapter formal academic report is available in [PROJECT_REPORT.md](PROJECT_REPORT.md) | 📥 **Download Official PDF Report:** [WebShield_Project_ReportJava.pdf](WebShield_Project_ReportJava.pdf)
