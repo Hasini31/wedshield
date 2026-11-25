@@ -9,13 +9,26 @@
 
 ---
 
-## 🎥 Full Video Demonstration
+## 🎥 Application Demo Video
+
+<div align="center">
+  <video src="demo1.mp4" controls width="100%" style="width: 100%; max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 6px 20px rgba(0,0,0,0.25);" preload="metadata">
+    <source src="demo1.mp4" type="video/mp4">
+    <p>Your browser or Markdown viewer does not support embedded videos. You can play or download the demo directly: <a href="demo1.mp4"><b>demo1.mp4</b></a>.</p>
+  </video>
+</div>
+
+---
+
+## 📽️ Full Project Explanation & Technical Presentation Video
+
+> **📌 Note:** Because the full technical presentation video (covering all four students' deep-dive explanations, architecture, source code walkthrough, and live multi-engine scanning runs) was very large (**~345 MB**), it has been uploaded to **Google Drive** for high-definition streaming.
 
 <div align="center">
 
-[![Watch Demonstration Video on Google Drive](https://img.shields.io/badge/▶_WATCH_FULL_DEMONSTRATION-GOOGLE_DRIVE-4285F4?style=for-the-badge&logo=googledrive&logoColor=white)](https://drive.google.com/file/d/1pRF_jsxh_mKnpEdg8l1hQeoTasNBomcj/view?usp=sharing)
+[![Watch Full Project Explanation on Google Drive](https://img.shields.io/badge/▶_WATCH_FULL_PROJECT_EXPLANATION-GOOGLE_DRIVE-4285F4?style=for-the-badge&logo=googledrive&logoColor=white)](https://drive.google.com/file/d/1pRF_jsxh_mKnpEdg8l1hQeoTasNBomcj/view?usp=sharing)
 
-### 🔗 **[Click Here to Watch the Video Demonstration on Google Drive](https://drive.google.com/file/d/1pRF_jsxh_mKnpEdg8l1hQeoTasNBomcj/view?usp=sharing)**
+### 🔗 **[Click Here to Stream the Full Project Explanation Video on Google Drive](https://drive.google.com/file/d/1pRF_jsxh_mKnpEdg8l1hQeoTasNBomcj/view?usp=sharing)**
 
 *(Direct Link: [https://drive.google.com/file/d/1pRF_jsxh_mKnpEdg8l1hQeoTasNBomcj/view?usp=sharing](https://drive.google.com/file/d/1pRF_jsxh_mKnpEdg8l1hQeoTasNBomcj/view?usp=sharing))*
 
